@@ -9,5 +9,9 @@
       enable = true;
       theme = "robbyrussell";
     };
+
+    autosuggestions.enable = true;
   };
+
+  programs.fzf.fuzzyCompletion = true;
 }
