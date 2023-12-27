@@ -4,6 +4,7 @@
 
   imports = 
     [ (root + "/modules/home-manager/alacritty")
+      (root + "/modules/home-manager/tmux")
       (root + "/modules/home-manager/i3")
     ];
 
