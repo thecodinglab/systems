@@ -160,6 +160,9 @@
     silver-searcher
   ];
 
-  programs.gnupg.agent.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryFlavor = "qt";
+  };
 }
 
