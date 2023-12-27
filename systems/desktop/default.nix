@@ -159,5 +159,7 @@
     fd
     silver-searcher
   ];
+
+  programs.gnupg.agent.enable = true;
 }
 
