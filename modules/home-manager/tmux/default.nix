@@ -29,6 +29,7 @@ in
     terminal = "screen-256color";
 
     plugins = with pkgs; [
+      tmuxPlugins.yank
       tmuxPlugins.sensible
       {
         plugin = tmuxPlugins.resurrect;
@@ -43,9 +44,6 @@ in
           set -g @continuum-restore 'on'
         '';
       }
-      tmuxPlugins.yank
-      # tmuxPlugins.nvim
-
       {
         plugin = tmux-nvim;
         extraConfig = ''
