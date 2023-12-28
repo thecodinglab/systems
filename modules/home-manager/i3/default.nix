@@ -122,6 +122,74 @@ in {
       ];
     };
   };
+
+  programs.i3status = {
+    enable = true;
+    enableDefault = false;
+
+    general =  {
+      colors = true;
+      # color_good = "#e0e0e0";
+      # color_degraded = "#d7ae00";
+      # color_bad = "#f69d6a";
+      interval = 5;
+    };
+
+    modules = {
+      "wireless wlp4s0" = {
+        position = 1;
+        settings = {
+          format_up = "W: %ip (%quality at %essid)";
+          format_down = "W: down";
+        };
+      };
+
+      "ethernet _first_" = {
+        position = 2;
+        settings = {
+          format_up = "E: %ip (%speed)";
+          format_down = "E: down";
+        };
+      };
+
+      "volume master" = {
+        position = 3;
+        settings = {
+          format = "%volume";
+        };
+      };
+
+      "disk /" = {
+        position = 4;
+        settings = {
+          format = "%avail";
+        };
+      };
+
+      load = {
+        position = 5;
+        settings = {
+          format = "%1min";
+        };
+      };
+
+      memory = {
+        position = 6;
+        settings = {
+          format = "%available";
+          threshold_degraded = "1G";
+          format_degraded = "MEMORY < %available";
+        };
+      };
+
+      "tztime local" = {
+        position = 7;
+        settings = {
+          format = "%Y-%m-%d %H:%M:%S";
+        };
+      };
+    };
+  };
   
   home.packages = with pkgs; [
     systemd
