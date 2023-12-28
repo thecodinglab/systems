@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   tmux-select-pane =
-    pkgs.writeShellScriptBin 
+    pkgs.writeShellScriptBin
       "tmux-select-pane"
       (builtins.readFile ./scripts/select-pane.sh);
 

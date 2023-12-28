@@ -64,7 +64,17 @@
   #######################
 
   networking.hostName = "florian-nixos";
-  networking.wireless.enable = true;
+
+  networking.wireless =
+    let
+      pskPath = root + "/secrets/wireless_psk.txt";
+      pskExists = builtins.pathExists pskPath;
+    in {
+      enable = builtins.trace pskExists pskExists;
+      networks = if pskExists then {
+        Privat.pskRaw = builtins.readFile pskPath;
+      } else {};
+    };
   
   #######################
   # Environment         #
@@ -148,6 +158,8 @@
 
     # Command Line Tools
     git
+    git-crypt
+
     gcc
     gnumake
     cmake
