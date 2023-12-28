@@ -2,11 +2,17 @@
 {
   home.stateVersion = "23.11";
 
-  imports = 
-    [ (root + "/modules/home-manager/alacritty")
-      (root + "/modules/home-manager/tmux")
-      (root + "/modules/home-manager/i3")
-    ];
+  imports = [
+    # Desktop Environment
+    (root + "/modules/home-manager/i3")
+
+    # Command Line Applications
+    (root + "/modules/home-manager/alacritty")
+    (root + "/modules/home-manager/tmux")
+    
+    # Desktop Applications
+    (root + "/modules/home-manager/zathura")
+  ];
 
   home.file.".background-image" = {
     enable = true;
