@@ -9,6 +9,7 @@
     # Command Line Applications
     (root + "/modules/home-manager/alacritty")
     (root + "/modules/home-manager/tmux")
+    (root + "/modules/home-manager/lf")
     
     # Desktop Applications
     (root + "/modules/home-manager/zathura")
