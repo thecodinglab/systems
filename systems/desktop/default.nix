@@ -70,7 +70,7 @@
       pskPath = root + "/secrets/wireless_psk.txt";
       pskExists = builtins.pathExists pskPath;
     in {
-      enable = builtins.trace pskExists pskExists;
+      enable = pskExists;
       networks = if pskExists then {
         Privat.pskRaw = builtins.readFile pskPath;
       } else {};
