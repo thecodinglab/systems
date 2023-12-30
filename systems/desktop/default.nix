@@ -7,6 +7,8 @@
 
       # System
       ./hardware.nix
+      ./security.nix
+
       (root + "/modules/nixos/zsh")
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/podman")
@@ -140,15 +142,6 @@
   services.dbus.enable = true;
   services.printing.enable = true;
   
-  services.openssh.enable = true;
-
-  # Firewall
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [];
-    allowedUDPPorts = [];
-  };
-  
   #######################
   # Applications        #
   #######################
@@ -172,10 +165,5 @@
     fd
     silver-searcher
   ];
-
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryFlavor = "qt";
-  };
 }
 
