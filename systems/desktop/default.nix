@@ -9,6 +9,7 @@
       ./hardware.nix
       (root + "/modules/nixos/zsh")
       (root + "/modules/nixos/audio")
+      (root + "/modules/nixos/podman")
 
       # User
       ./users/florian/nixos
