@@ -2,7 +2,7 @@
 {
   users.users.florian = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "i2c" ];
 
     shell = pkgs.zsh;
 

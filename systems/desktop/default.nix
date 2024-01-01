@@ -12,6 +12,7 @@
       (root + "/modules/nixos/zsh")
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/podman")
+      (root + "/modules/nixos/dynamic-brightness")
 
       # User
       ./users/florian/nixos

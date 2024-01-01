@@ -44,9 +44,8 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
-  hardware.bluetooth = {
-    enable = true;
-  };
+  hardware.bluetooth.enable = true;
+  hardware.i2c.enable = true;
 
   networking.useDHCP = lib.mkDefault true;
   networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
