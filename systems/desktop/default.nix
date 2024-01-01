@@ -107,7 +107,7 @@
     # Keyboard Layout
     xkb = {
       layout = "us";
-      # options = "caps:escape";
+      options = "compose:rwin";
     };
 
     # Monitor Arrangement
