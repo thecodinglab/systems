@@ -101,6 +101,10 @@ in {
         "${mod}+Shift+r" = "restart";
       };
 
+      keycodebindings = {
+        "248" = "exec ${pkgs.systemd}/bin/systemctl suspend";
+      };
+
       modes = {
         resize = 
           let 
