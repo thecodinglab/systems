@@ -18,4 +18,8 @@
   };
 
   programs.fzf.enableZshIntegration = true;
+
+  home.packages = with pkgs; [
+    coreutils
+  ];
 }

@@ -16,8 +16,6 @@
       (root + "/users/florian")
     ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   #######################
   # General             #
   #######################
@@ -45,6 +43,9 @@
 
   documentation.enable = true;
   documentation.dev.enable = true;
+  documentation.man.enable = true;
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   #######################
   # Boot                #

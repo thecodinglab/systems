@@ -1,4 +1,4 @@
-{ home-manager, root, ... }: {
+{ pkgs, home-manager, root, ... }: {
   imports =
     [
       ./nixos
@@ -11,7 +11,10 @@
           florian = import ./home-manager;
         };
 
-        home-manager.extraSpecialArgs = { root = root; };
+        home-manager.extraSpecialArgs = {
+          root = root;
+          pkgs = pkgs;
+        };
       }
     ];
 }
