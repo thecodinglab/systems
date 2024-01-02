@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, root, ... }:
 let
   screenshotLocation = "/home/florian/Pictures/Screenshots";
 in
