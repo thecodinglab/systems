@@ -74,6 +74,8 @@ in
     '';
   };
 
+  programs.fzf.tmux.enableShellIntegration = true;
+
   home.packages = [
     tmux-select-pane
   ];

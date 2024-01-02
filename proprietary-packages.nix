@@ -7,5 +7,6 @@
     # Applications
     "1password"
     "spotify"
+    "smartgithg"
   ];
 }

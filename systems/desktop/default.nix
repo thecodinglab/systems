@@ -147,23 +147,12 @@
   #######################
 
   environment.systemPackages = with pkgs; [
+    # Mandatory System Management CLIs
+    htop
+    neovim
+
     # Desktop Applications
     firefox
-
-    # Command Line Tools
-    git
-    git-crypt
-
-    gcc
-    gnumake
-    cmake
-    fontconfig
-    fzf
-
-    neovim
-    htop
-    fd
-    silver-searcher
   ];
 }
 

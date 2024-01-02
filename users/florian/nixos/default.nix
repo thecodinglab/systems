@@ -11,6 +11,18 @@
       # Desktop Applications
       _1password-gui
       spotify
+
+      # Build Tools
+      gcc
+      gnumake
+      cmake
+    
+      # Git
+      git
+      git-crypt
+      gh
+      glab
+      smartgithg
     ];
   };
 }
