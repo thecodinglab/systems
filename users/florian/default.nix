@@ -11,10 +11,7 @@
           florian = import ./home-manager;
         };
 
-        home-manager.extraSpecialArgs = {
-          root = root;
-          pkgs = pkgs;
-        };
+        home-manager.extraSpecialArgs = { inherit root pkgs; };
       }
     ];
 }
