@@ -9,11 +9,13 @@
   };
 
   outputs = attrs@{ self, nixpkgs, home-manager, ... }: {
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
-      system = "x84_64-linux";
-      modules = [ ./systems/desktop ];
-      specialArgs = attrs // { 
-        root = builtins.toString ./.;
+    nixosConfigurations = {
+      desktop = nixpkgs.lib.nixosSystem {
+        system = "x84_64-linux";
+        modules = [ ./proprietary-packages.nix ./systems/desktop ];
+        specialArgs = attrs // { 
+          root = builtins.toString ./.;
+        };
       };
     };
   };

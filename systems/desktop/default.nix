@@ -3,9 +3,7 @@
   system.stateVersion = "23.11";
 
   imports = 
-    [ ./proprietary-packages.nix
-
-      # System
+    [ # System
       ./hardware.nix
       ./security.nix
 

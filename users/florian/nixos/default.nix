@@ -3,6 +3,7 @@
   users.users.florian = {
     isNormalUser = true;
     extraGroups = [ "wheel" "i2c" ];
+    initialPassword = "changeme";
 
     shell = pkgs.zsh;
 
