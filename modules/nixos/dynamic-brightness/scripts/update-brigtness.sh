@@ -9,7 +9,7 @@ MIN_BRIGHTNESS=10
 MAX_BRIGHTNESS=75
 INCREMENTS=1
 
-SUNWAIT_BASE="sunwait list 1 $LAT $LON"
+SUNWAIT_BASE="sunwait list 1 $LAT $LON angle 2"
 
 CURRENT=$(date +%s)
 SUNRISE=$(date -d "$($SUNWAIT_BASE rise)" +%s)
