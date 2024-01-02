@@ -24,7 +24,7 @@
     };
 
     darwinConfigurations = {
-      mbp = darwin.lib.darwinSystem {
+      macbookpro = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         modules = [ ./proprietary-packages.nix ./systems/macbookpro ];
         specialArgs = attrs // {

@@ -23,8 +23,8 @@
     loginShell = pkgs.zsh;
 
     variables = {
-      TERMINAL = pkgs.alacritty;
-      EDITOR = pkgs.neovim;
+      TERMINAL = "${pkgs.alacritty}/bin/alacritty";
+      EDITOR = "${pkgs.neovim}/bin/nvim";
     };
   };
 
