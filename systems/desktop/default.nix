@@ -21,7 +21,10 @@
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
 
-        home-manager.users.florian = import ./users/florian/home-manager;
+        home-manager.users = {
+          florian = import ./users/florian/home-manager;
+        };
+
         home-manager.extraSpecialArgs = { root = root; };
       }
     ];
@@ -91,7 +94,8 @@
     };
 
     variables = {
-      EDITOR = "nvim";
+      TERMINAL = pkgs.alacritty;
+      EDITOR = pkgs.neovim;
     };
   };
 
@@ -123,17 +127,25 @@
     ];
 
     videoDrivers = [ "nvidia" ];
-
+    
+    # Desktop Environment
     windowManager.i3.enable = true;
 
-    desktopManager.wallpaper = {
-      combineScreens = false;
-      mode = "fill";
+    desktopManager = {
+      xterm.enable = false;
+
+      wallpaper = {
+        combineScreens = false;
+        mode = "fill";
+      };
     };
 
     displayManager = {
       defaultSession = "none+i3";
     };
+
+    # Other
+    excludePackages = with pkgs; [ xterm ];
   };
   
   #######################

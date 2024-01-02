@@ -5,6 +5,7 @@
       fontFamily = "JetBrainsMono Nerd Font";
     in {
       enable = true;
+      package = pkgs.alacritty;
     
       settings = {
         env.TERM = "xterm-256color";
@@ -57,7 +58,7 @@
         colors = import ./theme.nix;
       };
     };
-  
+
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
