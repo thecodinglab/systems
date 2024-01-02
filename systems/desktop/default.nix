@@ -8,7 +8,6 @@
       ./hardware.nix
       ./security.nix
 
-      (root + "/modules/nixos/zsh")
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/podman")
       (root + "/modules/nixos/dynamic-brightness")
@@ -76,11 +75,10 @@
   # Environment         #
   #######################
 
+  programs.zsh.enable = true;
+
   environment = {
     shells = [ pkgs.zsh ];
-    shellAliases = {
-      ls = "ls -l --color=auto --group-directories-first -I . -I ..";
-    };
 
     variables = {
       TERMINAL = pkgs.alacritty;
@@ -152,6 +150,7 @@
     # Mandatory System Management CLIs
     htop
     neovim
+    coreutils
 
     # Desktop Applications
     firefox
