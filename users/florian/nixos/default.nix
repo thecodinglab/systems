@@ -16,7 +16,7 @@
       gcc
       gnumake
       cmake
-    
+
       # Git
       git
       git-crypt

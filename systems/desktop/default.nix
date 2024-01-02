@@ -1,9 +1,10 @@
-{ config, pkgs, home-manager, root, ... }:
+{ lib, pkgs, home-manager, root, ... }:
 {
   system.stateVersion = "23.11";
 
-  imports = 
-    [ # System
+  imports =
+    [
+      # System
       ./hardware.nix
       ./security.nix
 
@@ -17,7 +18,7 @@
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
+
   #######################
   # General             #
   #######################
@@ -52,7 +53,7 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  
+
   #######################
   # Networking          #
   #######################
@@ -63,13 +64,14 @@
     let
       pskPath = root + "/secrets/wireless_psk.txt";
       pskExists = builtins.pathExists pskPath;
-    in {
+    in
+    {
       enable = pskExists;
-      networks = if pskExists then {
+      networks = lib.mkIf pskExists {
         Privat.pskRaw = builtins.readFile pskPath;
-      } else {};
+      };
     };
-  
+
   #######################
   # Environment         #
   #######################
@@ -95,7 +97,7 @@
   services.xserver = {
     enable = true;
     autorun = true;
-  
+
     # Keyboard Layout
     xkb = {
       layout = "us";
@@ -114,7 +116,7 @@
     ];
 
     videoDrivers = [ "nvidia" ];
-    
+
     # Desktop Environment
     windowManager.i3.enable = true;
 
@@ -134,14 +136,14 @@
     # Other
     excludePackages = with pkgs; [ xterm ];
   };
-  
+
   #######################
   # Services            #
   #######################
 
   services.dbus.enable = true;
   services.printing.enable = true;
-  
+
   #######################
   # Applications        #
   #######################

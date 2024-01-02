@@ -1,17 +1,18 @@
 { pkgs, ... }:
 {
-  programs.alacritty = 
-    let 
+  programs.alacritty =
+    let
       fontFamily = "JetBrainsMono Nerd Font";
-    in {
+    in
+    {
       enable = true;
       package = pkgs.alacritty;
-    
+
       settings = {
         env.TERM = "xterm-256color";
         scrolling.history = 100000;
         live_config_reload = true;
-    
+
         font = {
           size = 10;
           normal = {
@@ -31,9 +32,9 @@
             style = "BoldItalic";
           };
         };
-    
+
         key_bindings = [
-          { 
+          {
             key = "N";
             mods = "Command|Shift";
             action = "CreateNewWindow";
@@ -43,18 +44,18 @@
             mods = "Command|Control";
             action = "SpawnNewInstance";
           }
-          { 
+          {
             key = "Left";
             mods = "Alt";
             chars = "\\x1bb";
           }
-          { 
+          {
             key = "Right";
             mods = "Alt";
             chars = "\\x1bf";
           }
         ];
-    
+
         colors = import ./theme.nix;
       };
     };

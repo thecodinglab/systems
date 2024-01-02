@@ -15,7 +15,7 @@
     allowedTCPPorts = [
       2342
     ];
-    allowedUDPPorts = [];
+    allowedUDPPorts = [ ];
   };
 
   # Gnome Keyring
