@@ -1,33 +1,11 @@
-{ pkgs, home-manager, root, ... }:
-{
+{ pkgs, home-manager, root, ... }: {
   users.users.florian = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "i2c" ];
-    initialPassword = "changeme";
-
-    shell = pkgs.zsh;
-
-    packages = with pkgs; [
-      # Desktop Applications
-      _1password-gui
-      spotify
-
-      # Build Tools
-      gcc
-      gnumake
-      cmake
-
-      # Git
-      git
-      git-crypt
-      gh
-      glab
-      smartgithg
-    ];
+    name = "florian";
+    home = "/Users/florian/";
   };
 
   imports = [
-    home-manager.nixosModules.home-manager
+    home-manager.darwinModules.home-manager
     {
       home-manager = {
         useGlobalPkgs = true;
@@ -41,9 +19,6 @@
             (root + "/modules/home-manager/lf")
             (root + "/modules/home-manager/tmux")
             (root + "/modules/home-manager/zsh")
-
-            (root + "/modules/home-manager/i3")
-            (root + "/modules/home-manager/zathura")
           ];
 
           home.stateVersion = "23.11";
@@ -51,7 +26,8 @@
 
         extraSpecialArgs = {
           inherit root;
-          alacritty.fontSize = 10;
+
+          alacritty.fontSize = 12;
         };
       };
     }

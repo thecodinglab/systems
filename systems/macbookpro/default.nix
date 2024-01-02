@@ -1,7 +1,7 @@
-{ pkgs, ... }: {
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
+{ pkgs, root, ... }: {
+  imports = [
+    (root + "/users/florian/darwin")
+  ];
 
   #######################
   # General             #
@@ -11,6 +11,9 @@
   documentation.man.enable = true;
 
   services.nix-daemon.enable = true;
+  nix.extraOptions = ''
+    experimental-features = nix-command flakes
+  '';
 
   #######################
   # Environment         #
@@ -38,6 +41,8 @@
     neovim
     coreutils
   ];
+
+  programs.gnupg.agent.enable = true;
 
   #######################
   # Networking          #

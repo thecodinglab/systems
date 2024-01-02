@@ -13,7 +13,7 @@
       (root + "/modules/nixos/dynamic-brightness")
 
       # User
-      (root + "/users/florian")
+      (root + "/users/florian/nixos")
     ];
 
   #######################

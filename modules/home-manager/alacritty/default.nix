@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, alacritty, ... }:
 {
   programs.alacritty =
     let
@@ -14,7 +14,7 @@
         live_config_reload = true;
 
         font = {
-          size = 10;
+          size = alacritty.fontSize;
           normal = {
             family = fontFamily;
             style = "Regular";

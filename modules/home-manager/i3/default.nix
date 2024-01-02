@@ -217,4 +217,9 @@ in
     # Font
     (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
   ];
+
+  home.file.".background-image" = {
+    enable = true;
+    source = (root + "/wallpaper.jpg");
+  };
 }
