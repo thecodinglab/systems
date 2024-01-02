@@ -15,18 +15,7 @@
       (root + "/modules/nixos/dynamic-brightness")
 
       # User
-      ./users/florian/nixos
-
-      home-manager.nixosModules.home-manager {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-
-        home-manager.users = {
-          florian = import ./users/florian/home-manager;
-        };
-
-        home-manager.extraSpecialArgs = { root = root; };
-      }
+      (root + "/users/florian")
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
