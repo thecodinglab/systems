@@ -26,19 +26,18 @@ in
     secureSocket = true;
     shortcut = "Space";
 
-    terminal = "screen-256color";
-
-    plugins = with pkgs; [
-      tmuxPlugins.yank
-      tmuxPlugins.sensible
+    plugins = with pkgs.tmuxPlugins; [
+      nord
+      yank
+      sensible
       {
-        plugin = tmuxPlugins.resurrect;
+        plugin = resurrect;
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
         '';
       }
       {
-        plugin = tmuxPlugins.continuum;
+        plugin = continuum;
         extraConfig = ''
           set -g @continuum-boot 'on'
           set -g @continuum-restore 'on'
@@ -54,6 +53,9 @@ in
     ];
 
     extraConfig = ''
+      set -g default-terminal "tmux-256color"
+      set -ag terminal-overrides ",xterm-256color:RGB"
+
       set-option -g renumber-windows on
 
       # navigate windows
