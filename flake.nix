@@ -33,7 +33,9 @@
       };
     };
   } //
-  flake-utils.lib.eachDefaultSystem (system: {
-    formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
-  });
+  flake-utils.lib.eachDefaultSystem (system:
+    let pkgs = import nixpkgs { inherit system; }; in
+    {
+      formatter = pkgs.nixpkgs-fmt;
+    });
 }
