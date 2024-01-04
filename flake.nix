@@ -24,42 +24,44 @@
     };
   };
 
-  outputs = attrs@{ self, nixpkgs, darwin, home-manager, flake-utils, neovim-config }:
+  outputs = { self, nixpkgs, darwin, home-manager, flake-utils, neovim-config }:
     let
       root = builtins.toString ./.;
+
+      specialArgs = {
+        inherit root home-manager neovim-config;
+      };
+
+      systemConfigurations = {
+        nixosConfigurations = {
+          desktop = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [ ./proprietary-packages.nix ./systems/desktop ];
+            inherit specialArgs;
+          };
+
+          vm = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [ ./systems/vm ];
+            inherit specialArgs;
+          };
+        };
+
+        darwinConfigurations = {
+          macbookpro = darwin.lib.darwinSystem {
+            system = "aarch64-darwin";
+            modules = [ ./proprietary-packages.nix ./systems/macbookpro ];
+            inherit specialArgs;
+          };
+        };
+      };
+
+      formatter =
+        flake-utils.lib.eachDefaultSystem (system:
+          let pkgs = import nixpkgs { inherit system; }; in
+          {
+            formatter = pkgs.nixpkgs-fmt;
+          });
     in
-    {
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [ ./proprietary-packages.nix ./systems/desktop ];
-          specialArgs = attrs // {
-            inherit root;
-          };
-        };
-
-        vm = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [ ./systems/vm ];
-          specialArgs = attrs // {
-            inherit root;
-          };
-        };
-      };
-
-      darwinConfigurations = {
-        macbookpro = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          modules = [ ./proprietary-packages.nix ./systems/macbookpro ];
-          specialArgs = attrs // {
-            inherit root;
-          };
-        };
-      };
-    } //
-    flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; }; in
-      {
-        formatter = pkgs.nixpkgs-fmt;
-      });
+    systemConfigurations // formatter;
 }
