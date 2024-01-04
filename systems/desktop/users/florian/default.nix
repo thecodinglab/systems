@@ -40,7 +40,6 @@
             (root + "/modules/home-manager/fzf")
             (root + "/modules/home-manager/git")
             (root + "/modules/home-manager/lf")
-            (root + "/modules/home-manager/neovim")
             (root + "/modules/home-manager/tmux")
             (root + "/modules/home-manager/zsh")
 
@@ -53,7 +52,6 @@
 
         extraSpecialArgs = {
           inherit root;
-          alacritty.fontSize = 10;
         };
       };
     }

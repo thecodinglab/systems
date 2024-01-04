@@ -8,6 +8,7 @@
       ./hardware.nix
       ./security.nix
 
+      (root + "/modules/nixos/base")
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/podman")
       (root + "/modules/nixos/dynamic-brightness")
@@ -45,8 +46,6 @@
   documentation.dev.enable = true;
   documentation.man.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   #######################
   # Boot                #
   #######################
@@ -71,21 +70,6 @@
         Privat.pskRaw = builtins.readFile pskPath;
       };
     };
-
-  #######################
-  # Environment         #
-  #######################
-
-  programs.zsh.enable = true;
-
-  environment = {
-    shells = [ pkgs.zsh ];
-
-    variables = {
-      TERMINAL = "${pkgs.alacritty}/bin/alacritty";
-      EDITOR = "${pkgs.neovim}/bin/nvim";
-    };
-  };
 
   #######################
   # Desktop             #
@@ -147,14 +131,18 @@
   # Applications        #
   #######################
 
-  environment.systemPackages = with pkgs; [
-    # Mandatory System Management CLIs
-    htop
-    neovim
-    coreutils
+  programs.zsh.enable = true;
 
-    # Desktop Applications
-    firefox
-  ];
+  environment = {
+    shells = [ pkgs.zsh ];
+
+    variables = {
+      TERMINAL = "${pkgs.alacritty}/bin/alacritty";
+    };
+
+    systemPackages = with pkgs; [
+      firefox
+    ];
+  };
 }
 

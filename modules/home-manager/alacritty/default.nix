@@ -1,64 +1,70 @@
-{ pkgs, alacritty, ... }:
+args@{ pkgs, lib, ... }:
+let
+  fontFamily = "JetBrainsMono Nerd Font";
+
+  defaultConfig = {
+    fontSize = 10;
+  };
+
+  userConfig = args.alacritty or { };
+  config = defaultConfig // userConfig;
+in
 {
-  programs.alacritty =
-    let
-      fontFamily = "JetBrainsMono Nerd Font";
-    in
-    {
-      enable = true;
-      package = pkgs.alacritty;
+  programs.alacritty = {
+    enable = true;
+    package = pkgs.alacritty;
 
-      settings = {
-        env.TERM = "xterm-256color";
-        scrolling.history = 100000;
-        live_config_reload = true;
+    settings = {
+      env.TERM = "xterm-256color";
+      scrolling.history = 100000;
+      live_config_reload = true;
 
-        font = {
-          size = alacritty.fontSize;
-          normal = {
-            family = fontFamily;
-            style = "Regular";
-          };
-          bold = {
-            family = fontFamily;
-            style = "Bold";
-          };
-          italic = {
-            family = fontFamily;
-            style = "Italic";
-          };
-          bold_italic = {
-            family = fontFamily;
-            style = "BoldItalic";
-          };
+      font = {
+        size = config.fontSize;
+        normal = {
+          family = fontFamily;
+          style = "Regular";
         };
-
-        key_bindings = [
-          {
-            key = "N";
-            mods = "Command|Shift";
-            action = "CreateNewWindow";
-          }
-          {
-            key = "N";
-            mods = "Command|Control";
-            action = "SpawnNewInstance";
-          }
-          {
-            key = "Left";
-            mods = "Alt";
-            chars = "\\x1bb";
-          }
-          {
-            key = "Right";
-            mods = "Alt";
-            chars = "\\x1bf";
-          }
-        ];
-
-        colors = import ./theme.nix;
+        bold = {
+          family = fontFamily;
+          style = "Bold";
+        };
+        italic = {
+          family = fontFamily;
+          style = "Italic";
+        };
+        bold_italic = {
+          family = fontFamily;
+          style = "BoldItalic";
+        };
       };
+
+      key_bindings = [
+        {
+          key = "N";
+          mods = "Command|Shift";
+          action = "CreateNewWindow";
+        }
+        {
+          key = "N";
+          mods = "Command|Control";
+          action = "SpawnNewInstance";
+        }
+        {
+          key = "Left";
+          mods = "Alt";
+          chars = "\\x1bb";
+        }
+        {
+          key = "Right";
+          mods = "Alt";
+          chars = "\\x1bf";
+        }
+      ];
+
+      colors = import ./theme.nix;
     };
+  };
 
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })

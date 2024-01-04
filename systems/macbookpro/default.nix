@@ -1,5 +1,11 @@
 { pkgs, root, ... }: {
-  imports = [ ./users/florian ];
+  imports = [
+    # System
+    (root + "/modules/darwin/base")
+
+    # User
+    ./users/florian
+  ];
 
   #######################
   # General             #
@@ -8,13 +14,8 @@
   documentation.enable = true;
   documentation.man.enable = true;
 
-  services.nix-daemon.enable = true;
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
-
   #######################
-  # Environment         #
+  # Applications        #
   #######################
 
   programs.zsh.enable = true;
@@ -25,20 +26,8 @@
 
     variables = {
       TERMINAL = "${pkgs.alacritty}/bin/alacritty";
-      EDITOR = "${pkgs.neovim}/bin/nvim";
     };
   };
-
-  #######################
-  # Applications        #
-  #######################
-
-  environment.systemPackages = with pkgs; [
-    # Mandatory System Management CLIs
-    htop
-    neovim
-    coreutils
-  ];
 
   programs.gnupg.agent.enable = true;
 
