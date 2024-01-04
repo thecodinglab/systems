@@ -1,7 +1,5 @@
 { pkgs, root, ... }: {
-  imports = [
-    (root + "/users/florian/darwin")
-  ];
+  imports = [ ./users/florian ];
 
   #######################
   # General             #
