@@ -8,5 +8,6 @@
     "1password"
     "spotify"
     "smartgithg"
+    "plexmediaserver"
   ];
 }
