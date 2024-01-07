@@ -9,7 +9,13 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot.isContainer = true;
-  networking.firewall.enable = false;
+
+  networking = {
+    # use nftables firewall instead of iptables
+    nftables.enable = true;
+
+    firewall.enable = true;
+  };
 
   system.stateVersion = "23.11";
 }

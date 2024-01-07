@@ -27,6 +27,8 @@ let
   vhosts = lib.mapAttrs (_: mergeBaseConfig) (baseVhosts // (args.vhosts or { }));
 in
 {
+  networking.hostName = "hermes";
+
   services.nginx = {
     enable = true;
 

@@ -4,6 +4,8 @@ let
   gid = 1000;
 in
 {
+  networking.hostName = "apollo";
+
   services.nginx = {
     enable = true;
 
