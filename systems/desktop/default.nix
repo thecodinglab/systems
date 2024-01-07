@@ -1,4 +1,4 @@
-{ lib, pkgs, home-manager, root, ... }:
+{ lib, pkgs, root, ... }:
 {
   system.stateVersion = "23.11";
 
@@ -9,9 +9,10 @@
       ./security.nix
 
       (root + "/modules/nixos/base")
+
       (root + "/modules/nixos/audio")
-      (root + "/modules/nixos/podman")
       (root + "/modules/nixos/dynamic-brightness")
+      (root + "/modules/nixos/podman")
 
       # User
       ./users/florian
@@ -23,6 +24,7 @@
 
   time = {
     timeZone = "Europe/Zurich";
+    # use localtime to allow dual booting with windows
     hardwareClockInLocalTime = true;
   };
 
@@ -42,9 +44,11 @@
     useXkbConfig = true;
   };
 
-  documentation.enable = true;
-  documentation.dev.enable = true;
-  documentation.man.enable = true;
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    man.enable = true;
+  };
 
   #######################
   # Boot                #

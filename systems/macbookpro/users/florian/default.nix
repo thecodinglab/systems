@@ -1,4 +1,4 @@
-{ pkgs, home-manager, root, ... }: {
+{ home-manager, root, ... }: {
   users.users.florian = {
     name = "florian";
     home = "/Users/florian/";

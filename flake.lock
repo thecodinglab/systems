@@ -109,11 +109,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1704461837,
-        "narHash": "sha256-bAR/gXI/pKzpvwVGe6peSZfpr1cGHgJ2pgIlzyGCOkM=",
+        "lastModified": 1704465952,
+        "narHash": "sha256-Qa+PLIJEBobKTJ6/UR9XZ3wRbtcXIZkJZFW5P3yDCs4=",
         "owner": "thecodinglab",
         "repo": "neovim-config",
-        "rev": "d1a97a5ebe42c5f8cfa68cb791902bd264775a31",
+        "rev": "d39ab954b53dfa2ec470b405580b2cd0a94999fa",
         "type": "github"
       },
       "original": {

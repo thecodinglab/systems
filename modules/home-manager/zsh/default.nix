@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, root, ... }: {
+  imports = [
+    (root + "/modules/home-manager/fzf")
+  ];
+
   programs.zsh = {
     enable = true;
 

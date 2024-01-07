@@ -40,6 +40,12 @@
             inherit specialArgs;
           };
 
+          server = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [ ./systems/server ];
+            inherit specialArgs;
+          };
+
           vm = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             modules = [ ./systems/vm ];

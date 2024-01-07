@@ -1,4 +1,4 @@
-{ lib, pkgs, home-manager, root, ... }:
+{ root, ... }:
 {
   system.stateVersion = "23.11";
 
@@ -26,20 +26,14 @@
   # General             #
   #######################
 
-  time = {
-    timeZone = "Europe/Zurich";
-    hardwareClockInLocalTime = true;
-  };
+  time.timeZone = "Europe/Zurich";
 
   i18n = {
-    supportedLocales = [ "en_US.UTF-8/UTF-8" "de_CH.UTF-8/UTF-8" ];
+    supportedLocales = [ "en_US.UTF-8/UTF-8" ];
     defaultLocale = "en_US.UTF-8";
   };
 
-  console = {
-    font = "Lat2-Terminus16";
-    useXkbConfig = true;
-  };
+  console.font = "Lat2-Terminus16";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

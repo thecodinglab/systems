@@ -8,23 +8,20 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/365e5d1a-cdc3-4270-9ff5-ec551cdc02d5";
-      fsType = "btrfs";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/365e5d1a-cdc3-4270-9ff5-ec551cdc02d5";
+    fsType = "btrfs";
+  };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/6771-AEAF";
-      fsType = "vfat";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/6771-AEAF";
+    fsType = "vfat";
+  };
 
-  fileSystems."/media/data" =
-    {
-      device = "/dev/disk/by-uuid/d7f2ec8c-6cce-43be-ae74-aff6dc861387";
-      fsType = "btrfs";
-    };
+  fileSystems."/media/data" = {
+    device = "/dev/disk/by-uuid/d7f2ec8c-6cce-43be-ae74-aff6dc861387";
+    fsType = "btrfs";
+  };
 
   swapDevices = [ ];
 
@@ -52,6 +49,6 @@
   networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
   networking.interfaces.wlp4s0.useDHCP = lib.mkDefault true;
 
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  nixpkgs.hostPlatform = "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;
 }

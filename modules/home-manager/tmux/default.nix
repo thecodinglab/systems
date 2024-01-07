@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, root, ... }:
 let
   tmux-select-pane =
     pkgs.writeShellScriptBin
@@ -17,6 +17,10 @@ let
   };
 in
 {
+  imports = [
+    (root + "/modules/home-manager/fzf")
+  ];
+
   programs.tmux = {
     enable = true;
     clock24 = true;
