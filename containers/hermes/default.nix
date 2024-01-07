@@ -1,7 +1,5 @@
 args@{ pkgs, lib, ... }:
 let
-  config = args.hermes or { };
-
   mergeBaseConfig = (config: {
     onlySSL = true;
     enableACME = false;
@@ -26,7 +24,7 @@ let
     };
   };
 
-  vhosts = lib.mapAttrs (_: mergeBaseConfig) (baseVhosts // (config.vhosts or { }));
+  vhosts = lib.mapAttrs (_: mergeBaseConfig) (baseVhosts // (args.vhosts or { }));
 in
 {
   services.nginx = {
