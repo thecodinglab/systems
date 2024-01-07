@@ -36,6 +36,7 @@
 
             # setup machines
             (import ./hermes/terraform.nix moduleArgs)
+            (import ./apollo/terraform.nix moduleArgs)
           ];
         };
 
