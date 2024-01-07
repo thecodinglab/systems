@@ -1,16 +1,28 @@
-args@{ ... }:
+args@{ lib, ... }:
 let
   config = args.hermes or { };
 
+  mergeBaseConfig = (config: {
+      onlySSL = true;
+      enableACME = false;
+
+      # ssl certificates need to be installed manually
+      sslCertificate = "/etc/certs/cloudflare-origin-cert.pem";
+      sslCertificateKey = "/etc/certs/cloudflare-origin-key.pem";
+      sslTrustedCertificate = "/etc/certs/cloudflare-origin-pull-ca-cert.pem";
+  } // config);
+
   baseVhosts = {
     "hermes.thecodinglab.ch" = {
+      default = true;
+
       locations."/" = {
         proxyPass = "http://localhost:7575/";
       };
     };
   };
 
-  vhosts = baseVhosts // (config.vhosts or { });
+  vhosts = lib.mapAttrs (_: mergeBaseConfig) (baseVhosts // (config.vhosts or { }));
 in
 {
   services.nginx = {
