@@ -60,7 +60,7 @@
           };
         }
         {
-          name = "docker";
+          name = "nesting";
           config = {
             "security.nesting" = "true";
             "security.syscalls.intercept.mknod" = "true";
