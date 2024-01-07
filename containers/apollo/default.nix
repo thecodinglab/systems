@@ -6,7 +6,10 @@ in
 {
   networking = {
     hostName = "apollo";
-    firewall.allowedTCPPorts = [ 80 ];
+    firewall = {
+      allowedTCPPorts = [ 80 32400 8324 32469 ];
+      allowedUDPPorts = [ 1900 5353 32410 32412 32413 32414 ];
+    };
   };
 
   services.nginx = {
