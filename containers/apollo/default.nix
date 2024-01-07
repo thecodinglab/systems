@@ -28,25 +28,25 @@ in
 
       "media-tools.thecodinglab.ch" = {
         locations."/sabnzbd" = {
-          proxyPass = "http://localhost:40001/";
+          proxyPass = "http://localhost:40001";
           recommendedProxySettings = true;
         };
 
         locations."/english/radarr" = {
-          proxyPass = "http://localhost:41001/";
+          proxyPass = "http://localhost:41001";
           recommendedProxySettings = true;
         };
         locations."/english/sonarr" = {
-          proxyPass = "http://localhost:41002/";
+          proxyPass = "http://localhost:41002";
           recommendedProxySettings = true;
         };
 
         locations."/german/radarr" = {
-          proxyPass = "http://localhost:42001/";
+          proxyPass = "http://localhost:42001";
           recommendedProxySettings = true;
         };
         locations."/german/sonarr" = {
-          proxyPass = "http://localhost:42002/";
+          proxyPass = "http://localhost:42002";
           recommendedProxySettings = true;
         };
       };
