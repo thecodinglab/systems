@@ -60,6 +60,9 @@
       };
     };
 
+    # use nftables firewall instead of iptables
+    nftables.enable = true;
+
     firewall = {
       enable = true;
       allowedTCPPorts = [
