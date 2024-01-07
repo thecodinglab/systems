@@ -34,7 +34,7 @@
 
       makeContainerConfiguration = (src: specialArgs: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ ./containers/base.nix src ];
+        modules = [ ./proprietary-packages.nix ./containers/base.nix src ];
         inherit specialArgs;
       });
 
@@ -80,6 +80,8 @@
               };
             };
           };
+
+          container-apollo = makeContainerConfiguration ./containers/apollo { };
         };
 
         darwinConfigurations = {
