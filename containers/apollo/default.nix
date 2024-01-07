@@ -63,28 +63,24 @@ in
 
   virtualisation.oci-containers.containers =
     let
-      makeLinuxserverContainer = ({ name, image, port, volumes }:
-        let
-          res = {
-            autoStart = true;
-            image = "linuxserver/${image}";
+      makeLinuxserverContainer = ({ name, image, port, volumes }: {
+        autoStart = true;
+        image = "linuxserver/${image}";
 
-            environment = {
-              TZ = "Europe/Zurich";
-              PUID = toString uid;
-              PGID = toString gid;
-            };
+        environment = {
+          TZ = "Europe/Zurich";
+          PUID = toString uid;
+          PGID = toString gid;
+        };
 
-            ports = [
-              "127.0.0.1:${toString port.src}:${toString port.dst}"
-            ];
+        ports = [
+          "127.0.0.1:${toString port.src}:${toString port.dst}"
+        ];
 
-            volumes = [
-              "${name}-config:/config"
-            ] ++ volumes;
-          };
-        in
-        builtins.trace (builtins.toJSON res) res);
+        volumes = [
+          "${name}-config:/config"
+        ] ++ volumes;
+      });
 
       makeRadarrContainer = ({ lang, port }: makeLinuxserverContainer {
         name = "radarr-${lang}";
