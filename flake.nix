@@ -59,19 +59,7 @@
           };
 
           container-hermes = makeContainerConfiguration ./containers/hermes {
-            vhosts = {
-              "media.thecodinglab.ch" = {
-                locations."/" = {
-                  proxyPass = "http://172.16.0.35:32400";
-                  recommendedProxySettings = true;
-                };
-              };
-              "media-tools.thecodinglab.ch" = {
-                locations."/" = {
-                  proxyPass = "http://172.16.0.35:80";
-                  recommendedProxySettings = true;
-                };
-              };
+            vhosts = (import ./containers/apollo/vhosts.nix) // {
               "iot.thecodinglab.ch" = {
                 locations."/" = {
                   proxyPass = "http://172.16.0.65:3000";
