@@ -1,4 +1,6 @@
-{ ... }: {
+{ modulesPath, ... }: {
+  imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
+
   time.timeZone = "Europe/Zurich";
 
   i18n = {
