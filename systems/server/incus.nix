@@ -1,15 +1,11 @@
-{ config, pkgs, ... }: {
+{ config, lib, pkgs, ... }: {
   services.lvm = {
     enable = true;
     boot.thin.enable = true;
   };
 
-  security.apparmor = {
-    enable = true;
-  };
-
   # the base incus configuration is missing the lvm command line interface
-  systemd.services.incus.path = [ config.services.lvm.package ];
+  systemd.services.incus.path = lib.optional config.services.lvm.enable config.services.lvm.package;
 
   virtualisation.incus = {
     enable = true;
