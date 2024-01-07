@@ -55,22 +55,18 @@ in
     virtualHosts = vhosts;
   };
 
-  virtualisation.oci-containers = {
-    backend = "docker";
-
-    containers = {
-      homarr = {
-        autoStart = true;
-        image = "ghcr.io/ajnart/homarr:latest";
-        ports = [
-          "127.0.0.1:7575:7575"
-        ];
-        volumes = [
-          "homarr-config:/app/data/configs"
-          "homarr-icons:/app/public/icons"
-          "homarr-data:/data"
-        ];
-      };
+  virtualisation.oci-containers.containers = {
+    homarr = {
+      autoStart = true;
+      image = "ghcr.io/ajnart/homarr:latest";
+      ports = [
+        "127.0.0.1:7575:7575"
+      ];
+      volumes = [
+        "homarr-config:/app/data/configs"
+        "homarr-icons:/app/public/icons"
+        "homarr-data:/data"
+      ];
     };
   };
 }
