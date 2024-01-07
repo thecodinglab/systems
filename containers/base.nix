@@ -9,6 +9,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot.isContainer = true;
+  networking.firewall.enable = false;
 
   system.stateVersion = "23.11";
 }
