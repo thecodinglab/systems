@@ -4,7 +4,10 @@ let
   gid = 1000;
 in
 {
-  networking.hostName = "apollo";
+  networking = {
+    hostName = "apollo";
+    firewall.allowedTCPPorts = [ 80 ];
+  };
 
   services.nginx = {
     enable = true;

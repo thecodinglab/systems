@@ -27,7 +27,10 @@ let
   vhosts = lib.mapAttrs (_: mergeBaseConfig) (baseVhosts // (args.vhosts or { }));
 in
 {
-  networking.hostName = "hermes";
+  networking = {
+    hostName = "hermes";
+    firewall.allowedTCPPorts = [ 443 ];
+  };
 
   services.nginx = {
     enable = true;
