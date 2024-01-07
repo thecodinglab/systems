@@ -32,6 +32,12 @@
         inherit root home-manager neovim-config;
       };
 
+      makeContainerConfiguration = (src: specialArgs: nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [ ./containers/base.nix src ];
+        inherit specialArgs;
+      });
+
       systemConfigurations = {
         nixosConfigurations = {
           desktop = nixpkgs.lib.nixosSystem {
@@ -51,6 +57,8 @@
             modules = [ ./systems/vm ];
             inherit specialArgs;
           };
+          
+          container-hermes = makeContainerConfiguration ./containers/hermes {};
         };
 
         darwinConfigurations = {
