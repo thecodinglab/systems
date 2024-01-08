@@ -24,30 +24,36 @@ in
       "media.thecodinglab.ch".locations."/" = {
         proxyPass = "http://localhost:32400/";
         recommendedProxySettings = true;
+        proxyWebsockets = true;
       };
 
       "media-tools.thecodinglab.ch" = {
         locations."/sabnzbd" = {
-          proxyPass = "http://localhost:40001";
+          proxyPass = "http://localhost:40001/sabnzbd";
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
 
         locations."/english/radarr" = {
           proxyPass = "http://localhost:41001";
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
         locations."/english/sonarr" = {
           proxyPass = "http://localhost:41002";
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
 
         locations."/german/radarr" = {
           proxyPass = "http://localhost:42001";
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
         locations."/german/sonarr" = {
           proxyPass = "http://localhost:42002";
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
       };
     };
