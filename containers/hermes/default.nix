@@ -1,8 +1,15 @@
-args@{ pkgs, lib, ... }:
+args@{ pkgs, lib, root, ... }:
 let
+  cloudflareOriginPullCA = builtins.fetchurl {
+    url = "https://developers.cloudflare.com/ssl/static/authenticated_origin_pull_ca.pem";
+    sha256 = "0hxqszqfzsbmgksfm6k0gp0hsx9k1gqx24gakxqv0391wl6fsky1";
+  };
+
   mergeBaseConfig = (config: config // {
     onlySSL = true;
-    enableACME = false;
+
+    enableACME = true;
+    acmeRoot = null;
 
     # ssl certificates need to be installed manually
     sslCertificate = "/etc/certs/cloudflare-origin-cert.pem";
@@ -10,7 +17,7 @@ let
 
     # require client certificate
     extraConfig = ''
-      ssl_client_certificate /etc/certs/cloudflare-origin-pull-ca-cert.pem;
+      ssl_client_certificate ${cloudflareOriginPullCA};
       ssl_verify_client optional;
 
       set $access $ssl_client_verify;
@@ -28,15 +35,10 @@ let
           }
         '' + (location.extraConfig or "");
       })
-      (config.locations or []);
+      (config.locations or [ ]);
   });
 
   baseVhosts = {
-    default = {
-      default = true;
-      locations."/".return = "404";
-    };
-
     "hermes.thecodinglab.ch" = {
       locations."/" = {
         proxyPass = "http://localhost:7575/";
@@ -116,6 +118,16 @@ in
         "homarr-icons:/app/public/icons"
         "homarr-data:/data"
       ];
+    };
+  };
+
+  security.acme = {
+    acceptTerms = true;
+    defaults = {
+      email = "nairolf.retlaw@gmail.com";
+      dnsProvider = "cloudflare";
+      credentialsFile = pkgs.writeText "cloudflare-credentials"
+        (builtins.readFile (root + "/secrets/acme-cloudflare.env"));
     };
   };
 }
