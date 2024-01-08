@@ -102,6 +102,7 @@ in
         port = { src = port; dst = 7878; };
         volumes = [
           "/media/downloads/complete:/downloads"
+          "/media/downloads/incomplete:/incomplete-downloads"
           "/media/libraries/movies/${lang}:/movies"
         ];
       });
@@ -112,6 +113,7 @@ in
         port = { src = port; dst = 8989; };
         volumes = [
           "/media/downloads/complete:/downloads"
+          "/media/downloads/incomplete:/incomplete-downloads"
           "/media/libraries/series/${lang}:/tv"
         ];
       });
