@@ -23,7 +23,7 @@
   };
 
   system.environmentPackages = [
-    neovim-config.packages.x86_64-linux.prebuilt;
+    neovim-config.packages.x86_64-linux.prebuilt
   ];
   
   services.openssh.enable = true;
