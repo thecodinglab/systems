@@ -27,6 +27,8 @@
   };
 
   imports = [
+    (import (root + "/modules/common/ssh/authorized-keys.nix") "florian")
+
     home-manager.nixosModules.home-manager
     {
       home-manager = {

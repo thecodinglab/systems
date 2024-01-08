@@ -12,6 +12,8 @@
   };
 
   imports = [
+    (import (root + "/modules/common/ssh/authorized-keys.nix") "nix")
+
     home-manager.nixosModules.home-manager
     {
       home-manager = {

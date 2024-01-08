@@ -13,6 +13,7 @@
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/dynamic-brightness")
       (root + "/modules/nixos/podman")
+      (root + "/modules/nixos/ssh")
 
       # User
       ./users/florian

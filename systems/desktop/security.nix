@@ -1,8 +1,4 @@
 { ... }: {
-  # SSH
-  services.openssh.enable = true;
-  programs.ssh.startAgent = true;
-
   # GPG
   programs.gnupg.agent = {
     enable = true;
