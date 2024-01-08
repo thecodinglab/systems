@@ -1,14 +1,35 @@
 args@{ pkgs, lib, ... }:
 let
-  mergeBaseConfig = (config: {
+  mergeBaseConfig = (config: config // {
     onlySSL = true;
     enableACME = false;
 
     # ssl certificates need to be installed manually
     sslCertificate = "/etc/certs/cloudflare-origin-cert.pem";
     sslCertificateKey = "/etc/certs/cloudflare-origin-key.pem";
-    sslTrustedCertificate = "/etc/certs/cloudflare-origin-pull-ca-cert.pem";
-  } // config);
+
+    # require client certificate
+    extraConfig = ''
+      ssl_client_certificate /etc/certs/cloudflare-origin-pull-ca-cert.pem;
+      ssl_verify_client optional;
+
+      set $access $ssl_client_verify;
+
+      if ($local_address) {
+        set $access "SUCCESS";
+      }
+    '' + (config.extraConfig or "");
+
+    locations = builtins.mapAttrs
+      (_: location: location // {
+        extraConfig = ''
+          if ($access != 'SUCCESS') {
+            return 403;
+          }
+        '' + (location.extraConfig or "");
+      })
+      (config.locations or []);
+  });
 
   baseVhosts = {
     default = {
@@ -54,6 +75,11 @@ in
         ${realIPsFromList cfipv4}
         ${realIPsFromList cfipv6}
         real_ip_header CF-Connecting-IP;
+
+        geo $local_address {
+          default 0;
+          192.168.1.0/24 1;
+        }
       '';
 
 
