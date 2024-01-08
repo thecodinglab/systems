@@ -22,7 +22,7 @@
     firewall.enable = true;
   };
 
-  system.environmentPackages = [
+  environment.systemPackages = [
     neovim-config.packages.x86_64-linux.prebuilt
   ];
   
