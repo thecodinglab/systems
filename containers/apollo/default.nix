@@ -27,6 +27,12 @@ in
         proxyWebsockets = true;
       };
 
+      "requests.thecodinglab.ch".locations."/" = {
+        proxyPass = "http://localhost:40002";
+        recommendedProxySettings = true;
+        proxyWebsockets = true;
+      };
+
       "media-tools.thecodinglab.ch" = {
         locations."/sabnzbd" = {
           proxyPass = "http://localhost:40001/sabnzbd";
@@ -128,7 +134,7 @@ in
           "/media/downloads/incomplete:/incomplete-downloads"
         ];
       };
-      
+
       overseerr = makeLinuxserverContainer {
         name = "overseerr";
         image = "overseerr:latest";

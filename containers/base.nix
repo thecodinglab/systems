@@ -25,7 +25,7 @@
   environment.systemPackages = [
     neovim-config.packages.x86_64-linux.prebuilt
   ];
-  
+
   services.openssh.enable = true;
 
   system.stateVersion = "23.11";
