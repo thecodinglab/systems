@@ -88,7 +88,7 @@ in
         };
 
         ports = [
-          "127.0.0.1:${toString port.src}:${toString port.dst}"
+          "${toString port.src}:${toString port.dst}"
         ];
 
         volumes = [
