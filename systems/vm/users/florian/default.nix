@@ -3,12 +3,14 @@
   users.users.florian = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    initialPassword = "changeme";
+    initialPassword = "";
 
     shell = pkgs.bash;
   };
 
   imports = [
+    (import (root + "/modules/common/ssh/authorized-keys.nix") "florian")
+
     home-manager.nixosModules.home-manager
     {
       home-manager = {

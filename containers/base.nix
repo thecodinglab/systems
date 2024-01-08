@@ -1,5 +1,8 @@
-{ modulesPath, ... }: {
-  imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
+{ modulesPath, root, neovim-config, ... }: {
+  imports = [
+    (modulesPath + "/virtualisation/lxc-container.nix")
+    (import (root + "/modules/common/ssh/authorized-keys.nix") "root")
+  ];
 
   time.timeZone = "Europe/Zurich";
 
@@ -18,6 +21,12 @@
 
     firewall.enable = true;
   };
+
+  system.environmentPackages = [
+    neovim-config.packages.x86_64-linux.prebuilt;
+  ];
+  
+  services.openssh.enable = true;
 
   system.stateVersion = "23.11";
 }

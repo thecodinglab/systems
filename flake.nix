@@ -32,10 +32,10 @@
         inherit root home-manager neovim-config;
       };
 
-      makeContainerConfiguration = (src: specialArgs: nixpkgs.lib.nixosSystem {
+      makeContainerConfiguration = (src: args: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ ./proprietary-packages.nix ./containers/base.nix src ];
-        inherit specialArgs;
+        specialArgs = specialArgs // args;
       });
 
       systemConfigurations = {
@@ -81,12 +81,31 @@
         };
       };
 
-      formatter =
-        flake-utils.lib.eachDefaultSystem (system:
-          let pkgs = import nixpkgs { inherit system; }; in
-          {
-            formatter = pkgs.nixpkgs-fmt;
-          });
+      osIndependent = flake-utils.lib.eachDefaultSystem (system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        {
+          apps = {
+            container-apply =
+              let
+                rebuildCommand = (target: "nixos-rebuild switch --flake 'github:thecodinglab/systems#${target}' --refresh");
+                applyCommand = (container: "incus exec ${container} -- ${rebuildCommand "container-${container}"}");
+              in
+              {
+                type = "app";
+                program = toString (pkgs.writers.writeBash "apply" (
+                  builtins.concatStringsSep "\n" [
+                    (applyCommand "hermes")
+                    (applyCommand "apollo")
+                  ]
+                ));
+              };
+          };
+
+          formatter = pkgs.nixpkgs-fmt;
+        }
+      );
     in
-    systemConfigurations // formatter;
+    systemConfigurations // osIndependent;
 }
