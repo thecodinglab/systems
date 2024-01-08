@@ -128,6 +128,13 @@ in
           "/media/downloads/incomplete:/incomplete-downloads"
         ];
       };
+      
+      overseerr = makeLinuxserverContainer {
+        name = "overseerr";
+        image = "overseerr:latest";
+        port = { src = 40002; dst = 5055; };
+        volumes = [ ];
+      };
 
       radarr-english = makeRadarrContainer { lang = "english"; port = 41001; };
       sonarr-english = makeSonarrContainer { lang = "english"; port = 41002; };
