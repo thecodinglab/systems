@@ -39,7 +39,7 @@ in
         };
       };
 
-      key_bindings = [
+      keyboard.bindings = [
         {
           key = "N";
           mods = "Command|Shift";
@@ -53,12 +53,12 @@ in
         {
           key = "Left";
           mods = "Alt";
-          chars = "\\x1bb";
+          chars = "\\u001bb";
         }
         {
           key = "Right";
           mods = "Alt";
-          chars = "\\x1bf";
+          chars = "\\u001bf";
         }
       ];
 
