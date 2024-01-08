@@ -60,6 +60,24 @@ in
     virtualHosts = vhosts;
   };
 
+  services.bind = {
+    enable = true;
+
+    forwarders = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
+
+    extraOptions = ''
+      response-policy { zone "rpz"; };
+    '';
+
+    zones.rpz = {
+      master = true;
+      file = ./config/zone.dns;
+    };
+  };
+
   virtualisation.oci-containers.containers = {
     homarr = {
       autoStart = true;

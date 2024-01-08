@@ -1,0 +1,17 @@
+; vim: ft=dns
+
+$TTL 60
+@                             IN SOA localhost. root.localhost. (
+                                    2024010801   ; serial
+                                    1h           ; refresh
+                                    30m          ; retry
+                                    1w           ; expiry
+                                    30m)         ; minimum
+                              IN     NS    localhost.
+
+hermes.thecodinglab.ch        A 172.16.0.132
+apollo.thecodinglab.ch        A 172.16.0.233
+
+media.thecodinglab.ch         CNAME hermes.thecodinglab.ch
+requests.thecodinglab.ch      CNAME hermes.thecodinglab.ch
+media-tools.thecodinglab.ch   CNAME hermes.thecodinglab.ch
