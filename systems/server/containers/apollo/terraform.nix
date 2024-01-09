@@ -9,6 +9,7 @@
     profiles = [
       "default"
       "nesting"
+      "autostart"
     ];
 
     device = {
