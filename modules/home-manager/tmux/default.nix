@@ -1,4 +1,4 @@
-{ pkgs, root, ... }:
+{ pkgs, lib, root, ... }:
 let
   tmux-select-pane =
     pkgs.writeShellScriptBin
@@ -57,28 +57,38 @@ in
       }
     ];
 
-    extraConfig = ''
-      set -g default-terminal "screen-256color"
-      set -ag terminal-overrides ",xterm-256color:RGB"
-
-      set-option -g renumber-windows on
-
-      # navigate windows
-      bind C-h previous-window
-      bind C-l next-window
-
+    extraConfig = lib.concatStringsSep "\n" [
+      # fix colors inside tmux
+      ''
+        set -g default-terminal "screen-256color"
+        set -ag terminal-overrides ",xterm-256color:RGB"
+      ''
+      # general options options
+      ''
+        set-option -g renumber-windows on
+        set -g main-pane-width 60%
+      ''
+      # window navigation
+      ''
+        bind C-h previous-window
+        bind C-l next-window
+      ''
       # improve vi selection mode
-      bind-key -T copy-mode-vi 'v' send -X begin-selection
-      bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle
-      bind-key -T copy-mode-vi 'y' send -X copy-selection-and-cancel
-
+      ''
+        bind-key -T copy-mode-vi 'v' send -X begin-selection
+        bind-key -T copy-mode-vi 'C-v' send -X rectangle-toggle
+        bind-key -T copy-mode-vi 'y' send -X copy-selection-and-cancel
+      ''
       # open new panes in the current directory
-      bind '"' split-window -c "#{pane_current_path}"
-      bind '%' split-window -h -c "#{pane_current_path}"
-
+      ''
+        bind '"' split-window -c "#{pane_current_path}"
+        bind '%' split-window -h -c "#{pane_current_path}"
+      ''
       # select pane
-      bind-key f run-shell -b "${tmux-select-pane}/bin/tmux-select-pane"
-    '';
+      ''
+        bind-key f run-shell -b "${tmux-select-pane}/bin/tmux-select-pane"
+      ''
+    ];
   };
 
   programs.fzf.tmux.enableShellIntegration = true;
