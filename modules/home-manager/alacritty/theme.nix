@@ -15,12 +15,12 @@
   };
   selection = {
     text = "CellForeground";
-      background= "#4c566a";
+    background = "#4c566a";
   };
   search = {
     matches = {
       foreground = "CellBackground";
-        background= "#88c0d0";
+      background = "#88c0d0";
     };
   };
   normal = {
