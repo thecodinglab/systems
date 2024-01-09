@@ -53,6 +53,7 @@ in
   networking = {
     hostName = "hermes";
     firewall.allowedTCPPorts = [ 443 ];
+    firewall.allowedUDPPorts = [ 53 ];
   };
 
   services.nginx = {
@@ -97,6 +98,8 @@ in
     ];
 
     extraOptions = ''
+      allow-query-cache { any; };
+
       response-policy { zone "rpz"; };
     '';
 
