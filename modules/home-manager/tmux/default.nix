@@ -52,6 +52,7 @@ in
         extraConfig = ''
           set -g @tmux-nvim-navigation true
           set -g @tmux-nvim-navigation-cycle false
+          set -g @tmux-nvim-resize false
         '';
       }
     ];
