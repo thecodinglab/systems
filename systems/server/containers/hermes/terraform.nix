@@ -1,4 +1,4 @@
-{ ... }: {
+{ tofu, ... }: {
   # Hermes: god of boundaries, travel, trade, communication
   resource.incus_instance.hermes = {
     name = "hermes";
@@ -9,4 +9,6 @@
       "nesting"
     ];
   };
+
+  resource.cloudflare_record.hermes = tofu.makeCloudflareDNSRecord "hermes";
 }
