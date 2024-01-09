@@ -18,7 +18,12 @@
       theme = "robbyrussell";
     };
 
-    initExtra = builtins.readFile ./scripts/nix-shell-indicator.sh;
+    initExtra = builtins.concatStringsSep "\n" [
+      # show user and host in prompt
+      ''RPS1="%F{cyan}%m%f $RPS1"''
+
+      (builtins.readFile ./scripts/nix-shell-indicator.sh)
+    ];
   };
 
   programs.fzf.enableZshIntegration = true;
