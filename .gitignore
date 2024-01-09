@@ -1,2 +1,5 @@
-result
-*.qcow2
+/result
+/*.qcow2
+
+/.terraform/
+/config.tf.json

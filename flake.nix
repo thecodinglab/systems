@@ -22,9 +22,17 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
+    terranix = {
+      url = "github:terranix/terranix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, flake-utils, neovim-config }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, darwin, home-manager, neovim-config, terranix }:
     let
       root = builtins.toString ./.;
 
@@ -32,11 +40,7 @@
         inherit root home-manager neovim-config;
       };
 
-      makeContainerConfiguration = (src: args: nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./proprietary-packages.nix ./containers/base.nix src ];
-        specialArgs = specialArgs // args;
-      });
+      containers = import ./containers (inputs // { inherit root; });
 
       systemConfigurations = {
         nixosConfigurations = {
@@ -57,20 +61,7 @@
             modules = [ ./systems/vm ];
             inherit specialArgs;
           };
-
-          container-hermes = makeContainerConfiguration ./containers/hermes {
-            vhosts = (import ./containers/apollo/vhosts.nix) // {
-              "iot.thecodinglab.ch" = {
-                locations."/" = {
-                  proxyPass = "http://172.16.0.65:3000";
-                  recommendedProxySettings = true;
-                };
-              };
-            };
-          };
-
-          container-apollo = makeContainerConfiguration ./containers/apollo { };
-        };
+        } // containers.nixosConfigurations;
 
         darwinConfigurations = {
           macbookpro = darwin.lib.darwinSystem {
@@ -82,26 +73,10 @@
       };
 
       osIndependent = flake-utils.lib.eachDefaultSystem (system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
+        let pkgs = import nixpkgs { inherit system; }; in
         {
-          apps = {
-            container-apply =
-              let
-                rebuildCommand = (target: "nixos-rebuild switch --flake 'github:thecodinglab/systems#${target}' --refresh");
-                applyCommand = (container: "incus exec ${container} -- ${rebuildCommand "container-${container}"}");
-              in
-              {
-                type = "app";
-                program = toString (pkgs.writers.writeBash "apply" (
-                  builtins.concatStringsSep "\n" [
-                    (applyCommand "hermes")
-                    (applyCommand "apollo")
-                  ]
-                ));
-              };
-          };
+          packages = containers.packages system;
+          apps = containers.apps system;
 
           formatter = pkgs.nixpkgs-fmt;
         }
