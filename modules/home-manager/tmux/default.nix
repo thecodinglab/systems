@@ -43,8 +43,8 @@ in
       {
         plugin = continuum;
         extraConfig = ''
-          set -g @continuum-boot 'on'
           set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '60' # minutes
         '';
       }
       {
@@ -66,6 +66,7 @@ in
       # general options options
       ''
         set-option -g renumber-windows on
+        set -g main-pane-height 80%
         set -g main-pane-width 60%
       ''
       # window navigation
