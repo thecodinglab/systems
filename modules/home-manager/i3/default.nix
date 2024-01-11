@@ -10,6 +10,12 @@ in
       gaps.inner = 8;
       window.titlebar = false;
 
+      workspaceOutputAssign = [
+        { workspace = "1"; output = "DP-2"; }
+        { workspace = "2"; output = "DP-0.8"; }
+        { workspace = "3"; output = "DP-4"; }
+      ];
+
       fonts = {
         names = [ "SauceCodePro Nerd Font" ];
         size = 8.0;

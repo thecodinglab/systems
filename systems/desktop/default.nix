@@ -92,15 +92,15 @@
       options = "compose:rwin";
     };
 
-    # Monitor Arrangement
+    # Monitor Arrangement (from nvidia-settings)
     screenSection = ''
-      Option "metamodes" "DP-4: nvidia-auto-select +2560+0, DP-0: nvidia-auto-select +0+0, DP-2: nvidia-auto-select +6000+0"
+      Option "metamodes" "DP-4: nvidia-auto-select +6000+0, DP-0.8: nvidia-auto-select +0+0, DP-2: nvidia-auto-select +2560+0"
     '';
 
     xrandrHeads = [
-      "DP-0"
-      "DP-2"
-      { output = "DP-4"; primary = true; }
+      { output = "DP-0.8"; primary = false; }
+      { output = "DP-2"; primary = true; }
+      { output = "DP-4"; primary = false; }
     ];
 
     videoDrivers = [ "nvidia" ];
