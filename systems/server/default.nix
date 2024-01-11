@@ -10,6 +10,7 @@
     ./incus.nix
 
     (root + "/modules/nixos/base")
+    (root + "/modules/nixos/ssh")
 
     # User
     ./users/nix
@@ -82,6 +83,4 @@
 
   programs.zsh.enable = true;
   environment.shells = [ pkgs.zsh ];
-
-  services.openssh.enable = true;
 }
