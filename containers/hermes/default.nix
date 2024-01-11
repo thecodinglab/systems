@@ -63,7 +63,8 @@
             recommendedProxySettings = true;
           };
         };
-      } // (hermes.vhosts or { });
+
+      } // import (root + "/secrets/private-hosts.nix") // (hermes.vhosts or { });
 
       vhosts = lib.mapAttrs (_: mergeBaseConfig) baseVHosts;
     in
