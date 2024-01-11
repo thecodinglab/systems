@@ -5,7 +5,9 @@
   };
 
   # the base incus configuration is missing the lvm command line interface
-  systemd.services.incus.path = lib.optional config.services.lvm.enable config.services.lvm.package;
+  systemd.services.incus.path =
+    lib.optional config.services.lvm.enable config.services.lvm.package ++
+    lib.optional config.networking.nftables.enable pkgs.nftables;
 
   virtualisation.incus = {
     enable = true;
