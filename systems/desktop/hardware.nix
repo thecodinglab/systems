@@ -31,6 +31,8 @@
     driSupport32Bit = true;
   };
 
+  nixpkgs.config.cudaSupport = true;
+
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = true;

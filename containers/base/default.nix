@@ -1,4 +1,4 @@
-{ modulesPath, root, neovim-config, ... }: {
+{ pkgs, modulesPath, root, neovim-config, ... }: {
   imports = [
     (modulesPath + "/virtualisation/lxc-container.nix")
     (import (root + "/modules/common/ssh/authorized-keys.nix") "root")
@@ -23,7 +23,7 @@
   };
 
   environment.systemPackages = [
-    neovim-config.packages.x86_64-linux.prebuilt
+    (neovim-config.makeDistribution pkgs)
   ];
 
   services.openssh.enable = true;
