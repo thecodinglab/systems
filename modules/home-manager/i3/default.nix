@@ -147,7 +147,7 @@ in
     };
 
     modules = {
-      "wireless wlp4s0" = {
+      "wireless wlp12s0" = {
         position = 1;
         settings = {
           format_up = "W: %ip (%quality at %essid)";

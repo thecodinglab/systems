@@ -45,9 +45,14 @@
   hardware.bluetooth.enable = true;
   hardware.i2c.enable = true;
 
-  networking.useDHCP = false;
-  networking.interfaces.enp14s0.useDHCP = true;
-  # networking.interfaces.wlp4s0.useDHCP = lib.mkDefault true;
+  networking = {
+    useDHCP = false;
+    interfaces = {
+      enp14s0.useDHCP = true;
+      wlp12s0.useDHCP = true;
+      wlp15s0.useDHCP = false;
+    };
+  };
 
   nixpkgs.hostPlatform = "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = config.hardware.enableRedistributableFirmware;

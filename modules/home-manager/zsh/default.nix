@@ -11,6 +11,7 @@
 
     shellAliases = {
       ls = "${pkgs.coreutils}/bin/ls -l --color=auto --group-directories-first -I . -I ..";
+      ip = "ip --color=auto";
     };
 
     oh-my-zsh = {
