@@ -125,6 +125,9 @@
     excludePackages = with pkgs; [ xterm ];
   };
 
+  # clipboard manager
+  services.clipcat.enable = true;
+
   #######################
   # Services            #
   #######################
