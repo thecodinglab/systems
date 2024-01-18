@@ -23,6 +23,14 @@
       gh
       glab
       smartgithg
+
+      # Lanauges
+      ltex-ls
+      rnix-lsp
+
+      go
+      gopls
+      gotools
     ];
   };
 
@@ -38,7 +46,6 @@
         users.florian = ({ ... }: {
           imports = [
             (root + "/modules/home-manager/alacritty")
-            (root + "/modules/home-manager/develop")
             (root + "/modules/home-manager/fzf")
             (root + "/modules/home-manager/git")
             (root + "/modules/home-manager/lf")

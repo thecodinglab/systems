@@ -63,6 +63,11 @@ in
         set -g default-terminal "screen-256color"
         set -ag terminal-overrides ",xterm-256color:RGB"
       ''
+      # status bar length
+      ''
+        set -g status-left-length 80
+        set -g status-right-length 80
+      ''
       # general options options
       ''
         set-option -g renumber-windows on
