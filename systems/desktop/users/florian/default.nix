@@ -31,6 +31,10 @@
       go
       gopls
       gotools
+
+      # Latex
+      texliveFull
+      texlab
     ];
   };
 
