@@ -2,22 +2,63 @@
   # Hestia: goddess of the hearth, home and domesticity
 
   infrastructure = ({ lib, ... }: rec {
-    resource.incus_instance.hestia = {
-      name = "hestia";
-      image = "images:nixos/23.11";
+    resource = {
+      incus_instance.hestia = {
+        name = "hestia";
+        image = "images:nixos/23.11";
 
-      profiles = [
-        "default"
-        "nesting"
-      ];
+        profiles = [
+          "default"
+          "nesting"
+        ];
+      };
+
+      # TODO:
+      # cloudflare_record.teslamate = lib.makeCloudflareDNSRecord "teslamate";
+      #
+      #   cloudflare_access_application.teslamate = {
+      #     zone_id = lib.cloudflare.zone_id;
+      #
+      #     name = "teslamate";
+      #     domain = "teslamate.thecodinglab.ch";
+      #     type = "self_hosted";
+      #   };
+      #
+      #   cloudflare_access_policy.teslamate-policy-home =
+      #     let auth = {
+      #       ip = [
+      #         (lib.home_ipv4 + "/32")
+      #         (lib.home_ipv6 + "/60")
+      #       ];
+      #     }; in
+      #     {
+      #       zone_id = lib.cloudflare.zone_id;
+      #       application_id = "\${cloudflare_access_application.teslamate.id}";
+      #       application_id = "\${cloudflare_access_application.teslamate.id}";
+      #
+      #       name = "allow home";
+      #       decision = "allow";
+      #       precedence = "1";
+      #
+      #       include = auth;
+      #     };
+      #
+      #   cloudflare_access_policy.teslamate-policy-github =
+      #     let auth = {
+      #       email = [ "nairolf.retlaw@gmail.com" ];
+      #       login_method = [ lib.cloudflare.access_github_login_method_id ];
+      #     }; in
+      #     {
+      #       zone_id = lib.cloudflare.zone_id;
+      #       application_id = "\${cloudflare_access_application.teslamate.id}";
+      #
+      #       name = "allow myself from everywhere";
+      #       decision = "allow";
+      #       precedence = "2";
+      #
+      #       include = auth;
+      #     };
     };
-
-    # TODO:
-    # resource.cloudflare_record = {
-    #   media = lib.makeCloudflareDNSRecord "media";
-    #   requests = lib.makeCloudflareDNSRecord "requests";
-    #   media-tools = lib.makeCloudflareDNSRecord "media-tools";
-    # };
   });
 
   system = ({ root, ... }: {
@@ -50,7 +91,7 @@
           # FIXME: for some reason teslamate is unable to resolve the hostname
           #        (podman issue?)
           DATABASE_HOST = "10.88.0.4";
-          MQTT_HOST = "teslamate-mqtt";
+          MQTT_HOST = "10.88.0.3";
         };
 
         ports = [
@@ -71,6 +112,10 @@
         volumes = [
           "teslamate-postgres-data:/var/lib/postgresql/data"
         ];
+
+        extraOptions = [
+          "--ip=10.88.0.4"
+        ];
       };
 
       teslamate-grafana = {
@@ -87,6 +132,12 @@
           # FIXME: for some reason grafana is unable to resolve the hostname
           #        (podman issue?)
           DATABASE_HOST = "10.88.0.4";
+
+          GF_AUTH_ANONYMOUS_ENABLED = "true";
+          # TODO:
+          # GF_SERVER_DOMAIN = "teslamate.thecodinglab.ch";
+          # GF_SERVER_ROOT_URL = "%(protocol)s://%(domain)s/grafana";
+          # GF_SERVER_SERVE_FROM_SUB_PATH = "true";
         };
         ports = [
           "3000:3000"
@@ -105,6 +156,10 @@
         volumes = [
           "teslamate-misquitto-config:/mosquitto/config"
           "teslamate-misquitto-data:/mosquitto/data"
+        ];
+
+        extraOptions = [
+          "--ip=10.88.0.3"
         ];
       };
     };
