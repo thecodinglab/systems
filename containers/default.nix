@@ -3,6 +3,7 @@ let
   modules = {
     hermes = ./hermes;
     apollo = ./apollo;
+    poseidon = ./poseidon;
   };
 
   args = {
@@ -88,7 +89,7 @@ in
       makeOpenTofuCommandApp = (cmd: {
         type = "app";
         program = toString (pkgs.writers.writeBash cmd ''
-          if [[ -e config.tf.json ]]; then rm config.tf.json; fi
+          if [[ -h config.tf.json ]]; then rm config.tf.json; fi
           ln -s ${terraformConfiguration system} config.tf.json
           ${pkgs.opentofu}/bin/tofu init
           ${pkgs.opentofu}/bin/tofu ${cmd}

@@ -35,6 +35,7 @@
         "block.mount_options" = "discard";
         "snapshots.expiry" = "4w";
         "snapshots.schedule" = "@midnight";
+        "security.shifted" = "true";
       };
     };
 
