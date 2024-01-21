@@ -4,6 +4,7 @@ let
     hermes = ./hermes;
     apollo = ./apollo;
     poseidon = ./poseidon;
+    hestia = ./hestia;
   };
 
   args = {
