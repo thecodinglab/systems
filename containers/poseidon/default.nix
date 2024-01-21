@@ -6,6 +6,7 @@
 
       profiles = [
         "default"
+        "autostart"
       ];
 
       config = {

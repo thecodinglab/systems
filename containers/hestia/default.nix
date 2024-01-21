@@ -10,6 +10,7 @@
         profiles = [
           "default"
           "nesting"
+          "autostart"
         ];
       };
 
