@@ -155,8 +155,7 @@
             image = "radarr:latest";
             port = { src = port; dst = 7878; };
             volumes = [
-              "/media/downloads/complete:/downloads"
-              "/media/downloads/incomplete:/incomplete-downloads"
+              "/media/downloads:/downloads"
               "/media/libraries/movies/${lang}:/movies"
             ];
           });
@@ -166,8 +165,7 @@
             image = "sonarr:latest";
             port = { src = port; dst = 8989; };
             volumes = [
-              "/media/downloads/complete:/downloads"
-              "/media/downloads/incomplete:/incomplete-downloads"
+              "/media/downloads:/downloads"
               "/media/libraries/series/${lang}:/tv"
             ];
           });
@@ -178,8 +176,7 @@
             image = "sabnzbd:latest";
             port = { src = 40001; dst = 8080; };
             volumes = [
-              "/media/downloads/complete:/downloads"
-              "/media/downloads/incomplete:/incomplete-downloads"
+              "/media/downloads:/downloads"
             ];
           };
 
