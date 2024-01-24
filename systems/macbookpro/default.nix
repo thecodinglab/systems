@@ -2,6 +2,7 @@
   imports = [
     # System
     (root + "/modules/darwin/base")
+    (root + "/modules/darwin/yabai")
 
     # User
     ./users/florian
