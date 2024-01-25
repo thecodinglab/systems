@@ -2,47 +2,67 @@
   # Apollo: god of music, arts, knowledge
 
   infrastructure = ({ lib, ... }: rec {
-    resource.incus_instance.apollo = {
-      depends_on = [ "incus_volume.media" ];
+    resource = {
+      incus_instance.apollo = {
+        depends_on = [ "incus_volume.media" ];
 
-      name = "apollo";
-      image = "images:nixos/23.11";
+        name = "apollo";
+        image = "images:nixos/23.11";
 
-      profiles = [
-        "default"
-        "nesting"
-        "autostart"
-      ];
+        profiles = [
+          "default"
+          "nesting"
+          "autostart"
+        ];
 
-      device = {
-        name = "library";
-        type = "disk";
-        properties = {
-          source = resource.incus_volume.media.name;
-          pool = resource.incus_volume.media.pool;
-          path = "/media";
+        limits = {
+          cpu = 16;
+        };
+
+        device = {
+          name = "library";
+          type = "disk";
+          properties = {
+            source = resource.incus_volume.media.name;
+            pool = resource.incus_volume.media.pool;
+            path = "/media";
+          };
         };
       };
-    };
 
-    resource.incus_volume.media = {
-      name = "media-library";
-      pool = "data";
-      type = "custom";
+      incus_volume.media = {
+        name = "media-library";
+        pool = "data";
+        type = "custom";
 
-      config = {
-        "block.filesystem" = "btrfs";
-        "block.mount_options" = "discard";
-        "snapshots.expiry" = "4w";
-        "snapshots.schedule" = "@midnight";
-        "security.shifted" = "true";
+        config = {
+          "block.filesystem" = "btrfs";
+          "block.mount_options" = "noatime,discard";
+          "snapshots.expiry" = "4w";
+          "snapshots.schedule" = "@midnight";
+          "security.shifted" = "true";
+        };
       };
-    };
 
-    resource.cloudflare_record = {
-      media = lib.makeCloudflareDNSRecord "media";
-      requests = lib.makeCloudflareDNSRecord "requests";
-      media-tools = lib.makeCloudflareDNSRecord "media-tools";
+      cloudflare_record = {
+        media = lib.cloudflare.makeDNSRecord "media";
+        requests = lib.cloudflare.makeDNSRecord "requests";
+        media-tools = lib.cloudflare.makeDNSRecord "media-tools";
+      };
+
+      cloudflare_access_application.media-tools =
+        lib.cloudflare.makeDefaultApplication "media-tools";
+
+      cloudflare_access_policy = {
+        media-tools-policy-home = lib.cloudflare.makeHomeBypassAccessPolicy {
+          application_id = "\${cloudflare_access_application.media-tools.id}";
+          precedence = "2";
+        };
+        media-tools-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
+          application_id = "\${cloudflare_access_application.media-tools.id}";
+          precedence = "1";
+        };
+      };
     };
   });
 
@@ -127,6 +147,7 @@
         enable = true;
         user = "media";
         group = "media";
+        openFirewall = true;
       };
 
       virtualisation.oci-containers.containers =

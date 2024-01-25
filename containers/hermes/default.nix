@@ -2,18 +2,34 @@
   # Hermes: god of boundaries, travel, trade, communication
 
   infrastructure = ({ lib, ... }: {
-    resource.incus_instance.hermes = {
-      name = "hermes";
-      image = "images:nixos/23.11";
+    resource = {
+      incus_instance.hermes = {
+        name = "hermes";
+        image = "images:nixos/23.11";
 
-      profiles = [
-        "default"
-        "nesting"
-        "autostart"
-      ];
+        profiles = [
+          "default"
+          "nesting"
+          "autostart"
+        ];
+      };
+
+      cloudflare_record.hermes = lib.cloudflare.makeDNSRecord "hermes";
+
+      cloudflare_access_application.hermes =
+        lib.cloudflare.makeDefaultApplication "hermes";
+
+      cloudflare_access_policy = {
+        hermes-policy-home = lib.cloudflare.makeHomeBypassAccessPolicy {
+          application_id = "\${cloudflare_access_application.hermes.id}";
+          precedence = "2";
+        };
+        hermes-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
+          application_id = "\${cloudflare_access_application.hermes.id}";
+          precedence = "1";
+        };
+      };
     };
-
-    resource.cloudflare_record.hermes = lib.makeCloudflareDNSRecord "hermes";
   });
 
   system = ({ pkgs, lib, root, hermes, ... }:
