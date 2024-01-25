@@ -12,7 +12,7 @@ let
 
     hermes.vhosts =
       (import ./apollo/vhosts.nix) //
-      # TODO: (import ./hestia/vhosts.nix) //
+      (import ./hestia/vhosts.nix) //
       {
         "iot.thecodinglab.ch" = {
           locations."/" = {
@@ -33,23 +33,12 @@ let
     })
     config;
 
-  # FIXME: this requires that the reconfiguration process is always executed
-  #        from the same network
-  home_ipv4 = nixpkgs.lib.removeSuffix "\n" (builtins.readFile (builtins.fetchurl {
-    url = "https://ipv4.icanhazip.com";
-    sha256 = "0hh2p86gbq5grlx1m9p6w0yra2mwxf49mhwhxivsypc5bap5f28s";
-  }));
-
-  # FIXME: this requires that the reconfiguration process is always executed
-  #        from the same machine
-  home_ipv6 = nixpkgs.lib.removeSuffix "\n" (builtins.readFile (builtins.fetchurl {
-    url = "https://ipv6.icanhazip.com";
-    sha256 = "18pnb7imzki7icpydlln66357yk6rbkx2030jc0bs8nbj0nkk2fg";
-  }));
-
   cloudflare = builtins.fromJSON (builtins.readFile (root + "/secrets/cloudflare.json"));
+  home = import (root + "/secrets/home-subnets.nix");
+
   extraLib = {
-    inherit cloudflare home_ipv4 home_ipv6;
+    inherit cloudflare home;
+
 
     makeCloudflareDNSRecord = (name: {
       zone_id = cloudflare.zone_id;
@@ -98,7 +87,7 @@ let
 
           type = "A";
           name = "server";
-          value = home_ipv4;
+          value = home.ipv4;
 
           proxied = true;
           ttl = 1;

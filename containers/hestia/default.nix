@@ -14,51 +14,49 @@
         ];
       };
 
-      # TODO:
-      # cloudflare_record.teslamate = lib.makeCloudflareDNSRecord "teslamate";
-      #
-      #   cloudflare_access_application.teslamate = {
-      #     zone_id = lib.cloudflare.zone_id;
-      #
-      #     name = "teslamate";
-      #     domain = "teslamate.thecodinglab.ch";
-      #     type = "self_hosted";
-      #   };
-      #
-      #   cloudflare_access_policy.teslamate-policy-home =
-      #     let auth = {
-      #       ip = [
-      #         (lib.home_ipv4 + "/32")
-      #         (lib.home_ipv6 + "/60")
-      #       ];
-      #     }; in
-      #     {
-      #       zone_id = lib.cloudflare.zone_id;
-      #       application_id = "\${cloudflare_access_application.teslamate.id}";
-      #       application_id = "\${cloudflare_access_application.teslamate.id}";
-      #
-      #       name = "allow home";
-      #       decision = "allow";
-      #       precedence = "1";
-      #
-      #       include = auth;
-      #     };
-      #
-      #   cloudflare_access_policy.teslamate-policy-github =
-      #     let auth = {
-      #       email = [ "nairolf.retlaw@gmail.com" ];
-      #       login_method = [ lib.cloudflare.access_github_login_method_id ];
-      #     }; in
-      #     {
-      #       zone_id = lib.cloudflare.zone_id;
-      #       application_id = "\${cloudflare_access_application.teslamate.id}";
-      #
-      #       name = "allow myself from everywhere";
-      #       decision = "allow";
-      #       precedence = "2";
-      #
-      #       include = auth;
-      #     };
+      cloudflare_record.teslamate = lib.makeCloudflareDNSRecord "teslamate";
+
+      cloudflare_access_application.teslamate = {
+        zone_id = lib.cloudflare.zone_id;
+
+        name = "teslamate";
+        domain = "teslamate.thecodinglab.ch";
+        type = "self_hosted";
+      };
+
+      cloudflare_access_policy.teslamate-policy-home =
+        let auth = {
+          ip = [
+            lib.home.ipv4_subnet
+            lib.home.ipv6_subnet
+          ];
+        }; in
+        {
+          zone_id = lib.cloudflare.zone_id;
+          application_id = "\${cloudflare_access_application.teslamate.id}";
+
+          name = "allow home";
+          decision = "bypass";
+          precedence = "2";
+
+          include = auth;
+        };
+
+      cloudflare_access_policy.teslamate-policy-github =
+        let auth = {
+          email = [ "nairolf.retlaw@gmail.com" ];
+          login_method = [ lib.cloudflare.access_github_login_method_id ];
+        }; in
+        {
+          zone_id = lib.cloudflare.zone_id;
+          application_id = "\${cloudflare_access_application.teslamate.id}";
+
+          name = "allow myself from everywhere";
+          decision = "allow";
+          precedence = "1";
+
+          include = auth;
+        };
     };
   });
 
@@ -95,9 +93,7 @@
           MQTT_HOST = "10.88.0.3";
         };
 
-        ports = [
-          "4000:4000"
-        ];
+        ports = [ "4000:4000" ];
       };
 
       teslamate-postgres = {
@@ -135,14 +131,11 @@
           DATABASE_HOST = "10.88.0.4";
 
           GF_AUTH_ANONYMOUS_ENABLED = "true";
-          # TODO:
-          # GF_SERVER_DOMAIN = "teslamate.thecodinglab.ch";
-          # GF_SERVER_ROOT_URL = "%(protocol)s://%(domain)s/grafana";
-          # GF_SERVER_SERVE_FROM_SUB_PATH = "true";
+          GF_SERVER_DOMAIN = "teslamate.thecodinglab.ch";
+          GF_SERVER_ROOT_URL = "%(protocol)s://%(domain)s/grafana";
+          GF_SERVER_SERVE_FROM_SUB_PATH = "true";
         };
-        ports = [
-          "3000:3000"
-        ];
+        ports = [ "3000:3000" ];
         volumes = [
           "teslamate-grafana-data:/var/lib/grafana"
         ];
