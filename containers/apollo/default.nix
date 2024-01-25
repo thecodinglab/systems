@@ -107,6 +107,11 @@
               recommendedProxySettings = true;
               proxyWebsockets = true;
             };
+            locations."/tautulli" = {
+              proxyPass = "http://localhost:8181";
+              recommendedProxySettings = true;
+              proxyWebsockets = true;
+            };
 
             locations."/english/radarr" = {
               proxyPass = "http://localhost:41001";
@@ -144,6 +149,13 @@
       };
 
       services.plex = {
+        enable = true;
+        user = "media";
+        group = "media";
+        openFirewall = true;
+      };
+
+      services.tautulli = {
         enable = true;
         user = "media";
         group = "media";
