@@ -42,7 +42,7 @@
 
       config = {
         "block.filesystem" = "btrfs";
-        "block.mount_options" = "discard";
+        "block.mount_options" = "noatime,discard";
         "snapshots.expiry" = "4w";
         "snapshots.schedule" = "@midnight";
       };
