@@ -1,30 +1,9 @@
 {
   # Hestia: goddess of the hearth, home and domesticity
 
-  infrastructure = ({ lib, ... }: rec {
-    resource = {
-      incus_instance.hestia = {
-        name = "hestia";
-        image = "images:nixos/23.11";
-
-        profiles = [
-          "default"
-          "nesting"
-          "autostart"
-        ];
-      };
-
-      cloudflare_record.teslamate = lib.makeCloudflareDNSRecord "teslamate";
-
-      cloudflare_access_application.teslamate = {
-        zone_id = lib.cloudflare.zone_id;
-
-        name = "teslamate";
-        domain = "teslamate.thecodinglab.ch";
-        type = "self_hosted";
-      };
-
-      cloudflare_access_policy.teslamate-policy-home =
+  infrastructure = ({ lib, ... }:
+    let
+      makeHomeBypassAccessPolicy = ({ application_id, precedence }:
         let auth = {
           ip = [
             lib.home.ipv4_subnet
@@ -33,32 +12,90 @@
         }; in
         {
           zone_id = lib.cloudflare.zone_id;
-          application_id = "\${cloudflare_access_application.teslamate.id}";
+          inherit application_id;
 
           name = "allow home";
           decision = "bypass";
-          precedence = "2";
+          inherit precedence;
 
           include = auth;
-        };
+        });
 
-      cloudflare_access_policy.teslamate-policy-github =
+      makeGithubAllowancePolicy = ({ application_id, precedence }:
         let auth = {
           email = [ "nairolf.retlaw@gmail.com" ];
           login_method = [ lib.cloudflare.access_github_login_method_id ];
-        }; in
+        };
+        in
         {
           zone_id = lib.cloudflare.zone_id;
-          application_id = "\${cloudflare_access_application.teslamate.id}";
+          inherit application_id;
 
           name = "allow myself from everywhere";
           decision = "allow";
-          precedence = "1";
+          inherit precedence;
 
           include = auth;
+        }
+      );
+    in
+    rec {
+      resource = {
+        incus_instance.hestia = {
+          name = "hestia";
+          image = "images:nixos/23.11";
+
+          profiles = [
+            "default"
+            "nesting"
+            "autostart"
+          ];
         };
-    };
-  });
+
+        cloudflare_record = {
+          teslamate = lib.makeCloudflareDNSRecord "teslamate";
+          home-assistant = lib.makeCloudflareDNSRecord "home-assistant";
+        };
+
+        cloudflare_access_application = {
+          teslamate = {
+            zone_id = lib.cloudflare.zone_id;
+
+            name = "teslamate";
+            domain = "teslamate.thecodinglab.ch";
+            type = "self_hosted";
+          };
+
+          home-assistant = {
+            zone_id = lib.cloudflare.zone_id;
+
+            name = "home-assistant";
+            domain = "home-assistant.thecodinglab.ch";
+            type = "self_hosted";
+          };
+        };
+
+        cloudflare_access_policy = {
+          teslamate-policy-home = makeHomeBypassAccessPolicy {
+            application_id = "\${cloudflare_access_application.teslamate.id}";
+            precedence = "2";
+          };
+          teslamate-policy-github = makeGithubAllowancePolicy {
+            application_id = "\${cloudflare_access_application.teslamate.id}";
+            precedence = "1";
+          };
+
+          home-assistant-policy-home = makeHomeBypassAccessPolicy {
+            application_id = "\${cloudflare_access_application.home-assistant.id}";
+            precedence = "2";
+          };
+          home-assistant-policy-github = makeGithubAllowancePolicy {
+            application_id = "\${cloudflare_access_application.home-assistant.id}";
+            precedence = "1";
+          };
+        };
+      };
+    });
 
   system = ({ root, ... }: {
     networking = {
@@ -168,6 +205,10 @@
 
       config = {
         default_config = { };
+        http = {
+          use_x_forwarded_for = true;
+          trusted_proxies = "172.16.0.132";
+        };
       };
     };
 

@@ -12,4 +12,12 @@
       proxyWebsockets = true;
     };
   };
+
+  "home-assistant.thecodinglab.ch" = {
+    locations."/" = {
+      proxyPass = "http://172.16.0.92:8123";
+      recommendedProxySettings = true;
+      proxyWebsockets = true;
+    };
+  };
 }
