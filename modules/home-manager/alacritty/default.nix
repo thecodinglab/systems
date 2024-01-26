@@ -1,13 +1,6 @@
-args@{ pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 let
   fontFamily = "JetBrainsMono Nerd Font";
-
-  defaultConfig = {
-    fontSize = 10;
-  };
-
-  userConfig = args.alacritty or { };
-  config = defaultConfig // userConfig;
 in
 {
   programs.alacritty = {
@@ -20,7 +13,7 @@ in
       live_config_reload = true;
 
       font = {
-        size = config.fontSize;
+        size = lib.mkDefault 10;
         normal = {
           family = fontFamily;
           style = "Regular";
@@ -38,29 +31,6 @@ in
           style = "BoldItalic";
         };
       };
-
-      keyboard.bindings = [
-        {
-          key = "N";
-          mods = "Command|Shift";
-          action = "CreateNewWindow";
-        }
-        {
-          key = "N";
-          mods = "Command|Control";
-          action = "SpawnNewInstance";
-        }
-        {
-          key = "Left";
-          mods = "Alt";
-          chars = "\\u001bb";
-        }
-        {
-          key = "Right";
-          mods = "Alt";
-          chars = "\\u001bf";
-        }
-      ];
 
       colors = import ./theme.nix;
     };
