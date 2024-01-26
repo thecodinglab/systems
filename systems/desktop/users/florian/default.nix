@@ -2,7 +2,10 @@
 {
   users.users.florian = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "i2c" ];
+    extraGroups = [
+      "wheel"
+      "i2c" # required for dynamic-brightness service (i.e. ddcutil)
+    ];
     initialPassword = "changeme";
 
     shell = pkgs.zsh;
@@ -11,6 +14,7 @@
       # Desktop Applications
       _1password-gui
       spotify
+      steam
 
       # Build Tools
       gcc

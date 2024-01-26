@@ -15,5 +15,7 @@
     "spotify"
     "smartgithg"
     "plexmediaserver"
+    "steam"
+    "steam-original"
   ];
 }
