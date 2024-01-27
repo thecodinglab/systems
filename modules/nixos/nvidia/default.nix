@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ config, pkgs, ... }: {
   environment.variables = {
     LIBVA_DRIVER_NAME = "nvidia";
   };
