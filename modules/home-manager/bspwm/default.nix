@@ -173,6 +173,8 @@
 
           modules-left = "workspaces";
           modules-right = "filesystem space wifi space lan space pulseaudio space memory space cpu space time space";
+
+          wm-restack = "bspwm";
         };
 
         "bar/default" = {
