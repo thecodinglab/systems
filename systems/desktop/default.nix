@@ -9,6 +9,7 @@
       ./security.nix
 
       (root + "/modules/nixos/base")
+      (root + "/modules/nixos/nvidia")
 
       (root + "/modules/nixos/audio")
       (root + "/modules/nixos/dynamic-brightness")

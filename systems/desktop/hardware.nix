@@ -25,27 +25,16 @@
 
   swapDevices = [ ];
 
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+  hardware = {
+    bluetooth = {
+      enable = true;
+      settings = {
+        General.Experimental = true;
+      };
+    };
+
+    i2c.enable = true;
   };
-
-  nixpkgs.config.cudaSupport = true;
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-
-    nvidiaSettings = true;
-
-    open = false;
-
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
-  hardware.bluetooth.enable = true;
-  hardware.i2c.enable = true;
 
   networking = {
     useDHCP = false;
