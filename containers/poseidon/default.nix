@@ -15,6 +15,15 @@
 
       device = [
         {
+          name = "share";
+          type = "disk";
+          properties = {
+            source = "share";
+            pool = "data";
+            path = "/mnt/share";
+          };
+        }
+        {
           name = "timemachine";
           type = "disk";
           properties = {
@@ -33,6 +42,19 @@
           };
         }
       ];
+    };
+
+    resource.incus_volume.share = {
+      name = "share";
+      pool = "data";
+      type = "custom";
+
+      config = {
+        "block.filesystem" = "btrfs";
+        "block.mount_options" = "noatime,discard";
+        "snapshots.expiry" = "4w";
+        "snapshots.schedule" = "@midnight";
+      };
     };
 
     resource.incus_volume.timemachine = {
@@ -59,6 +81,11 @@
       };
 
       fileSystems = {
+        "/export/share" = {
+          device = "/mnt/share";
+          options = [ "bind" ];
+        };
+
         "/export/timemachine" = {
           device = "/mnt/timemachine";
           options = [ "bind" ];
@@ -76,6 +103,11 @@
 
       users = {
         users = {
+          share = {
+            isSystemUser = true;
+            group = "share";
+          };
+
           timemachine = {
             isSystemUser = true;
             group = "timemachine";
@@ -89,6 +121,7 @@
         };
 
         groups = {
+          share = { };
           timemachine = { };
           media = { gid = 1000; };
         };
@@ -99,6 +132,7 @@
           enable = true;
           exports = ''
             /export                 192.168.1.0/24(ro,crossmnt,fsid=0,no_subtree_check) 
+            /export/share           192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
             /export/media/library   192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
             /export/media/downloads 192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
           '';
@@ -121,6 +155,15 @@
           '';
 
           shares = {
+            share = {
+              path = "/mnt/share";
+              browseable = "yes";
+              writable = "yes";
+              "valid users" = "share";
+              "force user" = "share";
+              "force group" = "share";
+            };
+
             timemachine = {
               path = "/mnt/timemachine";
               browseable = "yes";
