@@ -157,7 +157,7 @@
     };
 
     systemPackages = with pkgs; [
-      firefox
+      brave
     ];
   };
 }
