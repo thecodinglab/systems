@@ -1,108 +1,126 @@
-{ pkgs, ... }: {
-  xsession.windowManager.bspwm = {
+{ pkgs, root, ... }: {
+  xsession = {
     enable = true;
+    numlock.enable = true;
 
-    monitors = {
-      "^1" = [ "1" ];
-      "^2" = [ "2" ];
-      "^3" = [ "3" ];
+    windowManager.bspwm = {
+      enable = true;
+
+      monitors = {
+        "^1" = [ "1" ];
+        "^2" = [ "2" "4" ];
+        "^3" = [ "3" ];
+      };
+
+      rules = {
+        "Spotify" = {
+          state = "floating";
+          sticky = true;
+        };
+      };
+
+      settings = {
+        border_width = 1;
+        window_gap = 8;
+
+        split_ratio = 0.6;
+        borderless_monocle = true;
+        gapless_monocle = true;
+
+        focus_follows_pointer = true;
+        pointer_follows_focus = true;
+      };
+
+      startupPrograms = [
+        "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
+      ];
     };
-
-    settings = {
-      border_width = 1;
-      window_gap = 8;
-
-      split_ratio = 0.6;
-      borderless_monocle = true;
-      gapless_monocle = true;
-
-      focus_follows_pointer = true;
-      pointer_follows_focus = true;
-    };
-
-    startupPrograms = [
-      "${pkgs.numlockx}/bin/numlockx on"
-      "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
-    ];
   };
 
   services = {
-    sxhkd = {
-      enable = true;
-      keybindings = {
-        "super + Return" = "${pkgs.alacritty}/bin/alacritty";
-        "super + d" = "${pkgs.dmenu}/bin/dmenu_run";
-        "super + control + q" = "${pkgs.systemd}/bin/loginctl lock-session";
+    sxhkd =
+      let
+        hideScript = pkgs.writeShellScriptBin "hide" (builtins.readFile ./scripts/hide.sh);
+      in
+      {
+        enable = true;
+        keybindings = {
+          "super + Return" = "${pkgs.alacritty}/bin/alacritty";
+          "super + d" = "${pkgs.dmenu}/bin/dmenu_run";
+          "super + control + q" = "${pkgs.systemd}/bin/loginctl lock-session";
 
-        # close currently focused application
-        "super + shift + q" = "bspc node -c";
+          # close currently focused application
+          "super + shift + q" = "bspc node -c";
 
-        # make sxhkd reload its configuration files:
-        "super + Escape" = "pkill -USR1 -x sxhkd";
+          # make sxhkd reload its configuration files:
+          "super + Escape" = "pkill -USR1 -x sxhkd";
 
-        # quit/restart bspwm
-        "super + alt + {q,r}" = "bspc {quit,wm -r}";
+          # quit/restart bspwm
+          "super + alt + {q,r}" = "bspc {quit,wm -r}";
 
-        #######################
-        # bspwm hotkeys       #
-        #######################
+          #######################
+          # bspwm hotkeys       #
+          #######################
 
-        # alternate between the tiled and monocle layout
-        "super + m" = "bspc desktop -l next";
+          # alternate between the tiled and monocle layout
+          "super + m" = "bspc desktop -l next";
 
-        # swap the current node and the biggest window
-        "super + g" = "bspc node -s biggest.window";
+          # swap the current node and the biggest window
+          "super + g" = "bspc node -s biggest.window";
 
-        #######################
-        # focus / swap        #
-        #######################
+          #######################
+          # focus / swap        #
+          #######################
 
-        # focus the node in the given direction
-        "super + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
+          # focus the node in the given direction
+          "super + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
 
-        # focus or send to the given desktop
-        "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'";
+          # focus or send to the given desktop
+          "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'";
 
-        #######################
-        # preselect           #
-        #######################
+          #######################
+          # preselect           #
+          #######################
 
-        # preselect the direction
-        "super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+          # preselect the direction
+          "super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
-        # preselect the ratio
-        "super + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+          # preselect the ratio
+          "super + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
 
-        # cancel the preselection for the focused node
-        "super + ctrl + space" = "bspc node -p cancel";
+          # cancel the preselection for the focused node
+          "super + ctrl + space" = "bspc node -p cancel";
 
-        #######################
-        # move / resize       #
-        #######################
+          #######################
+          # move / resize       #
+          #######################
 
-        # expand a window by moving one of its side outward
-        "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+          # expand a window by moving one of its side outward
+          "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
 
-        # contract a window by moving one of its side inward
-        "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
+          # contract a window by moving one of its side inward
+          "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
 
 
-        #######################
-        # audio               #
-        #######################
+          #######################
+          # audio               #
+          #######################
 
-        # volume
-        "XF86AudioRaiseVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "XF86AudioLowerVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-        "XF86AudioMute" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "XF86AudioMicMute" = "${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+          # volume
+          "XF86AudioRaiseVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+          "XF86AudioLowerVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+          "XF86AudioMute" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "XF86AudioMicMute" = "${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        # navigation
-        "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
-        "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
-        "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
+          # navigation
+          "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
+          "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
+          "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
+
+          # show/hide spotify
+          "super + minus" = "${hideScript}/bin/hide 'Spotify'";
+        };
       };
-    };
 
     polybar = {
       enable = true;
@@ -297,29 +315,33 @@
           type = "custom/text";
           format = "   ";
         };
-
-
-
-        # settings = {
-        # screenchange-reload = true;
-        # pseudo-transparency = false;
-        # };
-
-        # "bar/main" = {
-        #   width = "100%";
-        #   height = "24pt";
-        #   radius = 6;
-        #
-        #   modules = {
-        #     left = "bspwm";
-        #   };
-        # };
-        #
-        # "module/bspwm" = {
-        #   type = "internal/bspwm";
-        #   pin.workspaces = true;
-        # };
       };
     };
+  };
+
+  home.packages = with pkgs; [
+    # Desktop Applications
+    alacritty
+    dmenu
+    scrot
+
+    xclip
+    xdotool
+
+    # Lock Screen
+    xsecurelock
+    xss-lock
+
+    # Audio Controls
+    pulseaudio
+    playerctl
+
+    # Font
+    (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+  ];
+
+  home.file.".background-image" = {
+    enable = true;
+    source = (root + "/wallpaper.jpg");
   };
 }

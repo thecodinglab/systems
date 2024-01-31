@@ -60,8 +60,8 @@
             (root + "/modules/home-manager/tmux")
             (root + "/modules/home-manager/zsh")
 
+            (root + "/modules/home-manager/bspwm")
             (root + "/modules/home-manager/clipcat")
-            (root + "/modules/home-manager/i3")
             (root + "/modules/home-manager/zathura")
           ];
 

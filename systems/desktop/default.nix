@@ -107,7 +107,7 @@
     videoDrivers = [ "nvidia" ];
 
     # Desktop Environment
-    windowManager.i3.enable = true;
+    windowManager.bspwm.enable = true;
 
     desktopManager = {
       xterm.enable = false;
@@ -119,7 +119,7 @@
     };
 
     displayManager = {
-      defaultSession = "none+i3";
+      defaultSession = "none+bspwm";
     };
 
     # Other
