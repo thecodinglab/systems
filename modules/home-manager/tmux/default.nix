@@ -90,8 +90,9 @@ in
         bind '"' split-window -c "#{pane_current_path}"
         bind '%' split-window -h -c "#{pane_current_path}"
       ''
-      # select pane
+      # select project / pane
       ''
+        bind-key o display-popup -E "${pkgs.tmux-sessionizer}/bin/tms switch"
         bind-key f run-shell -b "${tmux-select-pane}/bin/tmux-select-pane"
       ''
     ];
@@ -101,5 +102,6 @@ in
 
   home.packages = [
     tmux-select-pane
+    pkgs.tmux-sessionizer
   ];
 }
