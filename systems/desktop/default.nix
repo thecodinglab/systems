@@ -133,8 +133,15 @@
   # Services            #
   #######################
 
-  services.dbus.enable = true;
-  services.printing.enable = true;
+  services = {
+    dbus.enable = true;
+    avahi.enable = true;
+
+    printing = {
+      enable = true;
+      drivers = [ pkgs.splix ];
+    };
+  };
 
   #######################
   # Applications        #
