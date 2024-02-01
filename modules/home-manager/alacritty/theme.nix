@@ -1,5 +1,5 @@
 {
-  # source: https://github.com/nordtheme/alacritty/blob/9949642f3903e8fcb62bfc03f09410e3d78440c2/src/nord.yaml
+  # based on: https://github.com/nordtheme/alacritty/blob/9949642f3903e8fcb62bfc03f09410e3d78440c2/src/nord.yaml
   primary = {
     background = "#2e3440";
     foreground = "#d8dee9";

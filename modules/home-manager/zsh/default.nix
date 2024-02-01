@@ -1,4 +1,4 @@
-{ pkgs, root, ... }: {
+{ pkgs, lib, root, ... }: {
   imports = [
     (root + "/modules/home-manager/fzf")
   ];
@@ -27,7 +27,10 @@
     ];
   };
 
-  programs.fzf.enableZshIntegration = true;
+  programs = {
+    fzf.enableZshIntegration = lib.mkDefault true;
+    kitty.shellIntegration.enableZshIntegration = lib.mkDefault true;
+  };
 
   home.packages = with pkgs; [
     coreutils
