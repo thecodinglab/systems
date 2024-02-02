@@ -45,7 +45,7 @@
       {
         enable = true;
         keybindings = {
-          "super + Return" = "${pkgs.alacritty}/bin/alacritty";
+          "super + Return" = "kitty";
           "super + d" = "${pkgs.dmenu}/bin/dmenu_run";
           "super + control + q" = "${pkgs.systemd}/bin/loginctl lock-session";
 
@@ -321,7 +321,6 @@
 
   home.packages = with pkgs; [
     # Desktop Applications
-    alacritty
     dmenu
     scrot
 
