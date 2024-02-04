@@ -15,6 +15,7 @@
       _1password-gui
       spotify
       steam
+      obsidian
 
       # Build Tools
       gcc
