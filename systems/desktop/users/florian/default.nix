@@ -29,10 +29,7 @@
       glab
       smartgithg
 
-      # Lanauges
-      ltex-ls
-      rnix-lsp
-
+      # Languages
       go
       gopls
       gotools
