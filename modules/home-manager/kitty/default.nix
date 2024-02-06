@@ -10,6 +10,9 @@
 
     settings = (import ./theme.nix) // {
       clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";
+
+      allow_remote_control = "socket-only";
+      listen_on = "unix:/tmp/kitty";
     };
   };
 }
