@@ -37,6 +37,9 @@
       # Latex
       texliveFull
       texlab
+
+      # AI
+      ollama
     ];
   };
 
