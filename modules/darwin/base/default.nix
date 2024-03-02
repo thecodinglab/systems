@@ -1,6 +1,6 @@
 { pkgs, neovim-config, ... }:
 let
-  neovim = neovim-config.makeDistribution pkgs;
+  neovim = neovim-config.packages.${pkgs.system}.default;
 in
 {
   services.nix-daemon.enable = true;
@@ -13,10 +13,11 @@ in
       EDITOR = "${neovim}/bin/nvim";
     };
 
-    systemPackages = with pkgs; [
-      coreutils
+    systemPackages = [
+      pkgs.coreutils
+      pkgs.htop
+
       neovim
-      htop
     ];
   };
 }

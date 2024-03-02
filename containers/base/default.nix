@@ -34,7 +34,7 @@
   };
 
   environment.systemPackages = [
-    (neovim-config.makeDistribution pkgs)
+    neovim-config.packages.${pkgs.system}.default
   ];
 
   services.openssh.enable = true;
