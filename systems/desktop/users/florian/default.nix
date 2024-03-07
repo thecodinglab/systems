@@ -4,6 +4,7 @@
     isNormalUser = true;
     extraGroups = [
       "wheel"
+      "docker"
       "i2c" # required for dynamic-brightness service (i.e. ddcutil)
     ];
     initialPassword = "changeme";

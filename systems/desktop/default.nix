@@ -12,6 +12,7 @@
       (root + "/modules/nixos/nvidia")
 
       (root + "/modules/nixos/audio")
+      (root + "/modules/nixos/docker")
       (root + "/modules/nixos/dynamic-brightness")
       (root + "/modules/nixos/podman")
       (root + "/modules/nixos/ssh")
