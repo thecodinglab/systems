@@ -56,6 +56,7 @@
         users.florian = ({ ... }: {
           imports = [
             (root + "/modules/home-manager/alacritty")
+            (root + "/modules/home-manager/direnv")
             (root + "/modules/home-manager/fzf")
             (root + "/modules/home-manager/git")
             (root + "/modules/home-manager/kitty")
