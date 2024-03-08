@@ -2,10 +2,17 @@
   programs.git = {
     enable = true;
 
+    userName = "Florian Walter";
+    userEmail = "nairolf.retlaw@gmail.com";
+
     signing = {
-      gpgPath = "${pkgs.gnupg}/bin/gpg";
       key = null;
       signByDefault = true;
+    };
+
+    extraConfig = {
+      init.defaultBranch = "main";
+      pull.rebase = "true";
     };
   };
 
