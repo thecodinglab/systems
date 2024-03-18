@@ -23,12 +23,14 @@ rec {
   });
 
   makeHomeBypassAccessPolicy = ({ application_id, precedence }:
-    let auth = {
-      ip = [
-        self.home.ipv4_subnet
-        self.home.ipv6_subnet
-      ];
-    }; in
+    let
+      auth = {
+        ip = [
+          self.home.ipv4_subnet
+          self.home.ipv6_subnet
+        ];
+      };
+    in
     {
       zone_id = self.cloudflare.zone_id;
       inherit application_id;
@@ -41,10 +43,11 @@ rec {
     });
 
   makeGithubAllowancePolicy = ({ application_id, precedence }:
-    let auth = {
-      email = [ "nairolf.retlaw@gmail.com" ];
-      login_method = [ self.cloudflare.access_github_login_method_id ];
-    };
+    let
+      auth = {
+        email = [ "nairolf.retlaw@gmail.com" ];
+        login_method = [ self.cloudflare.access_github_login_method_id ];
+      };
     in
     {
       zone_id = self.cloudflare.zone_id;
