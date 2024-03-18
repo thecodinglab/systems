@@ -74,11 +74,6 @@ in
         set -g main-pane-height 80%
         set -g main-pane-width 60%
       ''
-      # window navigation
-      ''
-        bind C-h previous-window
-        bind C-l next-window
-      ''
       # improve vi selection mode
       ''
         bind-key -T copy-mode-vi 'v' send -X begin-selection
