@@ -6,6 +6,9 @@ SSH_HESTIA_HOST := hestia
 
 CONTAINERS := apollo hermes poseidon hestia
 
+default:
+	@echo "Usage: make [desktop|macbookpro|server|containers]"
+
 desktop:
 	sudo nixos-rebuild switch --flake '.#desktop'
 
@@ -29,4 +32,4 @@ poseidon:
 hestia:
 	nixos-rebuild --target-host ${SSH_HESTIA_HOST} switch --flake '.#hestia'
 
-.PHONY: desktop macbookpro server containers $(CONTAINERS)
+.PHONY: default desktop macbookpro server containers $(CONTAINERS)
