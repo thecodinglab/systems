@@ -1,4 +1,4 @@
-{ pkgs, root, ... }: {
+{ pkgs, lib, root, ... }: {
   xsession = {
     enable = true;
     numlock.enable = true;
@@ -32,7 +32,8 @@
       };
 
       startupPrograms = [
-        "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
+        "${lib.getExe pkgs.xss-lock} --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
+        "${lib.getExe pkgs._1password-gui} --silent"
       ];
     };
   };
