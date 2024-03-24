@@ -94,6 +94,12 @@
       options = "compose:rwin";
     };
 
+    # Trackpad
+    libinput.touchpad = {
+      accelSpeed = "0.5";
+      naturalScrolling = true;
+    };
+
     # Monitor Arrangement (from nvidia-settings)
     screenSection = ''
       Option "metamodes" "DP-4: nvidia-auto-select +6000+0, DP-0.8: nvidia-auto-select +0+0, DP-2: nvidia-auto-select +2560+0"
