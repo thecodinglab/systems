@@ -18,5 +18,6 @@
     "steam"
     "steam-original"
     "obsidian"
+    "staruml"
   ];
 }

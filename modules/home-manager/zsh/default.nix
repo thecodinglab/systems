@@ -1,7 +1,5 @@
-{ pkgs, lib, root, ... }: {
-  imports = [
-    (root + "/modules/home-manager/fzf")
-  ];
+{ pkgs, lib, ... }: {
+  imports = [ ../fzf ];
 
   programs = {
     zsh = {

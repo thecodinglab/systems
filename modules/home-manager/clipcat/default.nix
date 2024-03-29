@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs, lib, ... }: lib.mkIf pkgs.stdenv.isLinux {
   xdg.configFile = {
     "clipcat/clipcatd.toml" = {
       enable = true;

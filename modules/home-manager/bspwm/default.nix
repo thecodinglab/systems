@@ -1,4 +1,4 @@
-{ pkgs, lib, root, ... }: {
+{ pkgs, lib, ... }: lib.mkIf pkgs.stdenv.isLinux {
   xsession = {
     enable = true;
     numlock.enable = true;
@@ -339,9 +339,4 @@
     # Font
     (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
   ];
-
-  home.file.".background-image" = {
-    enable = true;
-    source = (root + "/wallpaper.jpg");
-  };
 }

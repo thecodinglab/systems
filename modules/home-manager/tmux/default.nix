@@ -1,10 +1,5 @@
-{ pkgs, lib, root, ... }:
+{ pkgs, lib, ... }:
 let
-  tmux-select-pane =
-    pkgs.writeShellScriptBin
-      "tmux-select-pane"
-      (builtins.readFile ./scripts/select-pane.sh);
-
   tmux-nvim = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "tmux.nvim";
     version = "unstable-2023-10-28";
@@ -17,9 +12,7 @@ let
   };
 in
 {
-  imports = [
-    (root + "/modules/home-manager/fzf")
-  ];
+  imports = [ ../fzf ];
 
   programs.tmux = {
     enable = true;
@@ -87,8 +80,7 @@ in
       ''
       # select project / pane
       ''
-        bind-key o display-popup -E "${pkgs.tmux-sessionizer}/bin/tms switch"
-        bind-key f run-shell -b "${tmux-select-pane}/bin/tmux-select-pane"
+        bind-key o display-popup -E "${lib.getExe pkgs.tmux-sessionizer} switch"
       ''
     ];
   };
@@ -96,7 +88,6 @@ in
   programs.fzf.tmux.enableShellIntegration = true;
 
   home.packages = [
-    tmux-select-pane
     pkgs.tmux-sessionizer
   ];
 }

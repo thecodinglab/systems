@@ -34,31 +34,23 @@
 
   outputs = inputs@{ self, nixpkgs, flake-utils, darwin, home-manager, neovim-config, terranix }:
     let
-      root = builtins.toString ./.;
-
       specialArgs = {
-        inherit root home-manager neovim-config;
+        inherit home-manager neovim-config;
       };
 
-      containers = import ./containers (inputs // { inherit root; });
+      containers = import ./hosts/containers inputs;
 
       systemConfigurations = {
         nixosConfigurations = {
           desktop = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [ ./proprietary-packages.nix ./systems/desktop ];
+            modules = [ ./proprietary-packages.nix ./hosts/desktop/configuration.nix ];
             inherit specialArgs;
           };
 
           server = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [ ./systems/server ];
-            inherit specialArgs;
-          };
-
-          vm = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [ ./systems/vm ];
+            modules = [ ./hosts/server/configuration.nix ];
             inherit specialArgs;
           };
         } // containers.nixosConfigurations;
