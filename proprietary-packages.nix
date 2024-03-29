@@ -19,5 +19,6 @@
     "steam-original"
     "obsidian"
     "staruml"
+    "raycast"
   ];
 }

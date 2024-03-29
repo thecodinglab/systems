@@ -1,8 +1,8 @@
-{ pkgs, root, ... }: {
+{ pkgs, ... }: {
   imports = [
     # System
-    (root + "/modules/darwin/base")
-    (root + "/modules/darwin/yabai")
+    ../../modules/darwin/base
+    ../../modules/darwin/yabai
 
     # User
     ./users/florian

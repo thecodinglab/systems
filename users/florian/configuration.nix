@@ -1,61 +1,67 @@
 { config, pkgs, lib, ... }:
 let
-  basePackages = with pkgs;[
-    # Desktop Applications
-    _1password-gui
-    spotify
-    obsidian
-    signal-desktop
+  basePackages = lib.mkMerge [
+    (with pkgs; [
+      # Desktop Applications
+      _1password-gui
+      spotify
+      obsidian
+    ])
+    (lib.mkIf pkgs.stdenv.isLinux [ pkgs.signal-desktop ])
+    (lib.mkIf pkgs.stdenv.isDarwin [ pkgs.raycast ])
   ];
 
-  devPackages = with pkgs;[
-    # Desktop Applications
-    staruml
-    smartgithg
+  devPackages = lib.mkMerge [
+    (with pkgs; [
+      # CLI
+      openssl
+      vifm
+      jq
+      zip
+      unzip
 
-    # CLI
-    openssl
-    vifm
-    jq
-    zip
-    unzip
+      # AI
+      ollama
 
-    # AI
-    ollama
+      # Build Tools
+      gnumake
+      cmake
 
-    # Build Tools
-    gnumake
-    cmake
+      # Git
+      git
+      git-crypt
+      gh
+      glab
 
-    # Git
-    git
-    git-crypt
-    gh
-    glab
+      # C/C++
+      gcc
 
-    # C/C++
-    gcc
+      # Golang
+      go
+      gopls
+      gotools
 
-    # Golang
-    go
-    gopls
-    gotools
+      # Rust
+      cargo
+      rust-analyzer
 
-    # Rust
-    cargo
-    rust-analyzer
+      # Haskell
+      ghc
+      cabal-install
+      haskell-language-server
 
-    # Haskell
-    ghc
-    cabal-install
-    haskell-language-server
+      # JavaScript
+      nodejs
 
-    # JavaScript
-    nodejs
-
-    # Latex
-    texliveFull
-    texlab
+      # Latex
+      texliveFull
+      texlab
+    ])
+    (lib.mkIf pkgs.stdenv.isLinux [
+      # Desktop Applications
+      pkgs.staruml
+      pkgs.smartgithg
+    ])
   ];
 
   gamingPackages = with pkgs;[

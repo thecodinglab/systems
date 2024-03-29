@@ -1,11 +1,11 @@
-{ home-manager, root, ... }: {
+{ home-manager, ... }: {
   users.users.florian = {
     name = "florian";
     home = "/Users/florian/";
   };
 
   imports = [
-    (import (root + "/modules/common/ssh/authorized-keys.nix") "florian")
+    (import ../../../../modules/common/ssh/authorized-keys.nix "florian")
 
     home-manager.darwinModules.home-manager
     {
@@ -14,18 +14,8 @@
         useUserPackages = true;
 
         users.florian = ({ ... }: {
-          home.stateVersion = "23.11";
-
           imports = [
-            (root + "/modules/home-manager/alacritty")
-            (root + "/modules/home-manager/direnv")
-            (root + "/modules/home-manager/fzf")
-            (root + "/modules/home-manager/git")
-            (root + "/modules/home-manager/kitty")
-            (root + "/modules/home-manager/sioyek")
-            (root + "/modules/home-manager/tmux")
-            (root + "/modules/home-manager/zathura")
-            (root + "/modules/home-manager/zsh")
+            ../../../../users/florian/configuration.nix
           ];
 
           ########################
@@ -33,6 +23,11 @@
           ########################
 
           programs = {
+            default = {
+              enable = true;
+              enableDevelopment = true;
+            };
+
             alacritty.settings = {
               window = {
                 decorations = "buttonless";
@@ -78,10 +73,6 @@
             };
           };
         });
-
-        extraSpecialArgs = {
-          inherit root;
-        };
       };
     }
   ];

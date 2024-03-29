@@ -58,7 +58,7 @@
         darwinConfigurations = {
           macbookpro = darwin.lib.darwinSystem {
             system = "aarch64-darwin";
-            modules = [ ./proprietary-packages.nix ./systems/macbookpro ];
+            modules = [ ./proprietary-packages.nix ./hosts/macbookpro ];
             inherit specialArgs;
           };
         };
