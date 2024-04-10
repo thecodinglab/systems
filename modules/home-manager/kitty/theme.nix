@@ -1,28 +1,31 @@
+let
+  theme = import ../../../themes/nord;
+in
 {
-  # based on: https://github.com/nordtheme/alacritty/blob/9949642f3903e8fcb62bfc03f09410e3d78440c2/src/nord.yaml
-  background = "#2e3440";
-  foreground = "#d8dee9";
-  selection_foreground = "#d8dee9";
-  selection_background = "#4c566a";
+  background = theme.nord0;
+  foreground = theme.nord4;
 
-  cursor = "#d8dee9";
-  cursor_text_color = "#2e3440";
+  selection_foreground = theme.nord4;
+  selection_background = theme.nord3;
 
-  color0 = "#3b4252";
-  color1 = "#bf616a";
-  color2 = "#a3be8c";
-  color3 = "#ebcb8b";
-  color4 = "#81a1c1";
-  color5 = "#b48ead";
-  color6 = "#88c0d0";
-  color7 = "#e5e9f0";
+  cursor = theme.nord4;
+  cursor_text_color = theme.nord0;
 
-  color8 = "#4c566a";
-  color9 = "#bf616a";
-  color10 = "#a3be8c";
-  color11 = "#ebcb8b";
-  color12 = "#81a1c1";
-  color13 = "#b48ead";
-  color14 = "#8fbcbb";
-  color15 = "#eceff4";
+  color0 = theme.nord0; # black
+  color1 = theme.nord11; # red
+  color2 = theme.nord14; # green
+  color3 = theme.nord13; # yellow
+  color4 = theme.nord10; # blue
+  color5 = theme.nord15; # magenta
+  color6 = theme.nord8; # cyan
+  color7 = theme.nord5; # white
+
+  color8 = theme.nord3; # bright black
+  color9 = theme.nord11; # bright red
+  color10 = theme.nord14; # bright green
+  color11 = theme.nord13; # bright yellow
+  color12 = theme.nord10; # bright blue
+  color13 = theme.nord15; # bright magenta
+  color14 = theme.nord8; # bright cyan
+  color15 = theme.nord6; # bright white
 }
