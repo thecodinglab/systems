@@ -12,6 +12,7 @@
 
     # Applications
     "1password"
+    "1password-cli"
     "spotify"
     "smartgithg"
     "plexmediaserver"

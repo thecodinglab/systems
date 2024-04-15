@@ -3,7 +3,6 @@ let
   basePackages = lib.mkMerge [
     (with pkgs; [
       # Desktop Applications
-      _1password-gui
       spotify
       obsidian
     ])
@@ -13,14 +12,13 @@ let
 
   devPackages = lib.mkMerge [
     (with pkgs; [
-      # CLI
+      # Utilities
+      _1password
       openssl
       vifm
       jq
       zip
       unzip
-
-      # AI
       ollama
 
       # Build Tools

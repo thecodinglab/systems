@@ -11,6 +11,7 @@
       ../../modules/nixos/base
       ../../modules/nixos/nvidia
 
+      ../../modules/nixos/1password
       ../../modules/nixos/audio
       ../../modules/nixos/docker
       ../../modules/nixos/dynamic-brightness
@@ -84,6 +85,8 @@
 
   services.autorandr.enable = true;
 
+  services.displayManager.defaultSession = "none+bspwm";
+
   services.xserver = {
     enable = true;
     autorun = true;
@@ -123,10 +126,6 @@
         combineScreens = false;
         mode = "fill";
       };
-    };
-
-    displayManager = {
-      defaultSession = "none+bspwm";
     };
 
     # Other
