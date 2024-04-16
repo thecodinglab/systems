@@ -23,6 +23,8 @@ in
     secureSocket = true;
     shortcut = "Space";
 
+    terminal = "xterm-kitty";
+
     plugins = with pkgs.tmuxPlugins; [
       nord
       yank
@@ -51,11 +53,6 @@ in
     ];
 
     extraConfig = lib.concatStringsSep "\n" [
-      # fix colors inside tmux
-      ''
-        set -g default-terminal "screen-256color"
-        set -ag terminal-overrides ",xterm-256color:RGB"
-      ''
       # status bar length
       ''
         set -g status-left-length 80
