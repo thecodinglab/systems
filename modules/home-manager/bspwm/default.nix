@@ -285,7 +285,7 @@
         "module/wifi" = {
           type = "internal/network";
           interval = 5;
-          interface = "wlp12s0";
+          interface = "wlp15s0";
           interface-type = "wireless";
 
           format-connected = "<ramp-signal> <label-connected>";

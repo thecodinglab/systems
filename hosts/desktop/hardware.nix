@@ -35,9 +35,6 @@
   hardware = {
     bluetooth = {
       enable = true;
-      settings = {
-        General.Experimental = true;
-      };
     };
 
     i2c.enable = true;
@@ -47,8 +44,8 @@
     useDHCP = false;
     interfaces = {
       enp14s0.useDHCP = true;
-      wlp12s0.useDHCP = true;
-      wlp15s0.useDHCP = false;
+      wlp12s0.useDHCP = false;
+      wlp15s0.useDHCP = true;
     };
   };
 

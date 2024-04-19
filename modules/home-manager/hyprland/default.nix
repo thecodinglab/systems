@@ -284,7 +284,7 @@ lib.mkIf pkgs.stdenv.isLinux {
         };
 
         "network#wifi" = {
-          interface = "wlp12s0";
+          interface = "wlp15s0";
           format-wifi = "{icon}  {ipaddr}";
           format-linked = "󰤭  (no ip)";
           format-disconnected = "󰤭 ";
