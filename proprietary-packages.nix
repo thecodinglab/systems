@@ -4,12 +4,6 @@
     "nvidia-x11"
     "nvidia-settings"
 
-    # Nvidia Cuda
-    "cuda_cccl"
-    "cuda_cudart"
-    "cuda_nvcc"
-    "libcublas"
-
     # Applications
     "1password"
     "1password-cli"

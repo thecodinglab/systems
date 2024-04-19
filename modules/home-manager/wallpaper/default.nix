@@ -9,6 +9,16 @@ in
     ];
   };
 
+  services.hyprpaper = lib.mkIf config.wayland.windowManager.hyprland.enable {
+    enable = true;
+    preloads = [
+      "~/${backgroundImageName}"
+    ];
+    wallpapers = [
+      ",~/${backgroundImageName}"
+    ];
+  };
+
   home.file.${backgroundImageName} = {
     enable = true;
     source = ./wallpaper.jpg;

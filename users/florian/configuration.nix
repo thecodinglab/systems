@@ -75,11 +75,11 @@ in
     ../../modules/home-manager/kitty
     ../../modules/home-manager/sioyek
     ../../modules/home-manager/tmux
+    ../../modules/home-manager/wallpaper
     ../../modules/home-manager/zathura
     ../../modules/home-manager/zsh
 
-    ../../modules/home-manager/bspwm
-    ../../modules/home-manager/clipcat
+    ../../modules/home-manager/hyprland
   ];
 
   options = {

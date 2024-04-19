@@ -3,7 +3,9 @@
     LIBVA_DRIVER_NAME = "nvidia";
   };
 
-  nixpkgs.config.cudaSupport = true;
+  nixpkgs.config.cudaSupport = false;
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware = {
     opengl = {
@@ -16,9 +18,8 @@
       modesetting.enable = true;
       powerManagement.enable = true;
 
-      nvidiaSettings = true;
-
       open = false;
+      nvidiaSettings = true;
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };

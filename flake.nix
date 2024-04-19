@@ -30,12 +30,26 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, darwin, home-manager, neovim-config, terranix }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, darwin, home-manager, neovim-config, terranix, hyprland, hyprpaper }:
     let
       specialArgs = {
-        inherit home-manager neovim-config;
+        inherit home-manager neovim-config hyprland hyprpaper;
       };
 
       containers = import ./hosts/containers inputs;
