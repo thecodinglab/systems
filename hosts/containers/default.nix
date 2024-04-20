@@ -1,4 +1,4 @@
-{ nixpkgs, flake-utils, terranix, ... }:
+{ nixpkgs, flake-utils, neovim-config, terranix, ... }:
 let
   modules = {
     hermes = ./hermes;
@@ -8,6 +8,8 @@ let
   };
 
   args = {
+    inherit neovim-config;
+
     hermes.vhosts =
       (import ./apollo/vhosts.nix) //
       (import ./hestia/vhosts.nix) //
