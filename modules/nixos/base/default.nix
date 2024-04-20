@@ -1,7 +1,4 @@
-{ pkgs, neovim-config, ... }:
-let
-  neovim = neovim-config.packages.${pkgs.system}.default;
-in
+{ pkgs, ... }:
 {
   nix = {
     settings = {
@@ -18,14 +15,14 @@ in
 
   environment = {
     variables = {
-      EDITOR = "${neovim}/bin/nvim";
+      EDITOR = "${pkgs.neovim}/bin/nvim";
     };
 
     systemPackages = [
       pkgs.coreutils
       pkgs.htop
 
-      neovim
+      pkgs.neovim
     ];
   };
 }

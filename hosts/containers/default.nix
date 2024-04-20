@@ -1,4 +1,4 @@
-{ nixpkgs, flake-utils, neovim-config, terranix, ... }:
+{ nixpkgs, flake-utils, terranix, ... }:
 let
   modules = {
     hermes = ./hermes;
@@ -8,8 +8,6 @@ let
   };
 
   args = {
-    inherit neovim-config;
-
     hermes.vhosts =
       (import ./apollo/vhosts.nix) //
       (import ./hestia/vhosts.nix) //
@@ -28,7 +26,12 @@ let
   nixosConfigurations = builtins.mapAttrs
     (_: config: nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      modules = [ ../../proprietary-packages.nix ./base config.system ];
+      modules = [
+        ../../overlays.nix
+        ../../proprietary-packages.nix
+        ./base
+        config.system
+      ];
       specialArgs = args;
     })
     config;

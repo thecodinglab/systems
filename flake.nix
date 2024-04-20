@@ -68,7 +68,10 @@
 
           server = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [ ./hosts/server/configuration.nix ];
+            modules = [
+              ./overlays.nix
+              ./hosts/server/configuration.nix
+            ];
             inherit specialArgs;
           };
         } // containers.nixosConfigurations;
@@ -76,7 +79,11 @@
         darwinConfigurations = {
           macbookpro = darwin.lib.darwinSystem {
             system = "aarch64-darwin";
-            modules = [ ./proprietary-packages.nix ./hosts/macbookpro ];
+            modules = [
+              ./overlays.nix
+              ./proprietary-packages.nix
+              ./hosts/macbookpro
+            ];
             inherit specialArgs;
           };
         };
