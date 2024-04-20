@@ -1,5 +1,6 @@
 { pkgs, lib, hyprland, hyprpaper, ... }:
 let
+  mod = "SUPER";
   theme = import ../../../themes/nord;
 
   mkHyprColor = color:
@@ -119,106 +120,87 @@ lib.mkIf pkgs.stdenv.isLinux {
       # Keyboard Shortcuts    #
       #########################
 
-      bind =
-        let
-          mod = "SUPER";
-        in
-        [
-          # exit hyperland
-          "${mod} ALT, Q, exit,"
+      bind = [
+        # exit hyperland
+        "${mod} ALT, Q, exit,"
 
-          # window actions
-          "${mod} SHIFT, Q, killactive,"
+        # window actions
+        "${mod} SHIFT, Q, killactive,"
 
-          # application launcher (TODO: theme)
-          "${mod}, D, exec, ${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font 14px' --line-height 20"
+        # application launcher (TODO: theme)
+        "${mod}, D, exec, ${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font 14px' --line-height 20"
 
-          # terminal
-          "${mod}, RETURN, exec, ${lib.getExe pkgs.kitty}"
+        # terminal
+        "${mod}, RETURN, exec, ${lib.getExe pkgs.kitty}"
 
-          # workspace switching
-          "${mod}, 1, workspace, 1"
-          "${mod}, 2, workspace, 2"
-          "${mod}, 3, workspace, 3"
-          "${mod}, 4, workspace, 4"
-          "${mod}, 5, workspace, 5"
-          "${mod}, 6, workspace, 6"
-          "${mod}, 7, workspace, 7"
-          "${mod}, 8, workspace, 8"
-          "${mod}, 9, workspace, 9"
-          "${mod}, 0, workspace, 10"
+        # workspace switching
+        "${mod}, 1, workspace, 1"
+        "${mod}, 2, workspace, 2"
+        "${mod}, 3, workspace, 3"
+        "${mod}, 4, workspace, 4"
+        "${mod}, 5, workspace, 5"
+        "${mod}, 6, workspace, 6"
+        "${mod}, 7, workspace, 7"
+        "${mod}, 8, workspace, 8"
+        "${mod}, 9, workspace, 9"
+        "${mod}, 0, workspace, 10"
 
-          # move window to workspace
-          "${mod} SHIFT, 1, movetoworkspace, 1"
-          "${mod} SHIFT, 2, movetoworkspace, 2"
-          "${mod} SHIFT, 3, movetoworkspace, 3"
-          "${mod} SHIFT, 4, movetoworkspace, 4"
-          "${mod} SHIFT, 5, movetoworkspace, 5"
-          "${mod} SHIFT, 6, movetoworkspace, 6"
-          "${mod} SHIFT, 7, movetoworkspace, 7"
-          "${mod} SHIFT, 8, movetoworkspace, 8"
-          "${mod} SHIFT, 9, movetoworkspace, 9"
-          "${mod} SHIFT, 0, movetoworkspace, 10"
+        # move window to workspace
+        "${mod} SHIFT, 1, movetoworkspace, 1"
+        "${mod} SHIFT, 2, movetoworkspace, 2"
+        "${mod} SHIFT, 3, movetoworkspace, 3"
+        "${mod} SHIFT, 4, movetoworkspace, 4"
+        "${mod} SHIFT, 5, movetoworkspace, 5"
+        "${mod} SHIFT, 6, movetoworkspace, 6"
+        "${mod} SHIFT, 7, movetoworkspace, 7"
+        "${mod} SHIFT, 8, movetoworkspace, 8"
+        "${mod} SHIFT, 9, movetoworkspace, 9"
+        "${mod} SHIFT, 0, movetoworkspace, 10"
 
-          # move workspace to monitor
-          # "${mod} CONTROL SHIFT, 1, movecurrentworkspacetomonitor, DP-1"
-          # "${mod} CONTROL SHIFT, 2, movecurrentworkspacetomonitor, DP-3"
-          # "${mod} CONTROL SHIFT, 3, movecurrentworkspacetomonitor, DP-2"
+        # move window
+        "${mod} SHIFT, H, movewindow, l"
+        "${mod} SHIFT, L, movewindow, r"
+        "${mod} SHIFT, K, movewindow, u"
+        "${mod} SHIFT, J, movewindow, d"
 
-          # move window
-          "${mod} SHIFT, H, movewindow, l"
-          "${mod} SHIFT, L, movewindow, r"
-          "${mod} SHIFT, K, movewindow, u"
-          "${mod} SHIFT, J, movewindow, d"
+        # focus window
+        "${mod}, H, movefocus, l"
+        "${mod}, L, movefocus, r"
+        "${mod}, K, movefocus, u"
+        "${mod}, J, movefocus, d"
 
-          # focus window
-          "${mod}, H, movefocus, l"
-          "${mod}, L, movefocus, r"
-          "${mod}, K, movefocus, u"
-          "${mod}, J, movefocus, d"
+        # toggle fullscreen (monocle), split, floating
+        "${mod}, M, fullscreen, 1"
+        "${mod}, S, togglesplit,"
 
-          # resize window
-          # binde = , L, resizeactive,10 0
-          # binde = , H, resizeactive,-10 0
-          # binde = , K, resizeactive,0 -10
-          # binde = , J, resizeactive,0 10
-          # "${mod}, R, submap, resize"
+        "${mod}, SPACE, cyclenext, floating"
+        "${mod} SHIFT, SPACE, togglefloating,"
 
-          # submap = resize
-          # ", ESCAPE, submap, reset"
-          # ", RETURN, submap, reset"
-          # "${mod}, R, submap, reset"
-          # submap = reset
+        # center window
+        "${mod} SHIFT, C, centerwindow,"
 
-          # # move/resize windows with mod + LMB/RMB and dragging
-          # bindm = $mod, mouse:272, movewindow
-          # bindm = $mod, mouse:273, resizewindow
+        # scratchpad
+        "${mod} SHIFT, MINUS, movetoworkspace, special"
+        "${mod}, MINUS, togglespecialworkspace,"
 
-          # toggle fullscreen (monocle), split, floating
-          "${mod}, M, fullscreen, 1"
-          "${mod}, S, togglesplit,"
-          "${mod} SHIFT, SPACE, togglefloating,"
+        # volume control
+        ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
+        ", XF86AudioLowerVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%"
+        ", XF86AudioMute, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle"
+        ", XF86AudioMicMute, exec, ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle"
 
-          # center window
-          "${mod} SHIFT, C, centerwindow,"
+        # player control
+        ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} play-pause"
+        ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} pause-pause"
+        ", XF86AudioNext, exec, ${lib.getExe pkgs.playerctl} next"
+        ", XF86AudioPrev, exec, ${lib.getExe pkgs.playerctl} previous"
 
-          # scratchpad
-          "${mod} SHIFT, MINUS, movetoworkspace, special"
-          "${mod}, MINUS, togglespecialworkspace,"
+      ];
 
-          # volume control
-          ", XF86AudioRaiseVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%"
-          ", XF86AudioLowerVolume, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%"
-          ", XF86AudioMute, exec, ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle"
-          ", XF86AudioMicMute, exec, ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle"
-
-          # player control
-          ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} play-pause"
-          ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} pause-pause"
-          ", XF86AudioNext, exec, ${lib.getExe pkgs.playerctl} next"
-          ", XF86AudioPrev, exec, ${lib.getExe pkgs.playerctl} previous"
-
-        ];
+      bindm = [
+        "${mod}, mouse:272, movewindow"
+        "${mod} SHIFT, mouse:272, resizewindow"
+      ];
 
       #########################
       # Window Rules          #
