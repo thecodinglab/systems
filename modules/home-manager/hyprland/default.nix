@@ -127,8 +127,8 @@ lib.mkIf pkgs.stdenv.isLinux {
         # window actions
         "${mod} SHIFT, Q, killactive,"
 
-        # application launcher (TODO: theme)
-        "${mod}, D, exec, ${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font 14px' --line-height 20"
+        # application launcher
+        "${mod}, D, exec, ${pkgs.tofi}/bin/tofi-drun --drun-launch=true"
 
         # terminal
         "${mod}, RETURN, exec, ${lib.getExe pkgs.kitty}"
@@ -217,114 +217,143 @@ lib.mkIf pkgs.stdenv.isLinux {
     };
   };
 
-  programs.waybar = {
-    enable = true;
-    systemd.enable = true;
-    settings = {
-      mainBar = {
-        layer = "top";
-        position = "top";
-        spacing = 20;
+  programs = {
+    waybar = {
+      enable = true;
+      systemd.enable = true;
+      settings = {
+        mainBar = {
+          layer = "top";
+          position = "top";
+          spacing = 20;
 
-        modules-left = [ "hyprland/workspaces" ];
-        modules-right = [ "disk#root" "disk#data" "pulseaudio" "cpu" "memory" "network#ethernet" "network#wifi" "clock" ];
+          modules-left = [ "hyprland/workspaces" ];
+          modules-right = [ "disk#root" "disk#data" "pulseaudio" "cpu" "memory" "network#ethernet" "network#wifi" "clock" ];
 
-        "hyprland/workspaces" = {
-          sort-by-number = true;
-        };
+          "hyprland/workspaces" = {
+            sort-by-number = true;
+          };
 
-        "disk#root" = {
-          format = "/ {free}";
-          path = "/";
-        };
+          "disk#root" = {
+            format = "/ {free}";
+            path = "/";
+          };
 
-        "disk#data" = {
-          format = "/media/data {free}";
-          path = "/media/data";
-        };
+          "disk#data" = {
+            format = "/media/data {free}";
+            path = "/media/data";
+          };
 
-        pulseaudio = {
-          format = "󰕾  {volume}%";
-          format-muted = "󰝟 ";
-        };
+          pulseaudio = {
+            format = "󰕾  {volume}%";
+            format-muted = "󰝟 ";
+          };
 
-        cpu = {
-          format = "  {usage}%";
-        };
+          cpu = {
+            format = "  {usage}%";
+          };
 
-        memory = {
-          format = "  {avail}GiB";
-        };
+          memory = {
+            format = "  {avail}GiB";
+          };
 
-        "network#ethernet" = {
-          interface = "enp14s0";
-          format-ethernet = "󰛳  {ipaddr}";
-          format-linked = "󰅛  (no ip)";
-          format-disconnected = "󰅛 ";
+          "network#ethernet" = {
+            interface = "enp14s0";
+            format-ethernet = "󰛳  {ipaddr}";
+            format-linked = "󰅛  (no ip)";
+            format-disconnected = "󰅛 ";
 
-          tooltip-format = "{ifname} via {gwaddr}";
-        };
+            tooltip-format = "{ifname} via {gwaddr}";
+          };
 
-        "network#wifi" = {
-          interface = "wlp15s0";
-          format-wifi = "{icon}  {ipaddr}";
-          format-linked = "󰤭  (no ip)";
-          format-disconnected = "󰤭 ";
-          format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
+          "network#wifi" = {
+            interface = "wlp15s0";
+            format-wifi = "{icon}  {ipaddr}";
+            format-linked = "󰤭  (no ip)";
+            format-disconnected = "󰤭 ";
+            format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
 
-          tooltip-format = "{ifname} via {gwaddr}";
-        };
+            tooltip-format = "{ifname} via {gwaddr}";
+          };
 
-        clock = {
-          format = "{:%d.%m.%Y %H:%M}";
-          interval = 15;
+          clock = {
+            format = "{:%d.%m.%Y %H:%M}";
+            interval = 15;
+          };
         };
       };
+
+      style = ''
+        * {
+          font-family: JetBrainsMono Nerd Font;
+          font-size: 10pt;
+
+          border: none;
+          border-radius: 0;
+
+          color: ${theme.nord4};
+        }
+
+        window#waybar {
+          background: ${theme.nord0};
+          color: ${theme.nord4};
+        }
+
+        button:hover {
+          background: ${theme.nord2};
+          box-shadow: none;
+        }
+
+        #workspaces {
+          background: ${theme.nord0};
+          color: ${theme.nord4};
+        }
+
+        #workspaces button.active {
+          background: ${theme.nord10};
+        }
+
+        #workspaces button.urgent {
+          background: ${theme.nord11};
+        }
+
+        button {
+          padding: 0 5px;
+        }
+      '';
     };
 
-    style = ''
-      * {
-        font-family: JetBrainsMono Nerd Font;
-        font-size: 10pt;
+    tofi = {
+      enable = true;
+      settings = {
+        anchor = "top";
+        width = "100%";
+        height = 24;
 
-        border: none;
-        border-radius: 0;
+        horizontal = true;
+        prompt-text = " run: ";
+        min-input-width = 120;
+        result-spacing = 15;
 
-        color: ${theme.nord4};
-      }
+        font = "JetBrainsMono Nerd Font";
+        font-size = 10;
 
-      window#waybar {
-        background: ${theme.nord0};
-        color: ${theme.nord4};
-      }
+        text-color = theme.nord4;
+        background-color = theme.nord0;
+        selection-color = theme.nord8;
 
-      button:hover {
-        background: ${theme.nord2};
-        box-shadow: none;
-      }
-
-      #workspaces {
-        background: ${theme.nord0};
-        color: ${theme.nord4};
-      }
-
-      #workspaces button.active {
-        background: ${theme.nord10};
-      }
-
-      #workspaces button.urgent {
-        background: ${theme.nord11};
-      }
-
-      button {
-        padding: 0 5px;
-      }
-    '';
+        outline-width = 0;
+        border-width = 0;
+        padding-top = 4;
+        padding-bottom = 4;
+        padding-left = 0;
+        padding-right = 0;
+      };
+    };
   };
 
+
   home.packages = [
-    # Desktop Applications
-    pkgs.bemenu
     pkgs.hyprpaper
   ];
 }
