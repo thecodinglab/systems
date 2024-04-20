@@ -1,0 +1,11 @@
+--- a/share/applications/obsidian.desktop 1970-01-01 01:00:01.000000000 +0100
++++ b/share/applications/obsidian.desktop 2024-04-20 16:07:42.007864143 +0200
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Categories=Office
+ Comment=Knowledge base
+-Exec=obsidian %u
++Exec=obsidian --enable-features=UseOzonePlatform --ozone-platform=wayland %u
+ Icon=obsidian
+ MimeType=x-scheme-handler/obsidian
+ Name=Obsidian
