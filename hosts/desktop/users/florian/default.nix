@@ -1,4 +1,4 @@
-{ pkgs, home-manager, hyprland, hyprpaper, ... }:
+{ pkgs, home-manager, hyprland, hyprpaper, hypridle, hyprlock, ... }:
 {
   users.users.florian = {
     isNormalUser = true;
@@ -24,6 +24,8 @@
         users.florian = ({ ... }: {
           imports = [
             hyprpaper.homeManagerModules.hyprpaper
+            hypridle.homeManagerModules.hypridle
+            hyprlock.homeManagerModules.hyprlock
             ../../../../users/florian/configuration.nix
           ];
 
@@ -34,7 +36,7 @@
           };
         });
 
-        extraSpecialArgs = { inherit hyprland hyprpaper; };
+        extraSpecialArgs = { inherit hyprland; };
       };
     }
   ];

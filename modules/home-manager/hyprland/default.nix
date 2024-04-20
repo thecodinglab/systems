@@ -1,7 +1,8 @@
-{ pkgs, lib, hyprland, hyprpaper, ... }:
+{ config, pkgs, lib, hyprland, ... }:
 let
   mod = "SUPER";
   theme = import ../../../themes/nord;
+  lockscreenImageName = "Pictures/lockscreen.png";
 
   mkHyprColor = color:
     "rgb(" + lib.strings.removePrefix "#" color + ")";
@@ -117,15 +118,21 @@ lib.mkIf pkgs.stdenv.isLinux {
       };
 
       #########################
+      # Startup Programs      #
+      #########################
+
+      exec-once = [
+        "${lib.getExe pkgs._1password-gui} --silent"
+      ];
+
+      #########################
       # Keyboard Shortcuts    #
       #########################
 
       bind = [
-        # exit hyperland
         "${mod} ALT, Q, exit,"
-
-        # window actions
         "${mod} SHIFT, Q, killactive,"
+        "${mod} CONTROL, Q , exec, ${pkgs.systemd}/bin/loginctl lock-session"
 
         # application launcher
         "${mod}, D, exec, ${pkgs.tofi}/bin/tofi-drun --drun-launch=true"
@@ -215,6 +222,11 @@ lib.mkIf pkgs.stdenv.isLinux {
         "workspace special, class:^Spotify$"
       ];
     };
+  };
+
+  services.hypridle = {
+    enable = true;
+    lockCmd = lib.getExe pkgs.hyprlock;
   };
 
   programs = {
@@ -350,8 +362,32 @@ lib.mkIf pkgs.stdenv.isLinux {
         padding-right = 0;
       };
     };
+
+    hyprlock = {
+      enable = true;
+
+      backgrounds =
+        let
+          mkBackground = monitor: {
+            inherit monitor;
+
+            path = "${config.home.homeDirectory}/${lockscreenImageName}";
+            blur_size = 3;
+            blur_passes = 2;
+          };
+        in
+        [
+          (mkBackground "DP-5")
+          (mkBackground "DP-6")
+          (mkBackground "DP-7")
+        ];
+    };
   };
 
+  home.file.${lockscreenImageName} = {
+    enable = true;
+    source = ./lockscreen.png;
+  };
 
   home.packages = [
     pkgs.hyprpaper

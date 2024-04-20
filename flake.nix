@@ -44,12 +44,39 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, darwin, home-manager, neovim-config, terranix, hyprland, hyprpaper }:
+  outputs =
+    { self
+    , nixpkgs
+    , flake-utils
+    , darwin
+    , home-manager
+    , neovim-config
+    , terranix
+    , hyprland
+    , hyprpaper
+    , hypridle
+    , hyprlock
+    }@inputs:
     let
       specialArgs = {
-        inherit home-manager neovim-config hyprland hyprpaper;
+        inherit home-manager neovim-config;
+        inherit hyprland hyprpaper hypridle hyprlock;
       };
 
       containers = import ./hosts/containers inputs;
