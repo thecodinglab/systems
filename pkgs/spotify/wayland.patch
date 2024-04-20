@@ -1,0 +1,11 @@
+--- a/share/applications/spotify.desktop	2024-04-20 12:40:14.642098663 +0200
++++ b/share/applications/spotify.desktop  2024-04-20 12:40:40.006858532 +0200
+@@ -4,7 +4,7 @@
+ GenericName=Music Player
+ Icon=spotify-client
+ TryExec=spotify
+-Exec=spotify %U
++Exec=spotify --enable-features=UseOzonePlatform --ozone-platform=wayland %U
+ Terminal=false
+ MimeType=x-scheme-handler/spotify;
+ Categories=Audio;Music;Player;AudioVideo;

@@ -58,7 +58,11 @@
         nixosConfigurations = {
           desktop = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [ ./proprietary-packages.nix ./hosts/desktop/configuration.nix ];
+            modules = [
+              ./overlays.nix
+              ./proprietary-packages.nix
+              ./hosts/desktop/configuration.nix
+            ];
             inherit specialArgs;
           };
 
