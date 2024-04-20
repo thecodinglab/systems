@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hyprpaper, hypridle, hyprlock, ... }:
 let
   basePackages = lib.mkMerge [
     (with pkgs; [
@@ -74,6 +74,10 @@ let
 in
 {
   imports = [
+    hyprpaper.homeManagerModules.hyprpaper
+    hypridle.homeManagerModules.hypridle
+    hyprlock.homeManagerModules.hyprlock
+
     ../../modules/home-manager/direnv
     ../../modules/home-manager/fzf
     ../../modules/home-manager/git

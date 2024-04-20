@@ -1,4 +1,4 @@
-{ pkgs, home-manager, hyprland, hyprpaper, hypridle, hyprlock, ... }:
+{ inputs, pkgs, home-manager, ... }:
 {
   users.users.florian = {
     isNormalUser = true;
@@ -21,11 +21,10 @@
         useGlobalPkgs = true;
         useUserPackages = true;
 
+        extraSpecialArgs = inputs;
+
         users.florian = ({ ... }: {
           imports = [
-            hyprpaper.homeManagerModules.hyprpaper
-            hypridle.homeManagerModules.hypridle
-            hyprlock.homeManagerModules.hyprlock
             ../../../../users/florian/configuration.nix
           ];
 
@@ -36,8 +35,6 @@
             enableGaming = true;
           };
         });
-
-        extraSpecialArgs = { inherit hyprland; };
       };
     }
   ];

@@ -1,4 +1,4 @@
-{ home-manager, ... }: {
+{ inputs, home-manager, ... }: {
   users.users.florian = {
     name = "florian";
     home = "/Users/florian/";
@@ -12,6 +12,8 @@
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
+
+        extraSpecialArgs = inputs;
 
         users.florian = ({ ... }: {
           imports = [

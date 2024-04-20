@@ -75,8 +75,7 @@
     }@inputs:
     let
       specialArgs = {
-        inherit home-manager neovim-config;
-        inherit hyprland hyprpaper hypridle hyprlock;
+        inherit home-manager neovim-config inputs;
       };
 
       containers = import ./hosts/containers inputs;
