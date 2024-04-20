@@ -53,7 +53,7 @@ lib.mkIf pkgs.stdenv.isLinux {
       input = {
         kb_layout = "us";
         kb_variant = "altgr-intl";
-        kb_options = "compose:ralt";
+        kb_options = "compose:rwin";
 
         numlock_by_default = true;
 
