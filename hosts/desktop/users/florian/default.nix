@@ -32,6 +32,7 @@
           programs.default = {
             enable = true;
             enableDevelopment = true;
+            enablePhotography = true;
             enableGaming = true;
           };
         });

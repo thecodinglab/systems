@@ -62,6 +62,11 @@ let
     ])
   ];
 
+  photographyPackages = with pkgs; [
+    ffmpeg
+    exiftool
+  ];
+
   gamingPackages = with pkgs;[
     steam
     prismlauncher
@@ -86,6 +91,7 @@ in
     programs.default = {
       enable = lib.mkEnableOption "enable default packages";
       enableDevelopment = lib.mkEnableOption "enable development packages";
+      enablePhotography = lib.mkEnableOption "enable photography packages";
       enableGaming = lib.mkEnableOption "enable gaming packages";
     };
   };
@@ -96,6 +102,7 @@ in
     home.packages = lib.mkIf config.programs.default.enable (lib.mkMerge [
       basePackages
       (lib.mkIf config.programs.default.enableDevelopment devPackages)
+      (lib.mkIf config.programs.default.enablePhotography photographyPackages)
       (lib.mkIf config.programs.default.enableGaming gamingPackages)
     ]);
   };
