@@ -14,10 +14,15 @@
         ];
       };
 
-      cloudflare_record.hermes = lib.cloudflare.makeDNSRecord "hermes";
+      cloudflare_record = {
+        hermes = lib.cloudflare.makeDNSRecord "hermes";
+        uptime = lib.cloudflare.makeDNSRecord "uptime";
+      };
 
-      cloudflare_access_application.hermes =
-        lib.cloudflare.makeDefaultApplication "hermes";
+      cloudflare_access_application = {
+        hermes = lib.cloudflare.makeDefaultApplication "hermes";
+        uptime = lib.cloudflare.makeDefaultApplication "uptime";
+      };
 
       cloudflare_access_policy = {
         hermes-policy-home = lib.cloudflare.makeHomeBypassAccessPolicy {
@@ -26,6 +31,15 @@
         };
         hermes-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
           application_id = "\${cloudflare_access_application.hermes.id}";
+          precedence = "1";
+        };
+
+        uptime-policy-home = lib.cloudflare.makeHomeBypassAccessPolicy {
+          application_id = "\${cloudflare_access_application.uptime.id}";
+          precedence = "2";
+        };
+        uptime-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
+          application_id = "\${cloudflare_access_application.uptime.id}";
           precedence = "1";
         };
       };
@@ -80,6 +94,12 @@
           };
         };
 
+        "uptime.thecodinglab.ch" = {
+          locations."/" = {
+            proxyPass = "http://localhost:3001/";
+            recommendedProxySettings = true;
+          };
+        };
       } // import ../../../secrets/private-hosts.nix // (hermes.vhosts or { });
 
       vhosts = lib.mapAttrs (_: mergeBaseConfig) baseVHosts;
@@ -91,58 +111,66 @@
         firewall.allowedUDPPorts = [ 53 ];
       };
 
-      services.nginx = {
-        enable = true;
+      services = {
+        nginx = {
+          enable = true;
 
-        commonHttpConfig =
-          let
-            realIPsFromList = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
-            fileToList = (x: lib.strings.splitString "\n" (builtins.readFile x));
+          commonHttpConfig =
+            let
+              realIPsFromList = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
+              fileToList = (x: lib.strings.splitString "\n" (builtins.readFile x));
 
-            cfipv4 = fileToList (pkgs.fetchurl {
-              url = "https://www.cloudflare.com/ips-v4";
-              sha256 = "0ywy9sg7spafi3gm9q5wb59lbiq0swvf0q3iazl0maq1pj1nsb7h";
-            });
+              cfipv4 = fileToList (pkgs.fetchurl {
+                url = "https://www.cloudflare.com/ips-v4";
+                sha256 = "0ywy9sg7spafi3gm9q5wb59lbiq0swvf0q3iazl0maq1pj1nsb7h";
+              });
 
-            cfipv6 = fileToList (pkgs.fetchurl {
-              url = "https://www.cloudflare.com/ips-v6";
-              sha256 = "1ad09hijignj6zlqvdjxv7rjj8567z357zfavv201b9vx3ikk7cy";
-            });
-          in
-          ''
-            ${realIPsFromList cfipv4}
-            ${realIPsFromList cfipv6}
-            real_ip_header CF-Connecting-IP;
+              cfipv6 = fileToList (pkgs.fetchurl {
+                url = "https://www.cloudflare.com/ips-v6";
+                sha256 = "1ad09hijignj6zlqvdjxv7rjj8567z357zfavv201b9vx3ikk7cy";
+              });
+            in
+            ''
+              ${realIPsFromList cfipv4}
+              ${realIPsFromList cfipv6}
+              real_ip_header CF-Connecting-IP;
 
-            geo $local_address {
-              default 0;
-              192.168.1.0/24 1;
-            }
+              geo $local_address {
+                default 0;
+                192.168.1.0/24 1;
+                172.16.0.0/24 1;
+              }
+            '';
+
+
+          virtualHosts = vhosts;
+        };
+
+        bind = {
+          enable = true;
+
+          forwarders = [
+            "1.1.1.1"
+            "8.8.8.8"
+          ];
+
+          extraOptions = ''
+            allow-query-cache { any; };
+
+            response-policy { zone "rpz"; };
           '';
 
+          zones.rpz = {
+            master = true;
+            file = ./config/zone.dns;
+          };
+        };
 
-        virtualHosts = vhosts;
-      };
-
-      services.bind = {
-        enable = true;
-
-        forwarders = [
-          "1.1.1.1"
-          "8.8.8.8"
-        ];
-
-        extraOptions = ''
-          allow-query-cache { any; };
-
-          response-policy { zone "rpz"; };
-        '';
-
-        zones.rpz = {
-          master = true;
-          file = ./config/zone.dns;
+        uptime-kuma = {
+          enable = true;
         };
       };
+
 
       virtualisation.oci-containers.containers = {
         homarr = {
