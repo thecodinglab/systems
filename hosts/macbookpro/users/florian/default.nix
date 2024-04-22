@@ -28,6 +28,7 @@
             default = {
               enable = true;
               enableDevelopment = true;
+              enablePhotography = true;
             };
 
             alacritty.settings = {
