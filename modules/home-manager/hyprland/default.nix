@@ -395,5 +395,14 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   home.packages = [
     pkgs.hyprpaper
+
+    # Audio Control
+    pkgs.pulseaudio
+    pkgs.playerctl
+
+    # Font
+    (pkgs.nerdfonts.override {
+      fonts = [ "JetBrainsMono" ];
+    })
   ];
 }
