@@ -31,13 +31,6 @@
       };
     };
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
     hyprpaper = {
       url = "github:hyprwm/hyprpaper";
       inputs = {
@@ -68,7 +61,6 @@
     , home-manager
     , neovim-config
     , terranix
-    , hyprland
     , hyprpaper
     , hypridle
     , hyprlock

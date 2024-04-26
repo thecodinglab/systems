@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hyprland, ... }:
+{ config, pkgs, lib, ... }:
 let
   mod = "SUPER";
   theme = import ../../../themes/nord;
@@ -14,7 +14,6 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = hyprland.packages.${pkgs.system}.hyprland;
 
     settings = {
       env = [
