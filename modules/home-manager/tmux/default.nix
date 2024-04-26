@@ -23,8 +23,6 @@ in
     secureSocket = true;
     shortcut = "Space";
 
-    terminal = "xterm-kitty";
-
     plugins = with pkgs.tmuxPlugins; [
       nord
       yank
@@ -53,6 +51,10 @@ in
     ];
 
     extraConfig = lib.concatStringsSep "\n" [
+      # fix colors
+      ''
+        set-option -sa terminal-overrides ",xterm*:Tc"
+      ''
       # status bar length
       ''
         set -g status-left-length 80
