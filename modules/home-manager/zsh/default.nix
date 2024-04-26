@@ -22,7 +22,7 @@
         # show user and host in prompt
         ''RPS1="%F{cyan}%m%f $RPS1"''
 
-        (builtins.readFile ./scripts/nix-shell-indicator.sh)
+        (builtins.readFile ./scripts/nested-shell-indicator.sh)
       ];
     };
 
