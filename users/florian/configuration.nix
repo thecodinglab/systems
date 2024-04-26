@@ -21,6 +21,8 @@ let
       unzip
       ollama
 
+      nix-output-monitor
+
       # Build Tools
       gnumake
       cmake
