@@ -8,6 +8,10 @@ let
     "rgb(" + lib.strings.removePrefix "#" color + ")";
 in
 lib.mkIf pkgs.stdenv.isLinux {
+  home.sessionVariables = {
+    GDK_BACKEND = "wayland";
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.system}.hyprland;
