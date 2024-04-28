@@ -65,8 +65,11 @@ let
   ];
 
   photographyPackages = with pkgs; [
-    ffmpeg
     exiftool
+    ffmpeg
+    mpv
+
+    darktable
   ];
 
   gamingPackages = with pkgs;[
