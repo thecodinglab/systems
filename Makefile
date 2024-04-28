@@ -13,7 +13,7 @@ desktop:
 	nixos-rebuild switch --flake '.#desktop' |& nom
 
 macbookpro:
-	darwin-rebuild switch --flake '.#macbookpro' |& nom
+	darwin-rebuild switch --flake '.#macbookpro'
 
 server:
 	nixos-rebuild --build-host ${SSH_SERVER_HOST} --target-host ${SSH_SERVER_HOST} --use-remote-sudo switch --flake '.#server' |& nom
