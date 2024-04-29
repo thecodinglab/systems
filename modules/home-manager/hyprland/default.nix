@@ -138,7 +138,8 @@ lib.mkIf pkgs.stdenv.isLinux {
         "${mod} CONTROL, Q , exec, ${pkgs.systemd}/bin/loginctl lock-session"
 
         # application launcher
-        "${mod}, D, exec, ${pkgs.tofi}/bin/tofi-drun --drun-launch=true"
+        "${mod}, D, exec, ${pkgs.tofi}/bin/tofi-drun | xargs hyprctl dispatch exec --"
+        "${mod} SHIFT, D, exec, ${pkgs.tofi}/bin/tofi-run | xargs hyprctl dispatch exec --"
 
         # terminal
         "${mod}, RETURN, exec, ${lib.getExe pkgs.kitty}"
