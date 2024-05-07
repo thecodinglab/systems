@@ -1,13 +1,18 @@
-{ config, pkgs, lib, hyprpaper, hypridle, hyprlock, ... }:
+{ config, pkgs, lib, hyprpaper, hyprlock, ... }:
 let
   basePackages = lib.mkMerge [
-    (with pkgs; [
+    [
       # Desktop Applications
-      spotify
-      obsidian
+      pkgs.spotify
+      pkgs.obsidian
+    ]
+    (lib.mkIf pkgs.stdenv.isLinux [
+      pkgs.signal-desktop
+      pkgs.helvum
     ])
-    (lib.mkIf pkgs.stdenv.isLinux [ pkgs.signal-desktop ])
-    (lib.mkIf pkgs.stdenv.isDarwin [ pkgs.raycast ])
+    (lib.mkIf pkgs.stdenv.isDarwin [
+      pkgs.raycast
+    ])
   ];
 
   devPackages = lib.mkMerge [
@@ -60,27 +65,30 @@ let
     (lib.mkIf pkgs.stdenv.isLinux [
       # Desktop Applications
       pkgs.staruml
-      pkgs.smartgithg
     ])
   ];
 
-  photographyPackages = with pkgs; [
-    exiftool
-    ffmpeg
-    mpv
+  photographyPackages = lib.mkMerge [
+    [
+      pkgs.exiftool
+      pkgs.ffmpeg
+      pkgs.mpv
 
-    darktable
+      pkgs.darktable
+    ]
+    (lib.mkIf pkgs.stdenv.isLinux [
+      pkgs.imv
+    ])
   ];
 
-  gamingPackages = with pkgs;[
-    steam
-    prismlauncher
+  gamingPackages = [
+    pkgs.steam
+    pkgs.prismlauncher
   ];
 in
 {
   imports = [
     hyprpaper.homeManagerModules.hyprpaper
-    hypridle.homeManagerModules.hypridle
     hyprlock.homeManagerModules.hyprlock
 
     ../../modules/home-manager/direnv

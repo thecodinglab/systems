@@ -38,13 +38,6 @@
       };
     };
 
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
     hyprlock = {
       url = "github:hyprwm/hyprlock";
       inputs = {
@@ -54,17 +47,7 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , flake-utils
-    , darwin
-    , home-manager
-    , neovim-config
-    , terranix
-    , hyprpaper
-    , hypridle
-    , hyprlock
-    }@inputs:
+    { nixpkgs, flake-utils, darwin, home-manager, neovim-config, ... }@inputs:
     let
       specialArgs = {
         inherit home-manager neovim-config inputs;

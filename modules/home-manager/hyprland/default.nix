@@ -230,7 +230,26 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   services.hypridle = {
     enable = true;
-    lockCmd = lib.getExe pkgs.hyprlock;
+    settings = {
+      general = {
+        lock_cmd = lib.getExe pkgs.hyprlock;
+        after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+        ignore_dbus_inhibit = false;
+      };
+
+      listener = [
+        {
+          timeout = 900;
+          on-timeout = lib.getExe pkgs.hyprlock;
+        }
+        {
+          timeout = 1200;
+          on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
+          on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+        }
+      ];
+
+    };
   };
 
   programs = {
@@ -395,6 +414,11 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   home.packages = [
     pkgs.hyprpaper
+    pkgs.wl-clipboard
+
+    # Screenshot Utilities
+    pkgs.grim
+    pkgs.slurp
 
     # Audio Control
     pkgs.pulseaudio
