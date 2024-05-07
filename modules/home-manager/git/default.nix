@@ -21,10 +21,22 @@
       credential."https://gitlab.deepengine.io".helper = "${lib.getExe pkgs.glab} auth git-credential";
       credential."https://git.overleaf.com".helper = ''!f() { test "$1" = get && echo "password=$(op item get Overleaf --fields 'git auth token')"; }; f'';
     };
+
+    delta.enable = true;
   };
 
   programs.gpg = {
     enable = true;
     package = pkgs.gnupg;
+  };
+
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      git.paging = {
+        colorArg = "always";
+        pager = "${lib.getExe pkgs.delta} --dark --paging=never";
+      };
+    };
   };
 }
