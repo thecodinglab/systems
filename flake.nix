@@ -30,20 +30,6 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    hyprlock = {
-      url = "github:hyprwm/hyprlock";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
   };
 
   outputs =

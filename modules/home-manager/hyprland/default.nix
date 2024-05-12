@@ -388,22 +388,23 @@ lib.mkIf pkgs.stdenv.isLinux {
 
     hyprlock = {
       enable = true;
+      settings = {
+        background =
+          let
+            mkBackground = monitor: {
+              inherit monitor;
 
-      backgrounds =
-        let
-          mkBackground = monitor: {
-            inherit monitor;
-
-            path = "${config.home.homeDirectory}/${lockscreenImageName}";
-            blur_size = 3;
-            blur_passes = 2;
-          };
-        in
-        [
-          (mkBackground "DP-5")
-          (mkBackground "DP-6")
-          (mkBackground "DP-7")
-        ];
+              path = "${config.home.homeDirectory}/${lockscreenImageName}";
+              blur_size = 3;
+              blur_passes = 2;
+            };
+          in
+          [
+            (mkBackground "DP-5")
+            (mkBackground "DP-6")
+            (mkBackground "DP-7")
+          ];
+      };
     };
   };
 
@@ -413,7 +414,6 @@ lib.mkIf pkgs.stdenv.isLinux {
   };
 
   home.packages = [
-    pkgs.hyprpaper
     pkgs.wl-clipboard
 
     # Screenshot Utilities
