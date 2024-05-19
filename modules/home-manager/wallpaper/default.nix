@@ -12,6 +12,8 @@ in
   services.hyprpaper = lib.mkIf config.wayland.windowManager.hyprland.enable {
     enable = true;
     settings = {
+      splash = false;
+
       preload = [
         "~/${backgroundImageName}"
       ];
