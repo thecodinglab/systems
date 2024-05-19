@@ -1,15 +1,12 @@
 { pkgs, lib, ... }:
 let
-  tmux-nvim = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "tmux.nvim";
-    version = "unstable-2023-10-28";
-    src = pkgs.fetchFromGitHub {
-      owner = "aserowy";
-      repo = "tmux.nvim";
-      rev = "ea67d59721eb7e12144ce2963452e869bfd60526";
-      hash = "sha256-/2flPlSrXDcNYS5HJjf8RbrgmysHmNVYYVv8z3TLFwg=";
-    };
-  };
+  tmux-nvim = pkgs.tmuxPlugins.mkTmuxPlugin (
+    let pkg = pkgs.vimPlugins.tmux-nvim; in {
+      pluginName = "tmux.nvim";
+      version = pkg.version;
+      src = pkg.src;
+    }
+  );
 in
 {
   imports = [ ../fzf ];
@@ -23,18 +20,18 @@ in
     secureSocket = true;
     shortcut = "Space";
 
-    plugins = with pkgs.tmuxPlugins; [
-      nord
-      yank
-      sensible
+    plugins = [
+      pkgs.tmuxPlugins.nord
+      pkgs.tmuxPlugins.yank
+      pkgs.tmuxPlugins.sensible
       {
-        plugin = resurrect;
+        plugin = pkgs.tmuxPlugins.resurrect;
         extraConfig = ''
           set -g @resurrect-strategy-nvim 'session'
         '';
       }
       {
-        plugin = continuum;
+        plugin = pkgs.tmuxPlugins.continuum;
         extraConfig = ''
           set -g @continuum-restore 'on'
           set -g @continuum-save-interval '60' # minutes
@@ -45,7 +42,7 @@ in
         extraConfig = ''
           set -g @tmux-nvim-navigation true
           set -g @tmux-nvim-navigation-cycle false
-          set -g @tmux-nvim-resize false
+          set -g @tmux-nvim-resize true
         '';
       }
     ];
@@ -60,7 +57,7 @@ in
         set -g status-left-length 80
         set -g status-right-length 80
       ''
-      # general options options
+      # general options
       ''
         set-option -g renumber-windows on
         set -g main-pane-height 80%

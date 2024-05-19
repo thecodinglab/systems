@@ -13,14 +13,11 @@
         ip = "ip --color=auto";
       };
 
-      oh-my-zsh = {
-        enable = true;
-        theme = "robbyrussell";
-      };
-
       initExtra = builtins.concatStringsSep "\n" [
-        # show user and host in prompt
-        ''RPS1="%F{cyan}%m%f $RPS1"''
+        ''
+          PROMPT="%(?:%F{green}%1{➜%}:%F{red}%1{➜%}) %F{cyan}%~%f "
+          RPS1="%F{cyan}%n@%m%f $RPS1"
+        ''
 
         (builtins.readFile ./scripts/nested-shell-indicator.sh)
       ];

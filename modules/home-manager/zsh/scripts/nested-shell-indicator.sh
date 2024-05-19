@@ -6,10 +6,10 @@ fi
 
 function nested_shell_indicator() {
   if [ "$SHELL_DEPTH" -eq 1 ]; then
-    echo " ";
+    echo "";
   elif [ "$SHELL_DEPTH" -gt 1 ]; then
-    echo " (${SHELL_DEPTH}x) ";
+    echo " (${SHELL_DEPTH}x)";
   fi
 }
 
-RPS1="%F{yellow}%b$(nested_shell_indicator)%f$RPS1"
+RPS1="%F{yellow}$(nested_shell_indicator)%f $RPS1"
