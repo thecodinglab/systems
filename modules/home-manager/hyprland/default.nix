@@ -408,6 +408,11 @@ lib.mkIf pkgs.stdenv.isLinux {
     };
   };
 
+  home.pointerCursor = {
+    name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors;
+  };
+
   home.file.${lockscreenImageName} = {
     enable = true;
     source = ./lockscreen.png;
