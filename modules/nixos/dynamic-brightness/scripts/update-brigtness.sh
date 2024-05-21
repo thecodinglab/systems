@@ -30,7 +30,7 @@ BRIGHTNESS=$((BRIGHTNESS < MIN_BRIGHTNESS ? MIN_BRIGHTNESS : BRIGHTNESS))
 BRIGHTNESS=$((BRIGHTNESS > MAX_BRIGHTNESS ? MAX_BRIGHTNESS : BRIGHTNESS))
 
 for MONITOR in $(ddcutil detect --terse | grep I2C | sed -e 's/.*-//'); do
-  ddcutil -b $MONITOR --async setvcp 10 $BRIGHTNESS &
+  ddcutil -b $MONITOR setvcp 10 $BRIGHTNESS
 done
 
 wait

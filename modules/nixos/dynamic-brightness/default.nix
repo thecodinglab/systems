@@ -20,7 +20,8 @@
     enable = true;
 
     timerConfig = {
-      OnCalendar = "*-*-* *:*:00";
+      OnCalendar = "*-*-* *:0/5:00";
+      OnUnitInactiveSec = 3600;
       Unit = "dynamic-brightness.service";
     };
 
