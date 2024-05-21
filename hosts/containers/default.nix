@@ -53,7 +53,7 @@ let
       {
         terraform.required_providers.incus = {
           source = "lxc/incus";
-          version = "0.0.2";
+          version = "0.1.1";
         };
 
         provider.incus = { };
@@ -62,7 +62,7 @@ let
       {
         terraform.required_providers.cloudflare = {
           source = "cloudflare/cloudflare";
-          version = "4.21.0";
+          version = "4.33.0";
         };
 
         provider.cloudflare = {
