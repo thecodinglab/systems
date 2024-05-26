@@ -228,27 +228,126 @@ lib.mkIf pkgs.stdenv.isLinux {
     };
   };
 
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        lock_cmd = lib.getExe pkgs.hyprlock;
-        after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
-        ignore_dbus_inhibit = false;
+  services = {
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = lib.getExe pkgs.hyprlock;
+          after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+        };
+
+        listener = [
+          {
+            timeout = 900;
+            on-timeout = lib.getExe pkgs.hyprlock;
+          }
+          {
+            timeout = 1200;
+            on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
+            on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+          }
+        ];
+
       };
+    };
 
-      listener = [
-        {
-          timeout = 900;
-          on-timeout = lib.getExe pkgs.hyprlock;
-        }
-        {
-          timeout = 1200;
-          on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
-          on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
-        }
-      ];
+    dunst = {
+      enable = true;
 
+      settings = {
+        global = {
+          ### Display ###
+
+          monitor = "0";
+          follow = "mouse";
+
+          ### Geometry ###
+
+          origin = "top-center";
+          offset = "0x50";
+          height = "300";
+
+          padding = "8";
+          horizontal_padding = "10";
+          text_icon_padding = "0";
+          corner_radius = "16";
+
+          ### Color ###
+
+          separator_height = "1";
+          separator_color = "frame";
+
+          frame_width = "2";
+          frame_color = theme.nord5;
+
+          sort = "yes";
+          idle_threshold = "120";
+
+          ### Text ###
+
+          font = "JetBrainsMono Nerd Font 10";
+          line_height = "0";
+
+          format = "<b>%a</b> %s %p\n%b";
+          markup = "full";
+
+          alignment = "left";
+          vertical_alignment = "center";
+
+          show_age_threshold = "60";
+          ellipsize = "middle";
+
+          ignore_newline = "no";
+
+          stack_duplicates = "true";
+          hide_duplicate_count = "false";
+          show_indicators = "yes";
+
+          ### Icons ###
+
+          icon_position = "left";
+          min_icon_size = "0";
+          max_icon_size = "64";
+
+          ### History ###
+
+          sticky_history = "yes";
+          history_length = "20";
+
+          ### Misc/Advanced ###
+
+          always_run_script = "true";
+          ignore_dbusclose = "false";
+
+          ### Mouse ###
+
+          mouse_left_click = "close_current";
+          mouse_middle_click = "do_action, close_current";
+          mouse_right_click = "close_all";
+        };
+
+        experimental.per_monitor_dpi = "false";
+
+        urgency_low = {
+          background = theme.nord0;
+          foreground = theme.nord4;
+          timeout = "10";
+        };
+
+        urgency_normal = {
+          background = theme.nord0;
+          foreground = theme.nord4;
+          timeout = "10";
+        };
+
+        urgency_critical = {
+          background = theme.nord0;
+          foreground = theme.nord11;
+          timeout = "0";
+        };
+      };
     };
   };
 
