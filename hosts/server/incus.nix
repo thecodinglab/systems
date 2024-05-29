@@ -1,17 +1,7 @@
-{ config, lib, pkgs, ... }: {
+{ lib, ... }: {
   services.lvm = {
     enable = true;
     boot.thin.enable = true;
-  };
-
-  systemd.services.incus = {
-    # the base incus configuration is missing the lvm command line interface
-    path =
-      lib.optional config.services.lvm.enable config.services.lvm.package ++
-      lib.optional config.networking.nftables.enable pkgs.nftables;
-
-    # the default timeout is way too low
-    serviceConfig.TimeoutStopSeconds = lib.mkForce "3m";
   };
 
   virtualisation.incus = {

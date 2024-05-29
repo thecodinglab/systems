@@ -1,7 +1,7 @@
 { pkgs, lib, ... }: {
   programs.hyprland = {
     enable = true;
-    xwayland.enable = false;
+    xwayland.enable = true;
   };
 
   services.greetd = {

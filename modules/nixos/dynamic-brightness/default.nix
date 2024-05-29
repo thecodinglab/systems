@@ -20,11 +20,13 @@
     enable = true;
 
     timerConfig = {
+      Unit = "dynamic-brightness.service";
       OnCalendar = "*-*-* *:0/5:00";
       Persistent = true;
-      Unit = "dynamic-brightness.service";
     };
 
     wantedBy = [ "timers.target" ];
   };
+
+  hardware.i2c.enable = true;
 }

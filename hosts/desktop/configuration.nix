@@ -6,7 +6,6 @@
     [
       # System
       ./hardware.nix
-      ./security.nix
 
       ../../modules/nixos/base
       ../../modules/nixos/hyprland
@@ -64,22 +63,50 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   #######################
+  # Limits              #
+  #######################
+
+  security.pam.loginLimits = [
+    { domain = "*"; type = "soft"; item = "nofile"; value = "unlimited"; }
+  ];
+
+  #######################
   # Networking          #
   #######################
 
-  networking.hostName = "florian-nixos";
+  networking = {
+    useDHCP = false;
+    hostName = "florian-nixos";
 
-  networking.wireless =
-    let
-      pskPath = ../../secrets/wireless_psk.txt;
-      pskExists = builtins.pathExists pskPath;
-    in
-    {
-      enable = pskExists;
-      networks = lib.mkIf pskExists {
-        Privat.pskRaw = builtins.readFile pskPath;
-      };
+    interfaces = {
+      enp14s0.useDHCP = true;
+      wlp15s0.useDHCP = true;
     };
+
+    wireless =
+      let
+        pskPath = ../../secrets/wireless_psk.txt;
+        pskExists = builtins.pathExists pskPath;
+      in
+      {
+        enable = pskExists;
+        networks = lib.mkIf pskExists {
+          Privat.pskRaw = builtins.readFile pskPath;
+        };
+      };
+
+    nftables.enable = true;
+
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [
+        22 # ssh
+        5201 # iperf
+      ];
+      allowedUDPPorts = [ ];
+    };
+  };
+
 
   #######################
   # Services            #
@@ -88,6 +115,7 @@
   services = {
     dbus.enable = true;
     avahi.enable = true;
+    gnome.gnome-keyring.enable = true;
 
     printing = {
       enable = true;
@@ -110,5 +138,8 @@
       qutebrowser
     ];
   };
-}
 
+  hardware.bluetooth = {
+    enable = true;
+  };
+}

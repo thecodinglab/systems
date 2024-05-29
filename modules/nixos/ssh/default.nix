@@ -6,6 +6,4 @@
       AcceptEnv TMUX
     '';
   };
-
-  programs.ssh.startAgent = true;
 }

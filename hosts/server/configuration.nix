@@ -29,8 +29,6 @@
 
   console.font = "Lat2-Terminus16";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
   security.sudo = {
     wheelNeedsPassword = false;
     execWheelOnly = true;
@@ -48,7 +46,7 @@
   #######################
 
   networking = {
-    useDHCP = true;
+    useDHCP = false;
     hostName = "server";
 
     interfaces.eno1 = {
@@ -61,20 +59,18 @@
       };
     };
 
-    # use nftables firewall instead of iptables
     nftables.enable = true;
 
     firewall = {
       enable = true;
       allowedTCPPorts = [
+        22 # ssh
         8443 # incus api
       ];
       allowedUDPPorts = [ ];
 
       trustedInterfaces = [ "eno2" ];
     };
-
-    dhcpcd.denyInterfaces = [ "veth*" ];
   };
 
   #######################
