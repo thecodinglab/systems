@@ -27,10 +27,8 @@
   boot.isContainer = true;
 
   networking = {
-    # use nftables firewall instead of iptables
     nftables.enable = true;
-
-    firewall.enable = true;
+    firewall.enable = false;
   };
 
   environment.systemPackages = [

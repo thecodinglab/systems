@@ -105,11 +105,7 @@
       vhosts = lib.mapAttrs (_: mergeBaseConfig) baseVHosts;
     in
     {
-      networking = {
-        hostName = "hermes";
-        firewall.allowedTCPPorts = [ 443 ];
-        firewall.allowedUDPPorts = [ 53 ];
-      };
+      networking.hostName = "hermes";
 
       services = {
         nginx = {

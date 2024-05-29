@@ -75,10 +75,7 @@
     let
     in
     {
-      networking = {
-        hostName = "poseidon";
-        firewall.allowedTCPPorts = [ 2049 ];
-      };
+      networking.hostName = "poseidon";
 
       fileSystems = {
         "/export/share" = {
@@ -141,7 +138,6 @@
         samba = {
           enable = true;
           securityType = "user";
-          openFirewall = true;
 
           extraConfig = ''
             server string = poseidon
@@ -190,7 +186,6 @@
 
         avahi = {
           enable = true;
-          openFirewall = true;
 
           publish = {
             enable = true;

@@ -47,13 +47,7 @@
   });
 
   system = ({ ... }: {
-    networking = {
-      hostName = "hestia";
-      firewall = {
-        allowedTCPPorts = [ ];
-        allowedUDPPorts = [ ];
-      };
-    };
+    networking.hostName = "hestia";
 
     systemd.timers.podman-auto-update = {
       timerConfig = {
@@ -170,7 +164,6 @@
 
     services.home-assistant = {
       enable = true;
-      openFirewall = true;
 
       extraComponents = [
         "hue"

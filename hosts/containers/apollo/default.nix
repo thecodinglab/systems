@@ -72,13 +72,7 @@
       gid = 1000;
     in
     {
-      networking = {
-        hostName = "apollo";
-        firewall = {
-          allowedTCPPorts = [ 80 32400 8324 32469 ];
-          allowedUDPPorts = [ 1900 5353 32410 32412 32413 32414 ];
-        };
-      };
+      networking.hostName = "apollo";
 
       services.nginx = {
         enable = true;
@@ -152,14 +146,12 @@
         enable = true;
         user = "media";
         group = "media";
-        openFirewall = true;
       };
 
       services.tautulli = {
         enable = true;
         user = "media";
         group = "media";
-        openFirewall = true;
       };
 
       systemd.timers.podman-auto-update = {
