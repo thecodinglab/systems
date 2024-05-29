@@ -4,16 +4,30 @@
     lfs.enable = true;
 
     userName = "Florian Walter";
-    userEmail = "nairolf.retlaw@gmail.com";
+    userEmail = "fw@florian-walter.ch";
 
     signing = {
-      key = null;
+      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG";
       signByDefault = true;
     };
 
     extraConfig = {
       init.defaultBranch = "main";
       pull.rebase = "true";
+
+      gpg = {
+        format = "ssh";
+        ssh = {
+          program = lib.getExe' pkgs._1password-gui "op-ssh-sign";
+          allowedSignersFile =
+            let
+              allowedSigners = pkgs.writeText "git-ssh-allowed-signers" ''
+                fw@florian-walter.ch ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG
+              '';
+            in
+            "${allowedSigners}";
+        };
+      };
 
       credential."https://github.com".helper = "${lib.getExe pkgs.gh} auth git-credential";
       credential."https://gist.github.com".helper = "${lib.getExe pkgs.gh} auth git-credential";
