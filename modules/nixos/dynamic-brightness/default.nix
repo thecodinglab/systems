@@ -21,7 +21,7 @@
 
     timerConfig = {
       OnCalendar = "*-*-* *:0/5:00";
-      OnUnitInactiveSec = 3600;
+      Persistent = true;
       Unit = "dynamic-brightness.service";
     };
 
