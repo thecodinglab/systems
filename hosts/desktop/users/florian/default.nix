@@ -5,6 +5,7 @@
     extraGroups = [
       "wheel"
       "docker"
+      "libvirtd"
       "i2c" # required for dynamic-brightness service (i.e. ddcutil)
     ];
     initialPassword = "changeme";

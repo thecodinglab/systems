@@ -9,8 +9,9 @@
       ./security.nix
 
       ../../modules/nixos/base
-      ../../modules/nixos/nvidia
       ../../modules/nixos/hyprland
+      ../../modules/nixos/nvidia
+      ../../modules/nixos/virt
 
       ../../modules/nixos/1password
       ../../modules/nixos/audio
@@ -106,6 +107,7 @@
     systemPackages = with pkgs; [
       brave
       firefox-devedition
+      qutebrowser
     ];
   };
 }
