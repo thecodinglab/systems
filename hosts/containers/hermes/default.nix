@@ -171,11 +171,24 @@
         };
       };
 
+      systemd.timers.podman-auto-update = {
+        timerConfig = {
+          Unit = "podman-auto-update.service";
+          OnCalendar = "Mon 02:00";
+          Persistent = true;
+        };
+        wantedBy = [ "timers.target" ];
+      };
 
       virtualisation.oci-containers.containers = {
         homarr = {
           autoStart = true;
           image = "ghcr.io/ajnart/homarr:latest";
+
+          labels = {
+            "io.containers.autoupdate" = "registry";
+          };
+
           ports = [
             "127.0.0.1:7575:7575"
           ];

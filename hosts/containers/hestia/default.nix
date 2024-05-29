@@ -55,12 +55,24 @@
       };
     };
 
+    systemd.timers.podman-auto-update = {
+      timerConfig = {
+        Unit = "podman-auto-update.service";
+        OnCalendar = "Mon 02:00";
+        Persistent = true;
+      };
+      wantedBy = [ "timers.target" ];
+    };
 
     virtualisation.oci-containers.containers = {
       teslamate-core = {
         hostname = "teslamate-core";
-        image = "teslamate/teslamate:latest";
+        image = "docker.io/teslamate/teslamate:latest";
         autoStart = true;
+
+        labels = {
+          "io.containers.autoupdate" = "registry";
+        };
 
         dependsOn = [
           "teslamate-postgres"
@@ -84,8 +96,12 @@
 
       teslamate-postgres = {
         hostname = "teslamate-postgres";
-        image = "postgres:15";
+        image = "docker.io/postgres:15";
         autoStart = true;
+
+        labels = {
+          "io.containers.autoupdate" = "registry";
+        };
 
         environment = {
           POSTGRES_USER = "teslamate";
@@ -103,10 +119,14 @@
 
       teslamate-grafana = {
         hostname = "teslamate-grafana";
-        image = "teslamate/grafana:latest";
+        image = "docker.io/teslamate/grafana:latest";
         autoStart = true;
 
         dependsOn = [ "teslamate-postgres" ];
+
+        labels = {
+          "io.containers.autoupdate" = "registry";
+        };
 
         environment = {
           DATABASE_USER = "teslamate";
@@ -129,9 +149,13 @@
 
       teslamate-mqtt = {
         hostname = "teslamate-mqtt";
-        image = "eclipse-mosquitto:2";
+        image = "docker.io/eclipse-mosquitto:2";
         cmd = [ "mosquitto" "-c" "/mosquitto-no-auth.conf" ];
         autoStart = true;
+
+        labels = {
+          "io.containers.autoupdate" = "registry";
+        };
 
         volumes = [
           "teslamate-misquitto-config:/mosquitto/config"

@@ -162,11 +162,24 @@
         openFirewall = true;
       };
 
+      systemd.timers.podman-auto-update = {
+        timerConfig = {
+          Unit = "podman-auto-update.service";
+          OnCalendar = "Mon 02:00";
+          Persistent = true;
+        };
+        wantedBy = [ "timers.target" ];
+      };
+
       virtualisation.oci-containers.containers =
         let
           makeLinuxserverContainer = ({ name, image, port, volumes }: {
             autoStart = true;
-            image = "linuxserver/${image}";
+            image = "docker.io/linuxserver/${image}";
+
+            labels = {
+              "io.containers.autoupdate" = "registry";
+            };
 
             environment = {
               TZ = "Europe/Zurich";
