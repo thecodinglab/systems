@@ -88,6 +88,9 @@ let
 in
 {
   imports = [
+    ../../themes/nord/modules/home-manager
+    ../../themes/catppuccin/modules/home-manager
+
     ../../modules/home-manager/direnv
     ../../modules/home-manager/fzf
     ../../modules/home-manager/git
@@ -112,6 +115,8 @@ in
 
   config = {
     home.stateVersion = "23.11";
+
+    catppuccin.enable = true;
 
     home.packages = lib.mkIf config.programs.default.enable (lib.mkMerge [
       basePackages

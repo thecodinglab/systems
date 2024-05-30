@@ -8,7 +8,7 @@
       size = lib.mkDefault 11;
     };
 
-    settings = (import ./theme.nix) // {
+    settings = {
       clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";
 
       allow_remote_control = "socket-only";

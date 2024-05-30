@@ -21,7 +21,6 @@ in
     shortcut = "Space";
 
     plugins = [
-      pkgs.tmuxPlugins.nord
       pkgs.tmuxPlugins.yank
       pkgs.tmuxPlugins.sensible
       {
