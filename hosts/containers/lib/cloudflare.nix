@@ -45,7 +45,7 @@ rec {
   makeGithubAllowancePolicy = ({ application_id, precedence }:
     let
       auth = {
-        email = [ "nairolf.retlaw@gmail.com" ];
+        email = [ "fw@florian-walter.ch" ];
         login_method = [ self.cloudflare.access_github_login_method_id ];
       };
     in

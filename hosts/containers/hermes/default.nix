@@ -199,7 +199,7 @@
       security.acme = {
         acceptTerms = true;
         defaults = {
-          email = "nairolf.retlaw@gmail.com";
+          email = "fw@florian-walter.ch";
           dnsProvider = "cloudflare";
           credentialsFile = pkgs.writeText "cloudflare-credentials"
             (builtins.readFile ../../../secrets/acme-cloudflare.env);
