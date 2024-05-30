@@ -1,4 +1,4 @@
-{ inputs, pkgs, home-manager, ... }:
+{ pkgs, ... }:
 {
   users.users.florian = {
     isNormalUser = true;
@@ -13,30 +13,25 @@
     shell = pkgs.zsh;
   };
 
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+
+    users.florian = ({ ... }: {
+      imports = [
+        ../../../../users/florian/configuration.nix
+      ];
+
+      programs.default = {
+        enable = true;
+        enableDevelopment = true;
+        enablePhotography = true;
+        enableGaming = true;
+      };
+    });
+  };
+
   imports = [
     (import ../../../../modules/common/ssh/authorized-keys.nix "florian")
-
-    home-manager.nixosModules.home-manager
-    {
-      home-manager = {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-
-        extraSpecialArgs = inputs;
-
-        users.florian = ({ ... }: {
-          imports = [
-            ../../../../users/florian/configuration.nix
-          ];
-
-          programs.default = {
-            enable = true;
-            enableDevelopment = true;
-            enablePhotography = true;
-            enableGaming = true;
-          };
-        });
-      };
-    }
   ];
 }

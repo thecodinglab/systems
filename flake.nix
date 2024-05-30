@@ -36,8 +36,13 @@
     { nixpkgs, flake-utils, darwin, home-manager, neovim-config, ... }@inputs:
     let
       specialArgs = {
-        inherit home-manager neovim-config inputs;
+        inherit neovim-config;
       };
+
+      baseModules = [
+        ./overlays.nix
+        ./proprietary-packages.nix
+      ];
 
       containers = import ./hosts/containers inputs;
 
@@ -45,9 +50,8 @@
         nixosConfigurations = {
           desktop = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [
-              ./overlays.nix
-              ./proprietary-packages.nix
+            modules = baseModules ++ [
+              home-manager.nixosModules.home-manager
               ./hosts/desktop/configuration.nix
             ];
             inherit specialArgs;
@@ -55,8 +59,8 @@
 
           server = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-            modules = [
-              ./overlays.nix
+            modules = baseModules ++ [
+              home-manager.nixosModules.home-manager
               ./hosts/server/configuration.nix
             ];
             inherit specialArgs;
@@ -66,9 +70,8 @@
         darwinConfigurations = {
           macbookpro = darwin.lib.darwinSystem {
             system = "aarch64-darwin";
-            modules = [
-              ./overlays.nix
-              ./proprietary-packages.nix
+            modules = baseModules ++ [
+              home-manager.darwinModules.home-manager
               ./hosts/macbookpro
             ];
             inherit specialArgs;
