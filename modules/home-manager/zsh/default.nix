@@ -16,7 +16,7 @@
       initExtra = builtins.concatStringsSep "\n" [
         ''
           PROMPT="%(?:%F{green}%1{➜%}:%F{red}%1{➜%}) %F{cyan}%~%f "
-          RPS1="%F{cyan}%n@%m%f $RPS1"
+          RPS1="%F{cyan}%n@%m%f"
         ''
 
         (builtins.readFile ./scripts/nested-shell-indicator.sh)
