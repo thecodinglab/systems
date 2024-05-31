@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, stdenv, ... }: {
   programs.git = {
     enable = true;
     lfs.enable = true;
@@ -18,7 +18,10 @@
       gpg = {
         format = "ssh";
         ssh = {
-          program = lib.getExe' pkgs._1password-gui "op-ssh-sign";
+          program =
+            if stdenv.isDarwin
+            then "${pkgs._1password-gui}/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+            else lib.getExe' pkgs._1password-gui "op-ssh-sign";
           allowedSignersFile =
             let
               allowedSigners = pkgs.writeText "git-ssh-allowed-signers" ''
