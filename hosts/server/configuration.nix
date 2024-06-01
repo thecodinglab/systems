@@ -66,6 +66,7 @@
       allowedTCPPorts = [
         22 # ssh
         8443 # incus api
+        5201 # iperf
       ];
       allowedUDPPorts = [ ];
 
@@ -78,5 +79,8 @@
   #######################
 
   programs.zsh.enable = true;
-  environment.shells = [ pkgs.zsh ];
+  environment = {
+    systemPackages = [ pkgs.iperf ];
+    shells = [ pkgs.zsh ];
+  };
 }
