@@ -8,6 +8,7 @@ let
     ]
     (lib.mkIf pkgs.stdenv.isLinux [
       pkgs.signal-desktop
+      pkgs.protonmail-desktop
       pkgs.helvum
     ])
     (lib.mkIf pkgs.stdenv.isDarwin [
