@@ -1,0 +1,125 @@
+{
+  "pins": {
+    "btop": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "btop"
+      },
+      "branch": "main",
+      "revision": "21b8d5956a8b07fa52519e3267fb3a2d2e693d17",
+      "url": "https://github.com/catppuccin/btop/archive/21b8d5956a8b07fa52519e3267fb3a2d2e693d17.tar.gz",
+      "hash": "1hdh78314axpz96qvnl7dkgjd3b7sjq0l8k5h1iwir1mjz596xsi"
+    },
+    "delta": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "delta"
+      },
+      "branch": "main",
+      "revision": "765eb17d0268bf07c20ca439771153f8bc79444f",
+      "url": "https://github.com/catppuccin/delta/archive/765eb17d0268bf07c20ca439771153f8bc79444f.tar.gz",
+      "hash": "00pmg2rbzsrf2k0l6d7m5394i7klvk41h6xhv8c3v56rhvv2f38q"
+    },
+    "dunst": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "dunst"
+      },
+      "branch": "main",
+      "revision": "bfec91a5d0ab02a73a4615243feb5499d376831c",
+      "url": "https://github.com/catppuccin/dunst/archive/bfec91a5d0ab02a73a4615243feb5499d376831c.tar.gz",
+      "hash": "0q3p4r3in22r3bj7npk7ww5hd14p3gwch2iqxi7sjf3bj077sby7"
+    },
+    "hyprland": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "hyprland"
+      },
+      "branch": "main",
+      "revision": "b57375545f5da1f7790341905d1049b1873a8bb3",
+      "url": "https://github.com/catppuccin/hyprland/archive/b57375545f5da1f7790341905d1049b1873a8bb3.tar.gz",
+      "hash": "1vz0xbj26qb1vvzi18b5wrdla042vdyd3l4m98h7ay0fwydajfjx"
+    },
+    "kitty": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "kitty"
+      },
+      "branch": "main",
+      "revision": "1f99e6682d84fe4d8e3177d3add8d0591607a2ac",
+      "url": "https://github.com/catppuccin/kitty/archive/1f99e6682d84fe4d8e3177d3add8d0591607a2ac.tar.gz",
+      "hash": "1sfjwvn6xwc882mzv9nhb8wsw3q4kapypq7gh1dkq3jqcjc717b3"
+    },
+    "lazygit": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "lazygit"
+      },
+      "branch": "main",
+      "revision": "16dcbfcc5408acc947769df984073fe1600db839",
+      "url": "https://github.com/catppuccin/lazygit/archive/16dcbfcc5408acc947769df984073fe1600db839.tar.gz",
+      "hash": "0v3brd35giqr8977vbdm4551xk2h9fly2bfzx6slknr4nwmqlswf"
+    },
+    "palette": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "palette"
+      },
+      "branch": "main",
+      "revision": "d89c0b31e707b21c869df83d0f4b04b852864074",
+      "url": "https://github.com/catppuccin/palette/archive/d89c0b31e707b21c869df83d0f4b04b852864074.tar.gz",
+      "hash": "12x3w2216drd6bw4w8xng28kfagdnh6m0yllrc5szifn5xf9spwb"
+    },
+    "tofi": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "tofi"
+      },
+      "branch": "main",
+      "revision": "d6106461867c077a5e1d25236e02b7be7c83839e",
+      "url": "https://github.com/catppuccin/tofi/archive/d6106461867c077a5e1d25236e02b7be7c83839e.tar.gz",
+      "hash": "0hfa7jmr83h5m89mv5bzmd0wnq7819g5433wnj2ahyw2kg8yvfxs"
+    },
+    "waybar": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "waybar"
+      },
+      "branch": "main",
+      "revision": "0830796af6aa64ce8bc7453d42876a628777ac68",
+      "url": "https://github.com/catppuccin/waybar/archive/0830796af6aa64ce8bc7453d42876a628777ac68.tar.gz",
+      "hash": "0np88b9zi6zk21fy5w4kmgjg1clqp4ggw1hijlv9qvlka2zkwmpn"
+    },
+    "zathura": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "zathura"
+      },
+      "branch": "main",
+      "revision": "0adc53028d81bf047461bc61c43a484d11b15220",
+      "url": "https://github.com/catppuccin/zathura/archive/0adc53028d81bf047461bc61c43a484d11b15220.tar.gz",
+      "hash": "1cj1z2bh1qw1sbgqmk4i450yv7rgwcz06yhar23ccadsx22gzw7y"
+    }
+  },
+  "version": 3
+}

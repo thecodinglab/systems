@@ -12,8 +12,6 @@
 
     systemPackages = [
       pkgs.coreutils
-      pkgs.htop
-
       pkgs.neovim
     ];
   };

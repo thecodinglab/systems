@@ -1,11 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   mod = "SUPER";
-  theme = import ../../../themes/nord;
   lockscreenImageName = "Pictures/lockscreen.png";
-
-  mkHyprColor = color:
-    "rgb(" + lib.strings.removePrefix "#" color + ")";
 in
 lib.mkIf pkgs.stdenv.isLinux {
   home.sessionVariables = {
@@ -83,8 +79,6 @@ lib.mkIf pkgs.stdenv.isLinux {
         gaps_out = 20;
 
         border_size = 2;
-        "col.active_border" = mkHyprColor theme.hex.nord10;
-        "col.inactive_border" = mkHyprColor theme.hex.nord0;
 
         layout = "dwindle";
       };
@@ -280,7 +274,6 @@ lib.mkIf pkgs.stdenv.isLinux {
           separator_color = "frame";
 
           frame_width = "2";
-          frame_color = theme.hex.nord5;
 
           sort = "yes";
           idle_threshold = "120";
@@ -330,23 +323,9 @@ lib.mkIf pkgs.stdenv.isLinux {
 
         experimental.per_monitor_dpi = "false";
 
-        urgency_low = {
-          background = theme.hex.nord0;
-          foreground = theme.hex.nord4;
-          timeout = "10";
-        };
-
-        urgency_normal = {
-          background = theme.hex.nord0;
-          foreground = theme.hex.nord4;
-          timeout = "10";
-        };
-
-        urgency_critical = {
-          background = theme.hex.nord0;
-          foreground = theme.hex.nord11;
-          timeout = "0";
-        };
+        urgency_low.timeout = "10";
+        urgency_normal.timeout = "10";
+        urgency_critical.timeout = "0";
       };
     };
   };
@@ -416,45 +395,6 @@ lib.mkIf pkgs.stdenv.isLinux {
           };
         };
       };
-
-      style = ''
-        * {
-          font-family: JetBrainsMono Nerd Font;
-          font-size: 10pt;
-
-          border: none;
-          border-radius: 0;
-
-          color: ${theme.hex.nord4};
-        }
-
-        window#waybar {
-          background: ${theme.hex.nord0};
-          color: ${theme.hex.nord4};
-        }
-
-        button:hover {
-          background: ${theme.hex.nord2};
-          box-shadow: none;
-        }
-
-        #workspaces {
-          background: ${theme.hex.nord0};
-          color: ${theme.hex.nord4};
-        }
-
-        #workspaces button.active {
-          background: ${theme.hex.nord10};
-        }
-
-        #workspaces button.urgent {
-          background: ${theme.hex.nord11};
-        }
-
-        button {
-          padding: 0 5px;
-        }
-      '';
     };
 
     tofi = {
@@ -471,10 +411,6 @@ lib.mkIf pkgs.stdenv.isLinux {
 
         font = "JetBrainsMono Nerd Font";
         font-size = 10;
-
-        text-color = theme.hex.nord4;
-        background-color = theme.hex.nord0;
-        selection-color = theme.hex.nord8;
 
         outline-width = 0;
         border-width = 0;

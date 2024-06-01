@@ -4,8 +4,9 @@
     package = pkgs.zathura;
 
     options = {
+      font = "JetBrainsMono Nerd Font 9";
       selection-clipboard = "clipboard";
-    } // (import ./theme.nix);
+    };
   };
 
   xdg.mimeApps.defaultApplications."application/pdf" =

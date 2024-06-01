@@ -27,6 +27,7 @@ let
       ollama
 
       nix-output-monitor
+      npins
 
       # Build Tools
       gnumake
@@ -91,6 +92,7 @@ in
     ../../themes/nord/modules/home-manager
     ../../themes/catppuccin/modules/home-manager
 
+    ../../modules/home-manager/btop
     ../../modules/home-manager/direnv
     ../../modules/home-manager/fzf
     ../../modules/home-manager/git
