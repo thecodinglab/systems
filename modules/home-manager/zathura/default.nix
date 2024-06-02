@@ -6,6 +6,8 @@
     options = {
       font = "JetBrainsMono Nerd Font 9";
       selection-clipboard = "clipboard";
+
+      page-padding = 10;
     };
   };
 
