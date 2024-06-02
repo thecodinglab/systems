@@ -22,11 +22,19 @@
         ../../../../users/florian/configuration.nix
       ];
 
-      programs.default = {
-        enable = true;
-        enableDevelopment = true;
-        enablePhotography = true;
-        enableGaming = true;
+      ########################
+      # Customisations       #
+      ########################
+
+      programs = {
+        default = {
+          enable = true;
+          enableDevelopment = true;
+          enablePhotography = true;
+          enableGaming = true;
+        };
+
+        kitty.settings.window_padding_width = "4 5";
       };
     });
   };

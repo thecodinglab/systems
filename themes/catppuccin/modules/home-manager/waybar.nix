@@ -5,27 +5,37 @@ let sources = import ./npins; in
     style = (builtins.readFile "${sources.waybar}/themes/${config.catppuccin.flavor}.css") + ''
       * {
         font-family: JetBrainsMono Nerd Font;
-        font-size: 10pt;
+        font-size: 14px;
 
         border: none;
-        border-radius: 0;
+        border-radius: 5px;
 
         color: @text;
       }
 
       window#waybar {
-        background: @base;
-        color: @text;
+        background: transparent;
       }
 
-      button:hover {
+      .modules-left, .modules-center, .modules-right {
+        margin: 10px 30px;
+        background: @base;
+      }
+
+      .modules-center, .modules-right {
+        padding: 0 10px;
+      }
+
+      /* indiviual */
+
+      #workspaces button {
+        padding: 1px 10px;
+        background: transparent;
+      }
+
+      #workspaces button:hover {
         background: @surface0;
-        box-shadow: none;
-      }
-
-      #workspaces {
-        background: @base;
-        color: @text;
+        box-shadow: inherit;
       }
 
       #workspaces button.active {
@@ -36,8 +46,8 @@ let sources = import ./npins; in
         background: shade(@red, 0.5);
       }
 
-      button {
-        padding: 0 5px;
+      #clock, #disk, #pulseaudio, #cpu, #memory, #network {
+        padding: 0 2px;
       }
     '';
   };

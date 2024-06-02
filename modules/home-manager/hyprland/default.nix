@@ -75,8 +75,8 @@ lib.mkIf pkgs.stdenv.isLinux {
       #########################
 
       general = {
-        gaps_in = 5;
-        gaps_out = 20;
+        gaps_in = 10;
+        gaps_out = "5,30,30,30";
 
         border_size = 2;
 
@@ -84,7 +84,7 @@ lib.mkIf pkgs.stdenv.isLinux {
       };
 
       decoration = {
-        rounding = 0;
+        rounding = 10;
 
         blur.enabled = false;
         drop_shadow = false;
@@ -93,15 +93,13 @@ lib.mkIf pkgs.stdenv.isLinux {
       animations = {
         enabled = true;
 
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        bezier = "ease, 0.5, 0.0, 0.5, 1.0";
 
         animation = [
-          "windows, 1, 5, default"
-          "windowsOut, 1, 5, default, popin 80%"
-          "border, 1, 10, default"
-          "borderangle, 1, 8, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
+          "windows, 1, 5, ease"
+          "windowsOut, 1, 5, ease, popin 80%"
+          "fade, 1, 5, default"
+          "workspaces, 1, 5, ease"
         ];
       };
 
@@ -341,7 +339,8 @@ lib.mkIf pkgs.stdenv.isLinux {
           spacing = 20;
 
           modules-left = [ "hyprland/workspaces" ];
-          modules-right = [ "disk#root" "disk#data" "pulseaudio" "cpu" "memory" "network#ethernet" "network#wifi" "clock" ];
+          modules-center = [ "clock" ];
+          modules-right = [ "disk#root" "disk#data" "pulseaudio" "cpu" "memory" "network#ethernet" "network#wifi" ];
 
           "hyprland/workspaces" = {
             sort-by-number = true;
@@ -390,7 +389,7 @@ lib.mkIf pkgs.stdenv.isLinux {
           };
 
           clock = {
-            format = "{:%d.%m.%Y %H:%M}";
+            format = "{:%H:%M}";
             interval = 15;
           };
         };
