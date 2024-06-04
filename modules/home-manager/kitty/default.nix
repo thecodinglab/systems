@@ -9,6 +9,9 @@
     };
 
     settings = {
+      dynamic_background_opacity = true;
+      background_opacity = "0.8";
+
       clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";
 
       allow_remote_control = "socket-only";

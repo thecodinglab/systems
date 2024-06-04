@@ -96,7 +96,12 @@ lib.mkIf pkgs.stdenv.isLinux {
       decoration = {
         rounding = 10;
 
-        blur.enabled = false;
+        blur = {
+          enabled = true;
+          size = 5;
+          passes = 2;
+        };
+
         drop_shadow = false;
       };
 
