@@ -22,5 +22,13 @@
       pkgs.coreutils
       pkgs.neovim
     ];
+
+    pathsToLink = [
+      "/share/zsh" # link zsh completions for system packages
+
+      # link desktop portal definitions and applications
+      "/share/xdg-desktop-portal"
+      "/share/applications"
+    ];
   };
 }
