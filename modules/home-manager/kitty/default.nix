@@ -11,6 +11,7 @@
     settings = {
       dynamic_background_opacity = true;
       background_opacity = "0.8";
+      background_blur = 8;
 
       clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";
 
