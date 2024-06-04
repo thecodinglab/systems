@@ -13,10 +13,15 @@
 
     users.nix = ({ ... }: {
       imports = [
+        ../../../../themes/nord/modules/home-manager
+        ../../../../themes/catppuccin/modules/home-manager
+
         ../../../../modules/home-manager/fzf
         ../../../../modules/home-manager/tmux
         ../../../../modules/home-manager/zsh
       ];
+
+      catppuccin.enable = true;
 
       home.stateVersion = "23.11";
     });
