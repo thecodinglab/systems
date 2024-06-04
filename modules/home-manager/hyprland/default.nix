@@ -389,7 +389,7 @@ lib.mkIf pkgs.stdenv.isLinux {
           };
 
           clock = {
-            format = "{:%H:%M}";
+            format = "{:%H:%M - %d.%m.%Y}";
             interval = 15;
           };
         };
