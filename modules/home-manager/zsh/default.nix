@@ -8,6 +8,8 @@
       enableCompletion = true;
       autosuggestion.enable = true;
 
+      defaultKeymap = "viins";
+
       shellAliases = {
         ls = "${pkgs.coreutils}/bin/ls -l --color=auto --group-directories-first -I . -I ..";
         ip = "ip --color=auto";
