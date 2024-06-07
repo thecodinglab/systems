@@ -4,7 +4,7 @@
     package = pkgs.zathura;
 
     options = {
-      font = "JetBrainsMono Nerd Font 9";
+      font = "JetBrainsMono Nerd Font 11";
       selection-clipboard = "clipboard";
 
       page-padding = 10;
