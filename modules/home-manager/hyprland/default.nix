@@ -273,7 +273,7 @@ lib.mkIf pkgs.stdenv.isLinux {
           ### Geometry ###
 
           origin = "top-center";
-          offset = "0x50";
+          offset = "0x-30";
           height = "300";
 
           padding = "8";
