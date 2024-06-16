@@ -82,7 +82,17 @@
       osIndependent = flake-utils.lib.eachDefaultSystem (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
-          packages = containers.packages system;
+          packages = containers.packages system //
+            (
+              let sf = pkgs.callPackage ./pkgs/fonts/san-francisco.nix { }; in
+              {
+                apple-font-sf-pro = sf.pro;
+                apple-font-sf-compact = sf.compact;
+                apple-font-sf-mono = sf.mono;
+                apple-font-sf-new-york = sf.ny;
+              }
+            );
+
           apps = containers.apps system;
 
           formatter = pkgs.nixpkgs-fmt;

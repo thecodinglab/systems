@@ -5,6 +5,11 @@ let
       # Desktop Applications
       pkgs.spotify
       pkgs.obsidian
+
+      pkgs.apple-font-sf-pro
+      pkgs.apple-font-sf-compact
+      pkgs.apple-font-sf-mono
+      pkgs.apple-font-sf-new-york
     ]
     (lib.mkIf pkgs.stdenv.isLinux [
       pkgs.signal-desktop
@@ -127,5 +132,7 @@ in
       (lib.mkIf config.programs.default.enablePhotography photographyPackages)
       (lib.mkIf config.programs.default.enableGaming gamingPackages)
     ]);
+
+    fonts.fontconfig.enable = true;
   };
 }
