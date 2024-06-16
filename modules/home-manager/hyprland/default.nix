@@ -274,7 +274,7 @@ lib.mkIf pkgs.stdenv.isLinux {
 
           origin = "top-center";
           offset = "0x-30";
-          height = "300";
+          width = 512;
 
           padding = "8";
           horizontal_padding = "10";
@@ -316,6 +316,7 @@ lib.mkIf pkgs.stdenv.isLinux {
           icon_position = "left";
           min_icon_size = "0";
           max_icon_size = "64";
+          icon_corner_radius = "16";
 
           ### History ###
 
