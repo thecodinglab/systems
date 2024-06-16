@@ -4,8 +4,9 @@ let sources = import ./npins; in
   programs.waybar = lib.mkIf config.catppuccin.enable {
     style = (builtins.readFile "${sources.waybar}/themes/${config.catppuccin.flavor}.css") + ''
       * {
-        font-family: JetBrainsMono Nerd Font;
+        font-family: SF Pro;
         font-size: 14px;
+        font-weight: 500;
 
         border: none;
         border-radius: 5px;

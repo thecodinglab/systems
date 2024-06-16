@@ -3,8 +3,8 @@
     enable = true;
 
     font = {
-      package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
-      name = "JetBrainsMono Nerd Font";
+      package = pkgs.apple-font-sf-mono;
+      name = "SF Mono";
       size = lib.mkDefault 11;
     };
 

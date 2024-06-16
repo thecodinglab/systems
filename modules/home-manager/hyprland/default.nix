@@ -293,7 +293,7 @@ lib.mkIf pkgs.stdenv.isLinux {
 
           ### Text ###
 
-          font = "JetBrainsMono Nerd Font 10";
+          font = "SF Pro 12";
           line_height = "0";
 
           format = "<b>%a</b> %s %p\n%b";
@@ -363,49 +363,45 @@ lib.mkIf pkgs.stdenv.isLinux {
           };
 
           "disk#root" = {
-            format = "/ {free}";
+            format = "/  {free}";
             path = "/";
           };
 
           "disk#data" = {
-            format = "/media/data {free}";
+            format = "/media/data  {free}";
             path = "/media/data";
           };
 
           pulseaudio = {
-            format = "󰕾  {volume}%";
+            format = "󰕾   {volume}%";
             format-muted = "󰝟 ";
           };
 
           cpu = {
-            format = "  {usage}%";
+            format = "   {usage}%";
           };
 
           memory = {
-            format = "  {avail}GiB";
+            format = "   {avail} GiB";
           };
 
           "network#ethernet" = {
             interface = "enp14s0";
-            format-ethernet = "󰛳  {ipaddr}";
-            format-linked = "󰅛  (no ip)";
+            format-ethernet = "󰛳   {ipaddr}";
+            format-linked = "󰅛   (no ip)";
             format-disconnected = "󰅛 ";
-
-            tooltip-format = "{ifname} via {gwaddr}";
           };
 
           "network#wifi" = {
             interface = "wlp15s0";
-            format-wifi = "{icon}  {ipaddr}";
-            format-linked = "󰤭  (no ip)";
+            format-wifi = "{icon}   {ipaddr}";
+            format-linked = "󰤭   (no ip)";
             format-disconnected = "󰤭 ";
             format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
-
-            tooltip-format = "{ifname} via {gwaddr}";
           };
 
           clock = {
-            format = "{:%H:%M - %d.%m.%Y}";
+            format = "{:%H:%M  –  %d. %B %Y}";
             interval = 15;
           };
         };
@@ -424,7 +420,7 @@ lib.mkIf pkgs.stdenv.isLinux {
         min-input-width = 120;
         result-spacing = 15;
 
-        font = "JetBrainsMono Nerd Font";
+        font = "SF Pro";
         font-size = 10;
 
         outline-width = 0;
@@ -480,8 +476,6 @@ lib.mkIf pkgs.stdenv.isLinux {
     pkgs.playerctl
 
     # Font
-    (pkgs.nerdfonts.override {
-      fonts = [ "JetBrainsMono" ];
-    })
+    pkgs.apple-font-sf-pro
   ];
 }

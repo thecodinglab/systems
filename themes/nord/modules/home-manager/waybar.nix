@@ -4,8 +4,9 @@ let colors = import ../../default.nix; in
   programs.waybar = lib.mkIf config.nord.enable {
     style = ''
       * {
-        font-family: JetBrainsMono Nerd Font;
-        font-size: 10pt;
+        font-family: SF Pro;
+        font-size: 14px;
+        font-weight: 500;
 
         border: none;
         border-radius: 0;
