@@ -1,6 +1,6 @@
 { pkgs, lib, stdenv, ... }:
 let
-  mkFont = { pname, version, src }: stdenv.mkDerivation {
+  mkFont = { pname, version, src, patchFont ? false }: stdenv.mkDerivation {
     inherit pname version src;
 
     unpackPhase = ''
@@ -13,11 +13,22 @@ let
       runHook postUnpack
     '';
 
+    buildPhase = ''
+      runHook preBuild
+
+      ${lib.optionalString patchFont ''
+        find Library/Fonts -name '*.otf' -exec ${lib.getExe pkgs.nerd-font-patcher} -c {} \;
+        find Library/Fonts -name '*.ttf' -exec ${lib.getExe pkgs.nerd-font-patcher} -c {} \;
+      ''}
+
+      runHook postBuild
+    '';
+
     installPhase = ''
       runHook preInstall
 
-      find Library/Fonts -name '*.otf' -exec mkdir -p $out/share/fonts/opentype/${pname} \; -exec mv {} $out/share/fonts/opentype/${pname} \;
-      find Library/Fonts -name '*.ttf' -exec mkdir -p $out/share/fonts/truetype/${pname} \; -exec mv {} $out/share/fonts/truetype/${pname} \;
+      find -name '*.otf' -exec mkdir -p $out/share/fonts/opentype/${pname} \; -exec mv {} $out/share/fonts/opentype/${pname} \;
+      find -name '*.ttf' -exec mkdir -p $out/share/fonts/truetype/${pname} \; -exec mv {} $out/share/fonts/truetype/${pname} \;
 
       runHook postInstall
     '';
@@ -50,6 +61,7 @@ in
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
       sha256 = "sha256:0psf2fkqpwzw3hifciph7ypvjklb4jkcgh0mair0xvlf6baz3aji";
     };
+    patchFont = true;
   };
 
   ny = mkFont {
