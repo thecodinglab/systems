@@ -30,13 +30,19 @@
         flake-utils.follows = "flake-utils";
       };
     };
+
+    # NOTE: remove once https://github.com/hyprwm/hyprlock/pull/376 is merged
+    hyprlock = {
+      url = "github:thecodinglab/hyprlock";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { nixpkgs, flake-utils, darwin, home-manager, neovim-config, ... }@inputs:
+    { nixpkgs, flake-utils, darwin, home-manager, neovim-config, hyprlock, ... }@inputs:
     let
       specialArgs = {
-        inherit neovim-config;
+        inherit neovim-config hyprlock;
       };
 
       baseModules = [

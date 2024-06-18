@@ -1,4 +1,4 @@
-{ neovim-config, ... }: {
+{ neovim-config, hyprlock, ... }: {
   nixpkgs.overlays = [
     (import ./pkgs/spotify/overlay.nix)
     (import ./pkgs/obsidian/overlay.nix)
@@ -6,6 +6,11 @@
 
     (final: prev: {
       neovim = neovim-config.packages.${final.system}.default;
+    })
+
+    # NOTE: remove once https://github.com/hyprwm/hyprlock/pull/376 is merged
+    (final: prev: {
+      hyprlock = hyprlock.packages.${final.system}.default;
     })
   ];
 }
