@@ -243,7 +243,6 @@ lib.mkIf pkgs.stdenv.isLinux {
         general = {
           lock_cmd = lib.getExe pkgs.hyprlock;
           after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
-          ignore_dbus_inhibit = false;
         };
 
         listener = [
@@ -436,21 +435,52 @@ lib.mkIf pkgs.stdenv.isLinux {
     hyprlock = {
       enable = true;
       settings = {
-        background =
-          let
-            mkBackground = monitor: {
-              inherit monitor;
+        general = {
+          no_fade_in = true;
+          grace = 0;
+        };
 
-              path = "${config.home.homeDirectory}/${lockscreenImageName}";
-              blur_size = 3;
-              blur_passes = 2;
-            };
-          in
-          [
-            (mkBackground "DP-5")
-            (mkBackground "DP-6")
-            (mkBackground "DP-7")
-          ];
+        background = {
+          monitor = "";
+
+          path = "${config.home.homeDirectory}/${lockscreenImageName}";
+          blur_size = 3;
+          blur_passes = 2;
+        };
+
+        label = {
+          monitor = "DP-5";
+          text = ''cmd[update:1000] echo "$(date +"%H:%M")"'';
+
+          color = "rgb(200, 200, 200)";
+          font_family = "SF Pro";
+          font_size = 100;
+
+          halign = "center";
+          valign = "top";
+          position = "0, -200";
+        };
+
+        input-field = {
+          monitor = "DP-5";
+          size = "200, 50";
+
+          dots_size = 0.2;
+          dots_spacing = 0.2;
+          dots_center = true;
+
+          outer_color = "rgba(0, 0, 0, 0)";
+          inner_color = "rgba(0, 0, 0, 0.5)";
+          font_color = "rgb(200, 200, 200)";
+          outline_thickness = 2;
+
+          halign = "center";
+          valign = "bottom";
+          position = "0, 100";
+
+          fade_on_empty = true;
+          hide_input = false;
+        };
       };
     };
   };
