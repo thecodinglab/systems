@@ -33,6 +33,7 @@
 
   environment.systemPackages = [
     pkgs.neovim
+    pkgs.rsync
   ];
 
   services.openssh.enable = true;
