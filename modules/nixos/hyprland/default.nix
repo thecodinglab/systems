@@ -14,5 +14,5 @@
     };
   };
 
-  security.pam.services.hyprland = { };
+  security.pam.services.hyprlock = { };
 }
