@@ -71,9 +71,10 @@ lib.mkIf pkgs.stdenv.isLinux {
         touchpad = {
           natural_scroll = true;
           clickfinger_behavior = true;
+          scroll_factor = 0.2;
         };
 
-        sensitivity = 0.5;
+        sensitivity = 0.2;
       };
 
       gestures = {
