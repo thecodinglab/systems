@@ -1,7 +1,5 @@
 { neovim-config, hyprlock, ... }: {
   nixpkgs.overlays = [
-    (import ./pkgs/spotify/overlay.nix)
-    (import ./pkgs/obsidian/overlay.nix)
     (import ./pkgs/fonts/overlay.nix)
 
     (final: prev: {
