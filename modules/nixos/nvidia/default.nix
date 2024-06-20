@@ -1,9 +1,9 @@
-{ config, pkgs, ... }: {
+{ config, ... }: {
   environment.variables = {
     LIBVA_DRIVER_NAME = "nvidia";
   };
 
-  nixpkgs.config.cudaSupport = false;
+  nixpkgs.config.cudaSupport = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
