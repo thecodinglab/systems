@@ -12,9 +12,10 @@ lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     extraPortals = [
       pkgs.xdg-desktop-portal-hyprland
+      pkgs.xdg-desktop-portal-gtk # used to provide additional properties (e.g. appearance settings for dark-mode)
     ];
     config.common = {
-      default = [ "hyprland" ];
+      default = [ "hyprland" "gtk" ];
     };
   };
 
@@ -435,11 +436,6 @@ lib.mkIf pkgs.stdenv.isLinux {
     hyprlock = {
       enable = true;
       settings = {
-        general = {
-          no_fade_in = true;
-          grace = 0;
-        };
-
         background = {
           monitor = "";
 

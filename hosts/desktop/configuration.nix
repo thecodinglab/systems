@@ -131,12 +131,6 @@
 
   environment = {
     shells = [ pkgs.zsh ];
-
-    systemPackages = with pkgs; [
-      brave
-      firefox-devedition
-      qutebrowser
-    ];
   };
 
   hardware.bluetooth = {

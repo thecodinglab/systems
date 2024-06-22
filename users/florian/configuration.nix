@@ -11,11 +11,13 @@ let
       pkgs.apple-font-sf-mono
       pkgs.apple-font-sf-new-york
     ]
+
     (lib.mkIf pkgs.stdenv.isLinux [
       pkgs.signal-desktop
       pkgs.protonmail-desktop
       pkgs.helvum
     ])
+
     (lib.mkIf pkgs.stdenv.isDarwin [
       pkgs.raycast
     ])
@@ -99,6 +101,7 @@ in
     ../../themes/catppuccin/modules/home-manager
 
     ../../modules/home-manager/btop
+    ../../modules/home-manager/chromium
     ../../modules/home-manager/direnv
     ../../modules/home-manager/fzf
     ../../modules/home-manager/git

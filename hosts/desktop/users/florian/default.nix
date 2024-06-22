@@ -36,6 +36,13 @@
 
         kitty.settings.window_padding_width = "4 5";
       };
+
+      dconf = {
+        enable = true;
+        settings = {
+          "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+        };
+      };
     });
   };
 
