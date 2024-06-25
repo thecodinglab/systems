@@ -18,6 +18,7 @@
       ../../modules/nixos/dynamic-brightness
       ../../modules/nixos/podman
       ../../modules/nixos/ssh
+      ../../modules/nixos/steam
 
       # User
       ./users/florian
@@ -135,5 +136,25 @@
 
   hardware.bluetooth = {
     enable = true;
+  };
+
+  #######################
+  # Backup              #
+  #######################
+
+  services.snapper = {
+    snapshotInterval = "1h";
+    cleanupInterval = "7d";
+
+    snapshotRootOnBoot = true;
+    persistentTimer = false;
+
+    configs = {
+      root = {
+        SUBVOLUME = "/";
+        TIMELINE_CREATE = true;
+        TIMELINE_CLEANUP = true;
+      };
+    };
   };
 }
