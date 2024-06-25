@@ -91,7 +91,6 @@ let
   ];
 
   gamingPackages = [
-    pkgs.steam
     pkgs.prismlauncher
   ];
 in
