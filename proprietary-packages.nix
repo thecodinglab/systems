@@ -35,6 +35,7 @@
     "plexmediaserver"
     "steam"
     "steam-original"
+    "steam-run"
     "obsidian"
     "staruml"
     "raycast"
