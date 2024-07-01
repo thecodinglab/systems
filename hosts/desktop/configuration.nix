@@ -143,7 +143,7 @@
   #######################
 
   services.snapper = {
-    snapshotInterval = "1h";
+    snapshotInterval = "hourly";
     cleanupInterval = "7d";
 
     snapshotRootOnBoot = true;
