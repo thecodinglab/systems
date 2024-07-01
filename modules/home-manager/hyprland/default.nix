@@ -89,6 +89,7 @@ lib.mkIf pkgs.stdenv.isLinux {
       general = {
         gaps_in = 10;
         gaps_out = "5,30,30,30";
+        no_border_on_floating = true;
 
         border_size = 2;
 
