@@ -1,11 +1,11 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.kitty = {
     enable = true;
 
     font = {
       package = pkgs.apple-font-sf-mono;
       name = "SF Mono";
-      size = 12;
+      size = lib.mkDefault 12;
     };
 
     settings = {

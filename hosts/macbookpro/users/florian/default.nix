@@ -56,10 +56,14 @@
           ];
         };
 
-        kitty.settings = {
-          macos_show_window_title_in = "none";
-          hide_window_decorations = "titlebar-only";
-          window_padding_width = 1;
+        kitty = {
+          font.size = 14;
+
+          settings = {
+            macos_show_window_title_in = "none";
+            hide_window_decorations = "titlebar-only";
+            window_padding_width = 1;
+          };
         };
       };
     });
