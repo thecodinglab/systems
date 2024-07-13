@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services.nix-daemon.enable = true;
   nix.extraOptions = ''
@@ -7,7 +7,7 @@
 
   environment = {
     variables = {
-      EDITOR = "${pkgs.neovim}/bin/nvim";
+      EDITOR = lib.getExe pkgs.neovim;
     };
 
     systemPackages = [

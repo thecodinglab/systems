@@ -50,11 +50,11 @@
     useXkbConfig = true;
   };
 
-  documentation = {
-    enable = true;
-    dev.enable = true;
-    man.enable = true;
-  };
+  environment.pathsToLink = [
+    # link desktop portal definitions and applications
+    "/share/xdg-desktop-portal"
+    "/share/applications"
+  ];
 
   #######################
   # Boot                #
@@ -128,11 +128,6 @@
   # Applications        #
   #######################
 
-  programs.zsh.enable = true;
-
-  environment = {
-    shells = [ pkgs.zsh ];
-  };
 
   hardware.bluetooth = {
     enable = true;

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   nix = {
     settings = {
@@ -13,10 +13,18 @@
     };
   };
 
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    man.enable = true;
+  };
+
   environment = {
     variables = {
-      EDITOR = "${pkgs.neovim}/bin/nvim";
+      EDITOR = lib.getExe pkgs.neovim;
     };
+
+    shells = [ pkgs.zsh ];
 
     systemPackages = [
       pkgs.coreutils
@@ -24,11 +32,10 @@
     ];
 
     pathsToLink = [
-      "/share/zsh" # link zsh completions for system packages
-
-      # link desktop portal definitions and applications
-      "/share/xdg-desktop-portal"
-      "/share/applications"
+      # link zsh completions for system packages
+      "/share/zsh"
     ];
   };
+
+  programs.zsh.enable = true;
 }

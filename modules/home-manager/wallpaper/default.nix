@@ -1,11 +1,12 @@
 { config, pkgs, lib, ... }:
 let
   backgroundImageName = "Pictures/wallpaper.jpg";
+  backgroundImagePath = "${config.home.homeDirectory}/${backgroundImageName}";
 in
 {
   xsession.windowManager.bspwm = lib.mkIf config.xsession.windowManager.bspwm.enable {
     startupPrograms = [
-      "${lib.getExe pkgs.feh} --bg-fill ~/${backgroundImageName}"
+      "${lib.getExe pkgs.feh} --bg-fill ${backgroundImagePath}"
     ];
   };
 
@@ -14,13 +15,13 @@ in
     settings = {
       splash = false;
 
-      preload = [
-        "~/${backgroundImageName}"
-      ];
-      wallpaper = [
-        ",~/${backgroundImageName}"
-      ];
+      preload = [ backgroundImagePath ];
+      wallpaper = [ ",${backgroundImagePath}" ];
     };
+  };
+
+  programs.hyprlock = lib.mkIf config.programs.hyprlock.enable {
+    settings.background.path = backgroundImagePath;
   };
 
   home.file.${backgroundImageName} = {

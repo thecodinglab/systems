@@ -1,7 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.fzf = {
     enable = true;
-    defaultCommand = "${pkgs.fd} --type f";
+    defaultCommand = "${lib.getExe pkgs.fd} --type f";
   };
 
   home.packages = with pkgs; [

@@ -16,6 +16,7 @@
         ../../../../themes/nord/modules/home-manager
         ../../../../themes/catppuccin/modules/home-manager
 
+        ../../../../modules/home-manager/btop
         ../../../../modules/home-manager/fzf
         ../../../../modules/home-manager/tmux
         ../../../../modules/home-manager/zsh

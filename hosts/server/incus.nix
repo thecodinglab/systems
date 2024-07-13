@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ ... }: {
   services.lvm = {
     enable = true;
     boot.thin.enable = true;

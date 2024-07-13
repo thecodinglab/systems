@@ -1,7 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 let
   mod = "SUPER";
-  lockscreenImageName = "Pictures/lockscreen.png";
 in
 lib.mkIf pkgs.stdenv.isLinux {
   home.sessionVariables = {
@@ -440,7 +439,6 @@ lib.mkIf pkgs.stdenv.isLinux {
         background = {
           monitor = "";
 
-          path = "${config.home.homeDirectory}/${lockscreenImageName}";
           blur_size = 3;
           blur_passes = 2;
         };
@@ -485,11 +483,6 @@ lib.mkIf pkgs.stdenv.isLinux {
   home.pointerCursor = {
     name = "Bibata-Modern-Classic";
     package = pkgs.bibata-cursors;
-  };
-
-  home.file.${lockscreenImageName} = {
-    enable = true;
-    source = ./lockscreen.png;
   };
 
   home.packages = [

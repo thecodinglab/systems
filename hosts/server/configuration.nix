@@ -78,9 +78,7 @@
   # Applications        #
   #######################
 
-  programs.zsh.enable = true;
-  environment = {
-    systemPackages = [ pkgs.iperf ];
-    shells = [ pkgs.zsh ];
-  };
+  environment.systemPackages = [
+    pkgs.iperf
+  ];
 }
