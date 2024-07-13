@@ -1,5 +1,17 @@
 {
   "pins": {
+    "bat": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "catppuccin",
+        "repo": "bat"
+      },
+      "branch": "main",
+      "revision": "d714cc1d358ea51bfc02550dabab693f70cccea0",
+      "url": "https://github.com/catppuccin/bat/archive/d714cc1d358ea51bfc02550dabab693f70cccea0.tar.gz",
+      "hash": "1zlryg39y4dbrycjlp009vd7hx2yvn5zfb03a2vq426z78s7i423"
+    },
     "btop": {
       "type": "Git",
       "repository": {
@@ -20,9 +32,9 @@
         "repo": "delta"
       },
       "branch": "main",
-      "revision": "765eb17d0268bf07c20ca439771153f8bc79444f",
-      "url": "https://github.com/catppuccin/delta/archive/765eb17d0268bf07c20ca439771153f8bc79444f.tar.gz",
-      "hash": "00pmg2rbzsrf2k0l6d7m5394i7klvk41h6xhv8c3v56rhvv2f38q"
+      "revision": "b88f87aedbeb7dc74c38831cf385819b69b78cbe",
+      "url": "https://github.com/catppuccin/delta/archive/b88f87aedbeb7dc74c38831cf385819b69b78cbe.tar.gz",
+      "hash": "0rb8m10zp8qkfg2cw54xbkrsmplvcv8h038mwbw9x4akzb2y8cpz"
     },
     "dunst": {
       "type": "Git",
@@ -44,9 +56,9 @@
         "repo": "hyprland"
       },
       "branch": "main",
-      "revision": "b57375545f5da1f7790341905d1049b1873a8bb3",
-      "url": "https://github.com/catppuccin/hyprland/archive/b57375545f5da1f7790341905d1049b1873a8bb3.tar.gz",
-      "hash": "1vz0xbj26qb1vvzi18b5wrdla042vdyd3l4m98h7ay0fwydajfjx"
+      "revision": "c388ac55563ddeea0afe9df79d4bfff0096b146b",
+      "url": "https://github.com/catppuccin/hyprland/archive/c388ac55563ddeea0afe9df79d4bfff0096b146b.tar.gz",
+      "hash": "0cxzxfgbqnkdnvn8nch4z4s7izzlm2jgciq1s8cjmypf8g7vy9n5"
     },
     "kitty": {
       "type": "Git",
@@ -68,9 +80,9 @@
         "repo": "lazygit"
       },
       "branch": "main",
-      "revision": "16dcbfcc5408acc947769df984073fe1600db839",
-      "url": "https://github.com/catppuccin/lazygit/archive/16dcbfcc5408acc947769df984073fe1600db839.tar.gz",
-      "hash": "0v3brd35giqr8977vbdm4551xk2h9fly2bfzx6slknr4nwmqlswf"
+      "revision": "21a25afd92327ddea8446ab9171ca7039b431e9e",
+      "url": "https://github.com/catppuccin/lazygit/archive/21a25afd92327ddea8446ab9171ca7039b431e9e.tar.gz",
+      "hash": "0qb6xbdwg778m5q8795gh90zcdvf6h90ps6jz6spv3y8h7hy024d"
     },
     "palette": {
       "type": "Git",
@@ -80,9 +92,9 @@
         "repo": "palette"
       },
       "branch": "main",
-      "revision": "d89c0b31e707b21c869df83d0f4b04b852864074",
-      "url": "https://github.com/catppuccin/palette/archive/d89c0b31e707b21c869df83d0f4b04b852864074.tar.gz",
-      "hash": "12x3w2216drd6bw4w8xng28kfagdnh6m0yllrc5szifn5xf9spwb"
+      "revision": "7f17f46c5d3d86f4c8d17fef07d97459744e1157",
+      "url": "https://github.com/catppuccin/palette/archive/7f17f46c5d3d86f4c8d17fef07d97459744e1157.tar.gz",
+      "hash": "07ahjznk2hlg49mkjfvb8ws1wn5bni3rc1ra9m7j2gw16qqgn5fy"
     },
     "tofi": {
       "type": "Git",

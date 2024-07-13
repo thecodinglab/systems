@@ -99,6 +99,7 @@ in
     ../../themes/nord/modules/home-manager
     ../../themes/catppuccin/modules/home-manager
 
+    ../../modules/home-manager/bat
     ../../modules/home-manager/btop
     ../../modules/home-manager/chromium
     ../../modules/home-manager/direnv

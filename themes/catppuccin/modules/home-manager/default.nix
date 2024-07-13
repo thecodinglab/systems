@@ -34,6 +34,7 @@
   };
 
   imports = [
+    ./bat.nix
     ./btop.nix
     ./delta.nix
     ./dunst.nix
