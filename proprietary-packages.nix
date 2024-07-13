@@ -38,6 +38,11 @@
     "steam-run"
     "obsidian"
     "staruml"
+    "postman"
+    "lens-desktop"
+
+    # MacOS
     "raycast"
+    "tableplus"
   ];
 }

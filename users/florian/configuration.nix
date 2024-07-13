@@ -36,9 +36,15 @@ let
       zip
       unzip
       ollama
+      postman
 
       nix-output-monitor
       npins
+
+      # Kubernetes
+      kubectl
+      k9s
+      lens
 
       # Build Tools
       gnumake
@@ -74,8 +80,13 @@ let
       texliveFull
       texlab
     ])
+
     (lib.mkIf pkgs.stdenv.isLinux [
       pkgs.staruml
+    ])
+
+    (lib.mkIf pkgs.stdenv.isDarwin [
+      pkgs.tableplus
     ])
   ];
 
