@@ -81,12 +81,12 @@ let
     [
       pkgs.exiftool
       pkgs.ffmpeg
-      pkgs.mpv
 
       pkgs.darktable
     ]
     (lib.mkIf pkgs.stdenv.isLinux [
       pkgs.imv
+      pkgs.mpv
     ])
   ];
 
