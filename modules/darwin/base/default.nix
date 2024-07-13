@@ -14,5 +14,10 @@
       pkgs.coreutils
       pkgs.neovim
     ];
+
+    pathsToLink = [
+      # link zsh completions for system packages
+      "/share/zsh"
+    ];
   };
 }
