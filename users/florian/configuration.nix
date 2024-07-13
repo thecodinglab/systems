@@ -2,9 +2,12 @@
 let
   basePackages = lib.mkMerge [
     [
-      # Desktop Applications
       pkgs.spotify
       pkgs.obsidian
+
+      pkgs.hledger
+      pkgs.hledger-ui
+      pkgs.hledger-web
 
       pkgs.apple-font-sf-pro
       pkgs.apple-font-sf-compact
@@ -72,7 +75,6 @@ let
       texlab
     ])
     (lib.mkIf pkgs.stdenv.isLinux [
-      # Desktop Applications
       pkgs.staruml
     ])
   ];
