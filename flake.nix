@@ -17,10 +17,7 @@
 
     neovim-config = {
       url = "github:thecodinglab/neovim-config";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     terranix = {
@@ -30,80 +27,58 @@
         flake-utils.follows = "flake-utils";
       };
     };
-
-    # NOTE: remove once https://github.com/hyprwm/hyprlock/pull/376 is merged
-    hyprlock = {
-      url = "github:thecodinglab/hyprlock";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
-    { nixpkgs, flake-utils, darwin, home-manager, neovim-config, hyprlock, ... }@inputs:
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }@inputs:
     let
-      specialArgs = {
-        inherit neovim-config hyprlock;
-      };
+      inherit (self) outputs;
 
-      baseModules = [
-        ./overlays.nix
-        ./proprietary-packages.nix
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
       ];
 
-      containers = import ./hosts/containers inputs;
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+    in
+    {
+      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      overlays = import ./overlays { inherit inputs; };
 
-      systemConfigurations = {
-        nixosConfigurations = {
-          desktop = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = baseModules ++ [
-              home-manager.nixosModules.home-manager
-              ./hosts/desktop/configuration.nix
-            ];
-            inherit specialArgs;
-          };
+      nixosModules = import ./modules/nixos;
+      darwinModules = import ./modules/darwin;
+      homeManagerModules = import ./modules/home-manager;
 
-          server = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = baseModules ++ [
-              home-manager.nixosModules.home-manager
-              ./hosts/server/configuration.nix
-            ];
-            inherit specialArgs;
+      nixosConfigurations = {
+        desktop = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
           };
-        } // containers.nixosConfigurations;
-
-        darwinConfigurations = {
-          macbookpro = darwin.lib.darwinSystem {
-            system = "aarch64-darwin";
-            modules = baseModules ++ [
-              home-manager.darwinModules.home-manager
-              ./hosts/macbookpro
-            ];
-            inherit specialArgs;
-          };
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/desktop/configuration.nix
+            home-manager.nixosModules.home-manager
+          ];
         };
       };
 
-      osIndependent = flake-utils.lib.eachDefaultSystem (system:
-        let pkgs = import nixpkgs { inherit system; }; in
-        {
-          packages = containers.packages system //
-            (
-              let sf = pkgs.callPackage ./pkgs/fonts/san-francisco.nix { }; in
-              {
-                apple-font-sf-pro = sf.pro;
-                apple-font-sf-compact = sf.compact;
-                apple-font-sf-mono = sf.mono;
-                apple-font-sf-new-york = sf.ny;
-              }
-            );
-
-          apps = containers.apps system;
-
-          formatter = pkgs.nixpkgs-fmt;
-        }
-      );
-    in
-    systemConfigurations // osIndependent;
+      homeConfigurations = {
+        "florian@desktop" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
+          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
+            ./home-manager/florian/configuration.nix
+          ];
+        };
+      };
+    };
 }

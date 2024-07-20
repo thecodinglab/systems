@@ -1,342 +1,379 @@
-{ pkgs, lib, ... }: lib.mkIf pkgs.stdenv.isLinux {
-  xsession = {
-    enable = true;
-    numlock.enable = true;
-
-    windowManager.bspwm = {
-      enable = true;
-
-      monitors = {
-        "^1" = [ "1" "2" ];
-        "^2" = [ "3" "6" "7" "8" "9" "10" ];
-        "^3" = [ "4" "5" ];
-      };
-
-      rules = {
-        "Spotify" = {
-          state = "floating";
-          sticky = true;
-        };
-      };
-
-      settings = {
-        border_width = 1;
-        window_gap = 8;
-
-        split_ratio = 0.6;
-        borderless_monocle = true;
-        gapless_monocle = true;
-
-        focus_follows_pointer = true;
-        pointer_follows_focus = true;
-      };
-
-      startupPrograms = [
-        "${lib.getExe pkgs.xss-lock} --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
-        "${lib.getExe pkgs._1password-gui} --silent"
-      ];
-    };
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  options.custom.bspwm = {
+    enable = lib.mkEnableOption "enable bspwm";
   };
 
-  services = {
-    sxhkd =
-      let
-        hideScript = pkgs.writeShellScriptBin "hide" (builtins.readFile ./scripts/hide.sh);
-      in
-      {
+  config = lib.mkIf config.custom.bspwm.enable {
+    xsession = {
+      enable = true;
+      numlock.enable = true;
+
+      windowManager.bspwm = {
         enable = true;
-        keybindings = {
-          "super + Return" = "kitty";
-          "super + d" = "${pkgs.dmenu}/bin/dmenu_run";
-          "super + control + q" = "${pkgs.systemd}/bin/loginctl lock-session";
 
-          # close currently focused application
-          "super + shift + q" = "bspc node -c";
-
-          # make sxhkd reload its configuration files:
-          "super + Escape" = "pkill -USR1 -x sxhkd";
-
-          # quit/restart bspwm
-          "super + alt + {q,r}" = "bspc {quit,wm -r}";
-
-          #######################
-          # bspwm hotkeys       #
-          #######################
-
-          # alternate between the tiled and monocle layout
-          "super + m" = "bspc desktop -l next";
-
-          # swap the current node and the biggest window
-          "super + g" = "bspc node -s biggest.window";
-
-          #######################
-          # focus / swap        #
-          #######################
-
-          # focus the node in the given direction
-          "super + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
-
-          # focus or send to the given desktop
-          "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'";
-
-          #######################
-          # preselect           #
-          #######################
-
-          # preselect the direction
-          "super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
-
-          # preselect the ratio
-          "super + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
-
-          # cancel the preselection for the focused node
-          "super + ctrl + space" = "bspc node -p cancel";
-
-          #######################
-          # move / resize       #
-          #######################
-
-          # expand a window by moving one of its side outward
-          "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
-
-          # contract a window by moving one of its side inward
-          "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
-
-
-          #######################
-          # audio               #
-          #######################
-
-          # volume
-          "XF86AudioRaiseVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-          "XF86AudioLowerVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-          "XF86AudioMute" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-          "XF86AudioMicMute" = "${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
-
-          # navigation
-          "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
-          "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
-          "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
-
-          # show/hide spotify
-          "super + minus" = "${hideScript}/bin/hide 'Spotify'";
+        monitors = {
+          "^1" = [
+            "1"
+            "2"
+          ];
+          "^2" = [
+            "3"
+            "6"
+            "7"
+            "8"
+            "9"
+            "10"
+          ];
+          "^3" = [
+            "4"
+            "5"
+          ];
         };
+
+        rules = {
+          "Spotify" = {
+            state = "floating";
+            sticky = true;
+          };
+        };
+
+        settings = {
+          border_width = 1;
+          window_gap = 8;
+
+          split_ratio = 0.6;
+          borderless_monocle = true;
+          gapless_monocle = true;
+
+          focus_follows_pointer = true;
+          pointer_follows_focus = true;
+        };
+
+        startupPrograms = [
+          "${lib.getExe pkgs.xss-lock} --transfer-sleep-lock -- ${pkgs.xsecurelock}/bin/xsecurelock"
+          "${lib.getExe pkgs._1password-gui} --silent"
+        ];
       };
+    };
 
-    polybar = {
-      enable = true;
-      package = pkgs.polybarFull;
+    services = {
+      sxhkd =
+        let
+          hideScript = pkgs.writeShellScriptBin "hide" (builtins.readFile ./scripts/hide.sh);
+        in
+        {
+          enable = true;
+          keybindings = {
+            "super + Return" = "kitty";
+            "super + d" = "${pkgs.dmenu}/bin/dmenu_run";
+            "super + control + q" = "${pkgs.systemd}/bin/loginctl lock-session";
 
-      script = ''
-        DISPLAYS=$(${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep " connected" | ${pkgs.coreutils}/bin/cut -d" " -f1)
+            # close currently focused application
+            "super + shift + q" = "bspc node -c";
 
-        kill -9 $(pidof polybar)
-        for m in $DISPLAYS; do
-          MONITOR=$m polybar --reload default &
-        done
-      '';
+            # make sxhkd reload its configuration files:
+            "super + Escape" = "pkill -USR1 -x sxhkd";
 
-      settings = {
-        colors = {
-          red = "#e46c67";
-          red10 = "#cd615d";
-          red20 = "#b65652";
-          red30 = "#a04c48";
-          red40 = "#89413e";
-          red50 = "#723634";
-          red60 = "#5b2b29";
-          red70 = "#44201f";
-          red80 = "#2e1615";
-          red90 = "#170b0a";
+            # quit/restart bspwm
+            "super + alt + {q,r}" = "bspc {quit,wm -r}";
 
-          blue = "#7cb1ec";
+            #######################
+            # bspwm hotkeys       #
+            #######################
 
-          fg = "#c5c8c6";
-          fg10 = "#b1b4b2";
-          fg20 = "#9ea09e";
-          fg30 = "#8a8c8b";
-          fg40 = "#767877";
-          fg50 = "#636463";
-          fg60 = "#4f504f";
-          fg70 = "#3b3c3b";
-          fg80 = "#272828";
-          fg90 = "#141414";
+            # alternate between the tiled and monocle layout
+            "super + m" = "bspc desktop -l next";
 
-          bg = "#1d1f21";
-          bg10 = "#343537";
-          bg20 = "#4a4c4d";
-          bg30 = "#616264";
-          bg40 = "#77797a";
-          bg50 = "#8e8f90";
-          bg60 = "#a5a5a6";
-          bg70 = "#bbbcbc";
-          bg80 = "#d2d2d3";
-          bg90 = "#e8e9e9";
+            # swap the current node and the biggest window
+            "super + g" = "bspc node -s biggest.window";
+
+            #######################
+            # focus / swap        #
+            #######################
+
+            # focus the node in the given direction
+            "super + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
+
+            # focus or send to the given desktop
+            "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'";
+
+            #######################
+            # preselect           #
+            #######################
+
+            # preselect the direction
+            "super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+
+            # preselect the ratio
+            "super + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+
+            # cancel the preselection for the focused node
+            "super + ctrl + space" = "bspc node -p cancel";
+
+            #######################
+            # move / resize       #
+            #######################
+
+            # expand a window by moving one of its side outward
+            "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+
+            # contract a window by moving one of its side inward
+            "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
+
+            #######################
+            # audio               #
+            #######################
+
+            # volume
+            "XF86AudioRaiseVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+            "XF86AudioLowerVolume" = "${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+            "XF86AudioMute" = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+            "XF86AudioMicMute" = "${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+
+            # navigation
+            "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
+            "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
+            "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
+
+            # show/hide spotify
+            "super + minus" = "${hideScript}/bin/hide 'Spotify'";
+          };
         };
 
-        "bar/base" = {
-          width = "100%";
-          height = "16pt";
+      polybar = {
+        enable = true;
+        package = pkgs.polybarFull;
 
-          background = "\${colors.bg}";
-          foreground = "\${colors.fg}";
+        script = ''
+          DISPLAYS=$(${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep " connected" | ${pkgs.coreutils}/bin/cut -d" " -f1)
 
-          font = [ "SauceCodePro Nerd Font:size=10;2" ];
+          kill -9 $(pidof polybar)
+          for m in $DISPLAYS; do
+            MONITOR=$m polybar --reload default &
+          done
+        '';
 
-          cursor-click = "pointer";
+        settings = {
+          colors = {
+            red = "#e46c67";
+            red10 = "#cd615d";
+            red20 = "#b65652";
+            red30 = "#a04c48";
+            red40 = "#89413e";
+            red50 = "#723634";
+            red60 = "#5b2b29";
+            red70 = "#44201f";
+            red80 = "#2e1615";
+            red90 = "#170b0a";
 
-          padding-left = 0;
-          padding-right = 0;
-          module-margin-left = 0;
-          module-margin-right = 0;
+            blue = "#7cb1ec";
 
-          modules-left = "workspaces";
-          modules-right = "filesystem space wifi space lan space pulseaudio space memory space cpu space time space";
+            fg = "#c5c8c6";
+            fg10 = "#b1b4b2";
+            fg20 = "#9ea09e";
+            fg30 = "#8a8c8b";
+            fg40 = "#767877";
+            fg50 = "#636463";
+            fg60 = "#4f504f";
+            fg70 = "#3b3c3b";
+            fg80 = "#272828";
+            fg90 = "#141414";
 
-          wm-restack = "bspwm";
-        };
+            bg = "#1d1f21";
+            bg10 = "#343537";
+            bg20 = "#4a4c4d";
+            bg30 = "#616264";
+            bg40 = "#77797a";
+            bg50 = "#8e8f90";
+            bg60 = "#a5a5a6";
+            bg70 = "#bbbcbc";
+            bg80 = "#d2d2d3";
+            bg90 = "#e8e9e9";
+          };
 
-        "bar/default" = {
-          "inherit" = "bar/base";
+          "bar/base" = {
+            width = "100%";
+            height = "16pt";
 
-          monitor = "\${env:MONITOR}";
-        };
+            background = "\${colors.bg}";
+            foreground = "\${colors.fg}";
 
-        "module/workspaces" = {
-          type = "internal/bspwm";
-          pin.workspaces = true;
+            font = [ "SauceCodePro Nerd Font:size=10;2" ];
 
-          label-focused = "%name%";
-          label-focused-background = "\${colors.bg10}";
-          label-focused-padding = 1;
+            cursor-click = "pointer";
 
-          label-urgent = "%name%";
-          label-urgent-background = "\${colors.red50}";
-          label-urgent-padding = 1;
+            padding-left = 0;
+            padding-right = 0;
+            module-margin-left = 0;
+            module-margin-right = 0;
 
-          label-occupied = "%name%";
-          label-occupied-padding = 1;
+            modules-left = "workspaces";
+            modules-right = "filesystem space wifi space lan space pulseaudio space memory space cpu space time space";
 
-          label-empty = "%name%";
-          label-empty-padding = 1;
-        };
+            wm-restack = "bspwm";
+          };
 
-        "module/time" = {
-          type = "internal/date";
-          interval = 1;
+          "bar/default" = {
+            "inherit" = "bar/base";
 
-          date = "%d.%m.%Y";
-          time = "%H:%M";
+            monitor = "\${env:MONITOR}";
+          };
 
-          label = "%date% %time%";
-          label-foreground = "\${colors.fg}";
-        };
+          "module/workspaces" = {
+            type = "internal/bspwm";
+            pin.workspaces = true;
 
-        "module/cpu" = {
-          type = "internal/cpu";
+            label-focused = "%name%";
+            label-focused-background = "\${colors.bg10}";
+            label-focused-padding = 1;
 
-          format-prefix = "  ";
+            label-urgent = "%name%";
+            label-urgent-background = "\${colors.red50}";
+            label-urgent-padding = 1;
 
-          label-foreground = "\${colors.fg}";
-          label-warn-foreground = "\${colors.red}";
-        };
+            label-occupied = "%name%";
+            label-occupied-padding = 1;
 
-        "module/memory" = {
-          type = "internal/memory";
+            label-empty = "%name%";
+            label-empty-padding = 1;
+          };
 
-          format-prefix = "  ";
+          "module/time" = {
+            type = "internal/date";
+            interval = 1;
 
-          label = "%gb_free%";
-          label-foreground = "\${colors.fg}";
+            date = "%d.%m.%Y";
+            time = "%H:%M";
 
-          label-warn = "%gb_free%";
-          label-warn-foreground = "\${colors.red}";
-        };
+            label = "%date% %time%";
+            label-foreground = "\${colors.fg}";
+          };
 
-        "module/pulseaudio" = {
-          type = "internal/pulseaudio";
-          format-volume = "<ramp-volume> <label-volume>";
+          "module/cpu" = {
+            type = "internal/cpu";
 
-          label-volume = "%percentage%%";
-          label-volume-foreground = "\${colors.fg}";
+            format-prefix = "  ";
 
-          label-muted = "󰝟";
-          label-muted-foreground = "\${colors.red}";
+            label-foreground = "\${colors.fg}";
+            label-warn-foreground = "\${colors.red}";
+          };
 
-          ramp-volume = [ "󰕿" "󰖀" "󰕾" ];
-        };
+          "module/memory" = {
+            type = "internal/memory";
 
-        "module/lan" = {
-          type = "internal/network";
-          interval = 5;
-          interface = "enp14s0";
-          interface-type = "wired";
+            format-prefix = "  ";
 
-          format-connected = "<label-connected>";
-          format-disconnected = "<label-disconnected>";
+            label = "%gb_free%";
+            label-foreground = "\${colors.fg}";
 
-          label-connected = "󰛳  %local_ip% (%linkspeed%)";
-          label-connected-foreground = "\${colors.fg}";
+            label-warn = "%gb_free%";
+            label-warn-foreground = "\${colors.red}";
+          };
 
-          label-disconnected = "󰅛";
-          label-disconnected-foreground = "\${colors.red}";
-        };
+          "module/pulseaudio" = {
+            type = "internal/pulseaudio";
+            format-volume = "<ramp-volume> <label-volume>";
 
-        "module/wifi" = {
-          type = "internal/network";
-          interval = 5;
-          interface = "wlp15s0";
-          interface-type = "wireless";
+            label-volume = "%percentage%%";
+            label-volume-foreground = "\${colors.fg}";
 
-          format-connected = "<ramp-signal> <label-connected>";
-          format-disconnected = "<label-disconnected>";
+            label-muted = "󰝟";
+            label-muted-foreground = "\${colors.red}";
 
-          label-connected = " %local_ip% (%signal%%)";
-          label-connected-foreground = "\${colors.fg}";
+            ramp-volume = [
+              "󰕿"
+              "󰖀"
+              "󰕾"
+            ];
+          };
 
-          label-disconnected = "󰤭";
-          label-disconnected-foreground = "\${colors.red}";
+          "module/lan" = {
+            type = "internal/network";
+            interval = 5;
+            interface = "enp14s0";
+            interface-type = "wired";
 
-          ramp-signal = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
-        };
+            format-connected = "<label-connected>";
+            format-disconnected = "<label-disconnected>";
 
-        "module/filesystem" = {
-          type = "internal/fs";
-          mount = [ "/" "/media/data" ];
+            label-connected = "󰛳  %local_ip% (%linkspeed%)";
+            label-connected-foreground = "\${colors.fg}";
 
-          label-mounted = "%mountpoint% %free%";
-        };
+            label-disconnected = "󰅛";
+            label-disconnected-foreground = "\${colors.red}";
+          };
 
-        "module/space" = {
-          type = "custom/text";
-          format = "  ";
-        };
+          "module/wifi" = {
+            type = "internal/network";
+            interval = 5;
+            interface = "wlp15s0";
+            interface-type = "wireless";
 
-        "module/wide-space" = {
-          type = "custom/text";
-          format = "   ";
+            format-connected = "<ramp-signal> <label-connected>";
+            format-disconnected = "<label-disconnected>";
+
+            label-connected = " %local_ip% (%signal%%)";
+            label-connected-foreground = "\${colors.fg}";
+
+            label-disconnected = "󰤭";
+            label-disconnected-foreground = "\${colors.red}";
+
+            ramp-signal = [
+              "󰤯"
+              "󰤟"
+              "󰤢"
+              "󰤥"
+              "󰤨"
+            ];
+          };
+
+          "module/filesystem" = {
+            type = "internal/fs";
+            mount = [
+              "/"
+              "/media/data"
+            ];
+
+            label-mounted = "%mountpoint% %free%";
+          };
+
+          "module/space" = {
+            type = "custom/text";
+            format = "  ";
+          };
+
+          "module/wide-space" = {
+            type = "custom/text";
+            format = "   ";
+          };
         };
       };
     };
+
+    home.packages = with pkgs; [
+      # Desktop Applications
+      dmenu
+      scrot
+
+      xclip
+      xdotool
+
+      # Lock Screen
+      xsecurelock
+      xss-lock
+
+      # Audio Controls
+      pulseaudio
+      playerctl
+
+      # Font
+      (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+    ];
   };
-
-  home.packages = with pkgs; [
-    # Desktop Applications
-    dmenu
-    scrot
-
-    xclip
-    xdotool
-
-    # Lock Screen
-    xsecurelock
-    xss-lock
-
-    # Audio Controls
-    pulseaudio
-    playerctl
-
-    # Font
-    (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
-  ];
 }

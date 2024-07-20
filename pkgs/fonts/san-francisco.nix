@@ -1,42 +1,53 @@
-{ pkgs, lib, stdenv, ... }:
+{
+  lib,
+  stdenv,
+  p7zip,
+  nerd-font-patcher,
+}:
 let
-  mkFont = { pname, version, src, patchFont ? false }: stdenv.mkDerivation {
-    inherit pname version src;
+  mkFont =
+    {
+      pname,
+      version,
+      src,
+      patchFont ? false,
+    }:
+    stdenv.mkDerivation {
+      inherit pname version src;
 
-    unpackPhase = ''
-      runHook preUnpack
+      unpackPhase = ''
+        runHook preUnpack
 
-      ${lib.getExe' pkgs.p7zip "7z"} x $src
-      find -name '*.pkg' -exec ${lib.getExe' pkgs.p7zip "7z"} x {} \;
-      ${lib.getExe' pkgs.p7zip "7z"} x 'Payload~'
+        ${lib.getExe' p7zip "7z"} x $src
+        find -name '*.pkg' -exec ${lib.getExe' p7zip "7z"} x {} \;
+        ${lib.getExe' p7zip "7z"} x 'Payload~'
 
-      runHook postUnpack
-    '';
+        runHook postUnpack
+      '';
 
-    buildPhase = ''
-      runHook preBuild
+      buildPhase = ''
+        runHook preBuild
 
-      ${lib.optionalString patchFont ''
-        find Library/Fonts -name '*.otf' -exec ${lib.getExe pkgs.nerd-font-patcher} -c {} \;
-        find Library/Fonts -name '*.ttf' -exec ${lib.getExe pkgs.nerd-font-patcher} -c {} \;
-      ''}
+        ${lib.optionalString patchFont ''
+          find Library/Fonts -name '*.otf' -exec ${lib.getExe nerd-font-patcher} -c {} \;
+          find Library/Fonts -name '*.ttf' -exec ${lib.getExe nerd-font-patcher} -c {} \;
+        ''}
 
-      runHook postBuild
-    '';
+        runHook postBuild
+      '';
 
-    installPhase = ''
-      runHook preInstall
+      installPhase = ''
+        runHook preInstall
 
-      find -name '*.otf' -exec mkdir -p $out/share/fonts/opentype/${pname} \; -exec mv {} $out/share/fonts/opentype/${pname} \;
-      find -name '*.ttf' -exec mkdir -p $out/share/fonts/truetype/${pname} \; -exec mv {} $out/share/fonts/truetype/${pname} \;
+        find -name '*.otf' -exec mkdir -p $out/share/fonts/opentype/${pname} \; -exec mv {} $out/share/fonts/opentype/${pname} \;
+        find -name '*.ttf' -exec mkdir -p $out/share/fonts/truetype/${pname} \; -exec mv {} $out/share/fonts/truetype/${pname} \;
 
-      runHook postInstall
-    '';
-  };
-
+        runHook postInstall
+      '';
+    };
 in
 {
-  pro = mkFont {
+  apple-font-sf-pro = mkFont {
     pname = "apple-font-sf-pro";
     version = "1.0.0";
     src = builtins.fetchurl {
@@ -45,7 +56,7 @@ in
     };
   };
 
-  compact = mkFont {
+  apple-font-sf-compact = mkFont {
     pname = "apple-font-sf-compact";
     version = "1.0.0";
     src = builtins.fetchurl {
@@ -54,7 +65,7 @@ in
     };
   };
 
-  mono = mkFont {
+  apple-font-sf-mono = mkFont {
     pname = "apple-font-sf-mono";
     version = "1.0.0";
     src = builtins.fetchurl {
@@ -64,7 +75,7 @@ in
     patchFont = true;
   };
 
-  ny = mkFont {
+  apple-font-new-york = mkFont {
     pname = "apple-font-new-york";
     version = "1.0.0";
     src = builtins.fetchurl {
