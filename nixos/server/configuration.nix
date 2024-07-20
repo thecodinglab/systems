@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ outputs, pkgs, ... }:
 {
   system.stateVersion = "23.11";
 
@@ -9,11 +9,13 @@
     ./ups.nix
     ./incus.nix
 
-    ../../modules/nixos/base
-    ../../modules/nixos/ssh
-
     # User
     ./users/nix
+  ];
+
+  nixpkgs.overlays = [
+    outputs.overlays.additions
+    outputs.overlays.modifications
   ];
 
   #######################
@@ -78,7 +80,5 @@
   # Applications        #
   #######################
 
-  environment.systemPackages = [
-    pkgs.iperf
-  ];
+  environment.systemPackages = [ pkgs.iperf ];
 }

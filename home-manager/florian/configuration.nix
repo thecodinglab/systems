@@ -19,6 +19,8 @@
 
   custom = {
     catppuccin.enable = true;
+    desktop.enable = true;
+
     fzf.enable = true;
     tmux.enable = true;
     chromium.enable = true;

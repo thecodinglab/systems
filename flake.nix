@@ -62,8 +62,17 @@
           specialArgs = {
             inherit inputs outputs;
           };
+
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/desktop/configuration.nix ];
+        };
+
+        server = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/desktop/configuration.nix
+            ./nixos/server/configuration.nix
             home-manager.nixosModules.home-manager
           ];
         };
@@ -72,9 +81,11 @@
       homeConfigurations = {
         "florian@desktop" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
+
           extraSpecialArgs = {
             inherit inputs outputs;
           };
+
           modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
             ./home-manager/florian/configuration.nix
           ];
