@@ -358,12 +358,35 @@
     "root": {
       "inputs": {
         "darwin": "darwin",
-        "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "neovim-config": "neovim-config",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
+        "sops-nix": "sops-nix",
         "terranix": "terranix"
+      }
+    },
+    "sops-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-stable": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1721531171,
+        "narHash": "sha256-AsvPw7T0tBLb53xZGcUC3YPqlIpdxoSx56u8vPCr6gU=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "909e8cfb60d83321d85c8d17209d733658a21c95",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
       }
     },
     "systems": {
@@ -385,9 +408,7 @@
       "inputs": {
         "bats-assert": "bats-assert",
         "bats-support": "bats-support",
-        "flake-utils": [
-          "flake-utils"
-        ],
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ],

@@ -1,10 +1,14 @@
 keys:
   - &desktop age1wgenz0mv90afzts5ay84k24yykquv4cudt208wels0v2w66j3psqwxqsk9
+  - &server_hermes age17zu2f06ux4yyr85jwp22yx22589cz49gda6p7c7d5rv4wxgg6ecqs4p2uw
 
 creation_rules:
+  - path_regex: hermes/secrets.yaml$
+    key_groups:
+      - age:
+        - *desktop
+        - *server_hermes
   - path_regex: ^infra/secrets.yaml$
     key_groups:
       - age:
         - *desktop
-
-

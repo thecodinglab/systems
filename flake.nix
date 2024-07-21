@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -22,9 +21,14 @@
 
     terranix = {
       url = "github:terranix/terranix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+        nixpkgs-stable.follows = "nixpkgs";
       };
     };
   };
@@ -36,6 +40,7 @@
       nix-darwin,
       home-manager,
       terranix,
+      sops-nix,
       ...
     }@inputs:
     let
@@ -86,6 +91,37 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/apollo/configuration.nix
+          ];
+        };
+
+        hestia = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/containers/hestia/configuration.nix
+          ];
+        };
+
+        hermes = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/containers/hermes/configuration.nix
+            sops-nix.nixosModules.sops
+          ];
+        };
+
+        poseidon = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/containers/poseidon/configuration.nix
           ];
         };
       };
