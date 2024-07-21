@@ -1,4 +1,4 @@
-{ modulesPath, lib, ... }:
+{ modulesPath, ... }:
 let
   uid = 1000;
   gid = 1000;
@@ -10,7 +10,10 @@ in
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  custom.unfree = [ "plexmediaserver" ];
+  custom = {
+    isContainer = true;
+    unfree = [ "plexmediaserver" ];
+  };
 
   networking = {
     hostName = "apollo";
@@ -18,22 +21,10 @@ in
   };
 
   users = {
-    users = {
-      root.openssh.authorizedKeys.keys = lib.splitString "\n" (
-        builtins.readFile (
-          builtins.fetchurl {
-            name = "ssh-authorized-keys-v1";
-            url = "https://github.com/thecodinglab.keys";
-            sha256 = "fobgOm3SyyClt8TM74PXjyM9JjbXrXJ52na7TjJdKA0=";
-          }
-        )
-      );
-
-      media = {
-        isSystemUser = true;
-        group = "media";
-        inherit uid;
-      };
+    users.media = {
+      isSystemUser = true;
+      group = "media";
+      inherit uid;
     };
 
     groups.media = {

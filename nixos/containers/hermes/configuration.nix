@@ -1,9 +1,4 @@
-{
-  config,
-  modulesPath,
-  lib,
-  ...
-}:
+{ config, modulesPath, ... }:
 {
   system.stateVersion = "23.11";
 
@@ -14,25 +9,28 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  custom.nginx = {
-    enable = true;
-    vhosts = {
-      "hermes.thecodinglab.ch".locations."/".proxyPass = "http://localhost:7575/";
-      "uptime.thecodinglab.ch".locations."/".proxyPass = "http://localhost:3001/";
+  custom = {
+    isContainer = true;
+    nginx = {
+      enable = true;
+      vhosts = {
+        "hermes.thecodinglab.ch".locations."/".proxyPass = "http://localhost:7575/";
+        "uptime.thecodinglab.ch".locations."/".proxyPass = "http://localhost:3001/";
 
-      "teslamate.thecodinglab.ch" = {
-        locations."/grafana".proxyPass = "http://172.16.0.92:3000";
-        locations."/".proxyPass = "http://172.16.0.92:4000";
+        "teslamate.thecodinglab.ch" = {
+          locations."/grafana".proxyPass = "http://172.16.0.92:3000";
+          locations."/".proxyPass = "http://172.16.0.92:4000";
+        };
+
+        "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92:8123";
+
+        "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
+        "requests.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
+        "media-tools.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
+
+        "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
+        "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
       };
-
-      "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92:8123";
-
-      "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
-      "requests.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
-      "media-tools.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
-
-      "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
-      "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
     };
   };
 
@@ -40,16 +38,6 @@
     hostName = "hermes";
     firewall.allowedTCPPorts = [ 443 ];
   };
-
-  users.users.root.openssh.authorizedKeys.keys = lib.splitString "\n" (
-    builtins.readFile (
-      builtins.fetchurl {
-        name = "ssh-authorized-keys-v1";
-        url = "https://github.com/thecodinglab.keys";
-        sha256 = "fobgOm3SyyClt8TM74PXjyM9JjbXrXJ52na7TjJdKA0=";
-      }
-    )
-  );
 
   services.uptime-kuma.enable = true;
 

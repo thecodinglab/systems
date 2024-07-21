@@ -91,6 +91,7 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/apollo/configuration.nix
+            home-manager.nixosModules.home-manager
           ];
         };
 
@@ -101,6 +102,7 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/hestia/configuration.nix
+            home-manager.nixosModules.home-manager
           ];
         };
 
@@ -111,6 +113,7 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/hermes/configuration.nix
+            home-manager.nixosModules.home-manager
             sops-nix.nixosModules.sops
           ];
         };
@@ -122,6 +125,7 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/poseidon/configuration.nix
+            home-manager.nixosModules.home-manager
           ];
         };
       };

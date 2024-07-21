@@ -1,4 +1,4 @@
-{ modulesPath, lib, ... }:
+{ modulesPath, ... }:
 let
 in
 {
@@ -7,6 +7,8 @@ in
   imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  custom.isContainer = true;
 
   networking = {
     hostName = "poseidon";
@@ -36,16 +38,6 @@ in
 
   users = {
     users = {
-      root.openssh.authorizedKeys.keys = lib.splitString "\n" (
-        builtins.readFile (
-          builtins.fetchurl {
-            name = "ssh-authorized-keys-v1";
-            url = "https://github.com/thecodinglab.keys";
-            sha256 = "fobgOm3SyyClt8TM74PXjyM9JjbXrXJ52na7TjJdKA0=";
-          }
-        )
-      );
-
       share = {
         isSystemUser = true;
         group = "share";
