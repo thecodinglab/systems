@@ -64,7 +64,6 @@
     nftables.enable = true;
 
     firewall = {
-      enable = true;
       allowedTCPPorts = [
         22 # ssh
         8443 # incus api
@@ -80,5 +79,9 @@
   # Applications        #
   #######################
 
-  environment.systemPackages = [ pkgs.iperf ];
+  environment.systemPackages = [
+    pkgs.bridge-utils
+    pkgs.tcpdump
+    pkgs.iperf
+  ];
 }
