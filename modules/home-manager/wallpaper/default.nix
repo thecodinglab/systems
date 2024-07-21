@@ -37,7 +37,7 @@
         settings.background.path = "${wallpaperBlurred}";
       };
 
-      programs.kitty.settings = lib.mkIf config.programs.hyprlock.enable {
+      programs.kitty.settings = lib.mkIf config.programs.kitty.enable {
         background_image = "${wallpaperBlurred}";
         background_image_layout = "cscaled";
         background_tint = "0.8";
