@@ -113,12 +113,12 @@
             rounding = 10;
 
             blur = {
-              enabled = true;
+              enabled = false;
               size = 5;
               passes = 2;
             };
 
-            drop_shadow = false;
+            drop_shadow = true;
           };
 
           animations = {
@@ -464,9 +464,6 @@
           settings = {
             background = {
               monitor = "";
-
-              blur_size = 3;
-              blur_passes = 2;
             };
 
             label = {
