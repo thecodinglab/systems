@@ -35,6 +35,7 @@
       nixpkgs,
       nix-darwin,
       home-manager,
+      terranix,
       ...
     }@inputs:
     let
@@ -130,5 +131,52 @@
           ];
         };
       };
+
+      terraformConfiguration = forAllSystems (
+        system:
+        terranix.lib.terranixConfiguration {
+          inherit system;
+
+          extraArgs = {
+            lib = import ./infra/lib nixpkgs.lib;
+          };
+
+          modules = [
+            ./infra/provider.nix
+            ./infra/apollo.nix
+            ./infra/hermes.nix
+            ./infra/hestia.nix
+            ./infra/poseidon.nix
+          ];
+        }
+      );
+
+      apps = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          mkTerraformCmd =
+            cmd:
+            toString (
+              pkgs.writers.writeBash "apply" ''
+                if [[ -e config.tf.json ]]; then rm -f config.tf.json; fi
+                cp ${self.terraformConfiguration.${system}} config.tf.json
+
+                ${pkgs.lib.getExe pkgs.opentofu} init
+                ${pkgs.lib.getExe pkgs.opentofu} ${cmd} $@
+              ''
+            );
+        in
+        {
+          plan = {
+            type = "app";
+            program = mkTerraformCmd "plan";
+          };
+          apply = {
+            type = "app";
+            program = mkTerraformCmd "apply";
+          };
+        }
+      );
     };
 }
