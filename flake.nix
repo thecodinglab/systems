@@ -77,6 +77,16 @@
             home-manager.nixosModules.home-manager
           ];
         };
+
+        apollo = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/containers/apollo/configuration.nix
+          ];
+        };
       };
 
       darwinConfigurations = {

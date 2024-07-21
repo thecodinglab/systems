@@ -1,6 +1,11 @@
-{ pkgs, lib, ... }:
 {
-  config = lib.mkIf pkgs.stdenv.isLinux {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  config = {
     nix = {
       settings = {
         auto-optimise-store = true;
@@ -33,7 +38,7 @@
       };
     };
 
-    documentation = {
+    documentation = lib.mkIf (!config.boot.isContainer) {
       enable = lib.mkDefault true;
       dev.enable = lib.mkDefault true;
       man.enable = lib.mkDefault true;
@@ -42,6 +47,7 @@
 
     networking = {
       useNetworkd = true;
+      useHostResolvConf = false;
       nftables.enable = true;
       firewall.enable = true;
     };
