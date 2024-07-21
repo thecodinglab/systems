@@ -14,7 +14,7 @@
 
   home = {
     username = "florian";
-    homeDirectory = "/home/florian";
+    homeDirectory = if pkgs.stdenv.isDarwin then "/Users/florian" else "/home/florian";
   };
 
   custom = {
@@ -23,7 +23,7 @@
 
     fzf.enable = true;
     tmux.enable = true;
-    chromium.enable = true;
+    chromium.enable = pkgs.stdenv.isLinux;
     kitty.enable = true;
     git.enable = true;
 
@@ -31,14 +31,19 @@
     zsh.enable = true;
     zathura.enable = true;
 
-    unfree = [
-      "1password"
-      "1password-cli"
-      "spotify"
-      "obsidian"
-      "postman"
-      "lens-desktop"
-    ];
+    unfree =
+      [
+        "1password"
+        "1password-cli"
+        "spotify"
+        "obsidian"
+        "postman"
+        "lens-desktop"
+      ]
+      ++ lib.optionals pkgs.stdenv.isDarwin [
+        "raycast"
+        "tableplus"
+      ];
   };
 
   programs = {

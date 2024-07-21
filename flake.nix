@@ -33,6 +33,7 @@
     {
       self,
       nixpkgs,
+      nix-darwin,
       home-manager,
       ...
     }@inputs:
@@ -78,9 +79,37 @@
         };
       };
 
+      darwinConfigurations = {
+        macbookpro = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+
+          specialArgs = {
+            inherit inputs outputs;
+            something = outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
+            ./darwin/macbookpro/configuration.nix
+            home-manager.darwinModules.home-manager
+          ];
+        };
+      };
+
       homeConfigurations = {
         "florian@desktop" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
+
+          extraSpecialArgs = {
+            inherit inputs outputs;
+          };
+
+          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
+            ./home-manager/florian/configuration.nix
+          ];
+        };
+
+        "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
 
           extraSpecialArgs = {
             inherit inputs outputs;

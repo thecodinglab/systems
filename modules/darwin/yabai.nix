@@ -5,7 +5,11 @@
   ...
 }:
 {
-  config = lib.mkIf config.services.yabay.enable {
+  options.custom.yabai = {
+    enable = lib.mkEnableOption "enable yabai configuration";
+  };
+
+  config = lib.mkIf config.custom.yabai.enable {
     services =
       let
         yabai = lib.getExe pkgs.yabai;
