@@ -57,6 +57,21 @@
 
       nix-direnv.enable = true;
     };
+
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+
+      flags = [ "--disable-up-arrow" ];
+
+      settings = {
+        style = "compact";
+        keymap_mode = "vim-insert";
+
+        enter_accept = false;
+        ctrl_n_shortcuts = true;
+      };
+    };
   };
 
   home.packages =
