@@ -1,4 +1,4 @@
-{ modulesPath, ... }:
+{ config, modulesPath, ... }:
 let
   uid = 1000;
   gid = 1000;
@@ -24,12 +24,17 @@ in
     users.media = {
       isSystemUser = true;
       group = "media";
+      home = "/home/media";
       inherit uid;
     };
 
     groups.media = {
       inherit gid;
     };
+  };
+
+  sops.secrets.kavita = {
+    sopsFile = ./secrets.yaml;
   };
 
   services = {
@@ -87,6 +92,20 @@ in
             recommendedProxySettings = true;
             proxyWebsockets = true;
           };
+          locations."/german/readarr" = {
+            proxyPass = "http://localhost:42003";
+            recommendedProxySettings = true;
+            proxyWebsockets = true;
+          };
+          locations."/kavita" = {
+            proxyPass = "http://localhost:5000";
+            recommendedProxySettings = true;
+            proxyWebsockets = true;
+            extraConfig = ''
+              sub_filter '<base href="/">'  '<base href="/kavita/">';
+              sub_filter_once off;
+            '';
+          };
         };
       };
     };
@@ -104,6 +123,15 @@ in
       group = "media";
     };
 
+    kavita = {
+      enable = true;
+      user = "kavita";
+      tokenKeyFile = config.sops.secrets.kavita.path;
+      settings = {
+        AllowStatCollection = false;
+        BaseUrl = "/kavita/";
+      };
+    };
   };
 
   systemd.timers.podman-auto-update = {
@@ -126,7 +154,7 @@ in
         }:
         {
           autoStart = true;
-          image = "docker.io/linuxserver/${image}";
+          image = "lscr.io/linuxserver/${image}";
 
           labels = {
             "io.containers.autoupdate" = "registry";
@@ -175,6 +203,22 @@ in
           ];
         }
       );
+
+      makeReadarrContainer = (
+        { lang, port }:
+        makeLinuxserverContainer {
+          name = "readarr-${lang}";
+          image = "readarr:develop";
+          port = {
+            src = port;
+            dst = 8787;
+          };
+          volumes = [
+            "/media/downloads:/downloads"
+            "/media/libraries/books/${lang}:/books"
+          ];
+        }
+      );
     in
     {
       sabnzbd = makeLinuxserverContainer {
@@ -213,6 +257,10 @@ in
       sonarr-german = makeSonarrContainer {
         lang = "german";
         port = 42002;
+      };
+      readarr-german = makeReadarrContainer {
+        lang = "german";
+        port = 42003;
       };
     };
 }

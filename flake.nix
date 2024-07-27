@@ -92,6 +92,7 @@
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/apollo/configuration.nix
             home-manager.nixosModules.home-manager
+            sops-nix.nixosModules.sops
           ];
         };
 
