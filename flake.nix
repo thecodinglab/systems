@@ -78,10 +78,7 @@
             inherit inputs outputs;
           };
 
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/server/configuration.nix
-            home-manager.nixosModules.home-manager
-          ];
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/server/configuration.nix ];
         };
 
         apollo = nixpkgs.lib.nixosSystem {
@@ -91,7 +88,6 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/apollo/configuration.nix
-            home-manager.nixosModules.home-manager
             sops-nix.nixosModules.sops
           ];
         };
@@ -103,7 +99,6 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/hestia/configuration.nix
-            home-manager.nixosModules.home-manager
           ];
         };
 
@@ -114,7 +109,6 @@
 
           modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             ./nixos/containers/hermes/configuration.nix
-            home-manager.nixosModules.home-manager
             sops-nix.nixosModules.sops
           ];
         };

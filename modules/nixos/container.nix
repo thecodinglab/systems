@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   outputs,
   pkgs,
   lib,
@@ -7,6 +8,8 @@
 }:
 {
   options.custom.isContainer = lib.mkEnableOption "enable base container configuration ";
+
+  imports = [ inputs.home-manager.nixosModules.home-manager ];
 
   config = lib.mkIf config.custom.isContainer {
     users.users.root = {
