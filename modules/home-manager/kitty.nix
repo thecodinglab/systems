@@ -14,9 +14,9 @@
       enable = true;
 
       font = {
-        package = pkgs.fonts.apple-font-sf-mono;
-        name = "SF Mono";
-        size = if pkgs.stdenv.isDarwin then 14 else 12;
+        package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
+        name = "Fira Code";
+        size = if pkgs.stdenv.isDarwin then 16 else 12;
       };
 
       settings = pkgs.lib.mkMerge [
