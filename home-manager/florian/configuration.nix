@@ -31,19 +31,14 @@
     zsh.enable = true;
     zathura.enable = true;
 
-    unfree =
-      [
-        "1password"
-        "1password-cli"
-        "spotify"
-        "obsidian"
-        "postman"
-        "lens-desktop"
-      ]
-      ++ lib.optionals pkgs.stdenv.isDarwin [
-        "raycast"
-        "tableplus"
-      ];
+    unfree = [
+      "1password"
+      "1password-cli"
+      "spotify"
+      "obsidian"
+      "postman"
+      "lens-desktop"
+    ] ++ lib.optionals pkgs.stdenv.isDarwin [ "raycast" ];
   };
 
   programs = {
@@ -63,9 +58,7 @@
       enableZshIntegration = true;
 
       settings = {
-        style = "compact";
         keymap_mode = "vim-insert";
-
         enter_accept = true;
         ctrl_n_shortcuts = true;
       };
@@ -156,10 +149,7 @@
 
       pkgs.prismlauncher
     ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [
-      pkgs.raycast
-      pkgs.tableplus
-    ];
+    ++ lib.optionals pkgs.stdenv.isDarwin [ pkgs.raycast ];
 
   fonts.fontconfig.enable = true;
 }
