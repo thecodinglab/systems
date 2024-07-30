@@ -1,4 +1,4 @@
-{ config, modulesPath, ... }:
+{ modulesPath, ... }:
 let
   uid = 1000;
   gid = 1000;
@@ -24,17 +24,13 @@ in
     users.media = {
       isSystemUser = true;
       group = "media";
-      home = "/home/media";
+      home = "/var/empty";
       inherit uid;
     };
 
     groups.media = {
       inherit gid;
     };
-  };
-
-  sops.secrets.kavita = {
-    sopsFile = ./secrets.yaml;
   };
 
   services = {
@@ -97,15 +93,6 @@ in
             recommendedProxySettings = true;
             proxyWebsockets = true;
           };
-          locations."/kavita" = {
-            proxyPass = "http://localhost:5000";
-            recommendedProxySettings = true;
-            proxyWebsockets = true;
-            extraConfig = ''
-              sub_filter '<base href="/">'  '<base href="/kavita/">';
-              sub_filter_once off;
-            '';
-          };
         };
       };
     };
@@ -121,16 +108,6 @@ in
       enable = true;
       user = "media";
       group = "media";
-    };
-
-    kavita = {
-      enable = true;
-      user = "kavita";
-      tokenKeyFile = config.sops.secrets.kavita.path;
-      settings = {
-        AllowStatCollection = false;
-        BaseUrl = "/kavita/";
-      };
     };
   };
 
