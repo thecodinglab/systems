@@ -376,7 +376,6 @@
                 "cpu"
                 "memory"
                 "network#ethernet"
-                "network#wifi"
               ];
 
               "hyprland/workspaces" = {
