@@ -37,7 +37,7 @@
     {
       self,
       nixpkgs,
-      darwin,
+      nix-darwin,
       home-manager,
       terranix,
       sops-nix,
@@ -126,7 +126,7 @@
       };
 
       darwinConfigurations = {
-        macbookpro = darwin.lib.darwinSystem {
+        macbookpro = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
 
           specialArgs = {
