@@ -21,17 +21,15 @@
 
       settings = pkgs.lib.mkMerge [
         {
-          dynamic_background_opacity = true;
-
           clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";
-
           allow_remote_control = "socket-only";
           listen_on = "unix:/tmp/kitty";
+
+          window_padding_width = "2 4";
         }
         (lib.mkIf pkgs.stdenv.isDarwin {
           macos_show_window_title_in = "none";
           hide_window_decorations = "titlebar-only";
-          window_padding_width = 1;
         })
       ];
     };
