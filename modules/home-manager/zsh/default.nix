@@ -21,15 +21,46 @@
           ls = "${pkgs.coreutils}/bin/ls -l --color=auto --group-directories-first -I . -I ..";
           ip = "ip --color=auto";
         };
+      };
 
-        initExtra = builtins.concatStringsSep "\n" [
-          ''
-            PROMPT="%(?:%F{green}%1{➜%}:%F{red}%1{➜%}) %F{cyan}%~%f "
-            RPS1="%F{cyan}%n@%m%f"
-          ''
+      starship = {
+        enable = true;
+        enableZshIntegration = true;
 
-          (builtins.readFile ./scripts/nested-shell-indicator.sh)
-        ];
+        settings = {
+          format = "$character $directory";
+          right_format = "$cmd_duration$shlvl[$username@$hostname](cyan)";
+          add_newline = false;
+
+          character = {
+            format = "$symbol";
+            success_symbol = "[➜](bold green)";
+            error_symbol = "[➜](bold red)";
+            vimcmd_symbol = "[➜](bold purple)";
+          };
+
+          username = {
+            format = "$user";
+            show_always = true;
+          };
+
+          hostname = {
+            format = "$hostname";
+            ssh_only = false;
+          };
+
+          shlvl = {
+            # TODO: add counter
+            disabled = false;
+            format = "[$symbol]($style) ";
+            symbol = "";
+            threshold = 3;
+          };
+
+          cmd_duration = {
+            format = "[$duration](bold yellow) ";
+          };
+        };
       };
 
       fzf.enableZshIntegration = config.custom.fzf.enable;
