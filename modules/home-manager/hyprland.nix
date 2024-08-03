@@ -102,7 +102,6 @@
           general = {
             gaps_in = 10;
             gaps_out = "5,30,30,30";
-            no_border_on_floating = true;
 
             border_size = 2;
 
@@ -296,17 +295,14 @@
 
               ### Color ###
 
-              separator_height = "1";
-              separator_color = "frame";
-
               frame_width = "2";
+              separator_height = "1";
 
               sort = "yes";
               idle_threshold = "120";
 
               ### Text ###
 
-              font = "SF Pro 12";
               line_height = "0";
 
               format = "<b>%a</b> %s %p\n%b";
@@ -361,6 +357,50 @@
         waybar = {
           enable = true;
           systemd.enable = true;
+
+          style = ''
+            * {
+              border: none;
+              border-radius: 5px;
+            }
+
+            window#waybar {
+              background: transparent;
+            }
+
+            .modules-left, .modules-center, .modules-right {
+              margin: 10px 30px;
+
+              background: @base00;
+              color: @base05;
+            }
+
+            .modules-center, .modules-right {
+              padding: 0 10px;
+            }
+
+            .modules-left #workspaces button {
+              padding: 1px 10px;
+              background: transparent;
+              border-bottom: none;
+            }
+
+            .modules-left #workspaces button.focused,
+            .modules-left #workspaces button.active {
+              background: shade(@base0D, 0.5);
+              border-bottom: none;
+            }
+
+            #workspaces button.urgent {
+              background: shade(@base08, 0.5);
+              border-bottom: none;
+            }
+
+            #clock, #disk, #pulseaudio, #cpu, #memory, #network {
+              padding: 0 2px;
+            }
+          '';
+
           settings = {
             mainBar = {
               layer = "top";
@@ -446,9 +486,6 @@
             min-input-width = 120;
             result-spacing = 15;
 
-            font = "SF Pro";
-            font-size = 10;
-
             outline-width = 0;
             border-width = 0;
             padding-top = 4;
@@ -463,6 +500,11 @@
           settings = {
             background = {
               monitor = "";
+              path = builtins.toString (
+                pkgs.runCommand "wallpaper-blurred.png" { buildInputs = [ pkgs.ffmpeg ]; } ''
+                  ffmpeg -y -i ${config.stylix.image} -vf "gblur=sigma=30:steps=3" $out
+                ''
+              );
             };
 
             label = {
@@ -470,7 +512,7 @@
               text = ''cmd[update:1000] echo "$(date +"%H:%M")"'';
 
               color = "rgb(200, 200, 200)";
-              font_family = "SF Pro";
+              font_family = "Inter";
               font_size = 100;
 
               halign = "center";
@@ -500,11 +542,6 @@
             };
           };
         };
-      };
-
-      home.pointerCursor = {
-        name = "Bibata-Modern-Classic";
-        package = pkgs.bibata-cursors;
       };
 
       home.packages = [

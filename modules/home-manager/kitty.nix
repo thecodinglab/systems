@@ -13,12 +13,6 @@
     programs.kitty = {
       enable = true;
 
-      font = {
-        package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
-        name = "Fira Code";
-        size = if pkgs.stdenv.isDarwin then 16 else 12;
-      };
-
       settings = pkgs.lib.mkMerge [
         {
           clipboard_control = "write-clipboard write-primary read-clipboard-ask read-primary-ask";

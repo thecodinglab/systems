@@ -31,16 +31,25 @@
         nixpkgs-stable.follows = "nixpkgs";
       };
     };
+
+    stylix = {
+      url = "github:danth/stylix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      nix-darwin,
+      darwin,
       home-manager,
       terranix,
       sops-nix,
+      stylix,
       ...
     }@inputs:
     let
@@ -64,69 +73,59 @@
       darwinModules = import ./modules/darwin;
       homeManagerModules = import ./modules/home-manager;
 
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/desktop/configuration.nix ];
-        };
-
-        server = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/server/configuration.nix ];
-        };
-
-        apollo = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
-          };
-
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/apollo/configuration.nix
+      nixosConfigurations =
+        let
+          baseModules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
             sops-nix.nixosModules.sops
+            stylix.nixosModules.stylix
           ];
-        };
-
-        hestia = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
+        in
+        {
+          desktop = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/desktop/configuration.nix ];
           };
 
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/hestia/configuration.nix
-          ];
-        };
-
-        hermes = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
+          server = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/server/configuration.nix ];
           };
 
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/hermes/configuration.nix
-            sops-nix.nixosModules.sops
-          ];
-        };
-
-        poseidon = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs outputs;
+          apollo = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/containers/apollo/configuration.nix ];
           };
 
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/poseidon/configuration.nix
-            home-manager.nixosModules.home-manager
-          ];
+          hestia = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/containers/hestia/configuration.nix ];
+          };
+
+          hermes = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/containers/hermes/configuration.nix ];
+          };
+
+          poseidon = nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./nixos/containers/poseidon/configuration.nix ];
+          };
         };
-      };
 
       darwinConfigurations = {
-        macbookpro = nix-darwin.lib.darwinSystem {
+        macbookpro = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
 
           specialArgs = {
@@ -136,36 +135,36 @@
 
           modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
             ./darwin/macbookpro/configuration.nix
-            home-manager.darwinModules.home-manager
+            sops-nix.darwinModules.sops
+            stylix.darwinModules.stylix
           ];
         };
       };
 
-      homeConfigurations = {
-        "florian@desktop" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-
-          extraSpecialArgs = {
-            inherit inputs outputs;
+      homeConfigurations =
+        let
+          baseModules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
+            sops-nix.homeManagerModules.sops
+            stylix.homeManagerModules.stylix
+          ];
+        in
+        {
+          "florian@desktop" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            extraSpecialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./home-manager/florian/configuration.nix ];
           };
 
-          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
-            ./home-manager/florian/configuration.nix
-          ];
-        };
-
-        "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-
-          extraSpecialArgs = {
-            inherit inputs outputs;
+          "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+            extraSpecialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./home-manager/florian/configuration.nix ];
           };
-
-          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
-            ./home-manager/florian/configuration.nix
-          ];
         };
-      };
 
       terraformConfiguration = forAllSystems (
         system:
