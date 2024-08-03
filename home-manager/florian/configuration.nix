@@ -123,7 +123,8 @@
       pkgs.jq
       pkgs.zip
       pkgs.unzip
-      pkgs.ollama
+      # FIXME: current version of ollama has invalid fixed output hash
+      # pkgs.ollama
       pkgs.postman
 
       pkgs.exiftool
@@ -178,8 +179,6 @@
       pkgs.signal-desktop
       pkgs.protonmail-desktop
       pkgs.helvum
-
-      pkgs.darktable
 
       pkgs.imv
       pkgs.mpv

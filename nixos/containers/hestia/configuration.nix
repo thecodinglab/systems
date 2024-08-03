@@ -144,7 +144,4 @@
       };
     };
   };
-
-  # FIXME: see https://nixos.wiki/wiki/Home_Assistant
-  # nixpkgs.config.permittedInsecurePackages = [ "openssl-1.1.1w" ];
 }
