@@ -1,14 +1,20 @@
 keys:
-  - &desktop age1wgenz0mv90afzts5ay84k24yykquv4cudt208wels0v2w66j3psqwxqsk9
+  - &user_florian age1wgenz0mv90afzts5ay84k24yykquv4cudt208wels0v2w66j3psqwxqsk9
+  - &nixos_desktop age1l6ekk5r643nqa7n49d94ux5e37uwj3zju4lch0vj88tzkxjzkcmscc4dh4
   - &server_hermes age17zu2f06ux4yyr85jwp22yx22589cz49gda6p7c7d5rv4wxgg6ecqs4p2uw
 
 creation_rules:
+  - path_regex: ^modules/nixos/vpn/secrets.yaml$
+    key_groups:
+      - age:
+        - *user_florian
+        - *nixos_desktop
   - path_regex: hermes/secrets.yaml$
     key_groups:
       - age:
-        - *desktop
+        - *user_florian
         - *server_hermes
   - path_regex: ^infra/secrets.yaml$
     key_groups:
       - age:
-        - *desktop
+        - *user_florian

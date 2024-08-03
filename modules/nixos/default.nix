@@ -6,6 +6,7 @@
   desktop = import ./desktop;
   dynamic-brightness = import ./dynamic-brightness.nix;
   nvidia = import ./nvidia.nix;
+  vpn = import ./vpn;
 
   unfree = import ../unfree.nix;
 }
