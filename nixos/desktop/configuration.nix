@@ -57,10 +57,16 @@
       enp14s0.useDHCP = true;
     };
 
-    firewall.allowedTCPPorts = [
-      22 # ssh
-      5201 # iperf
-    ];
+    firewall = {
+      allowedTCPPorts = [
+        22 # ssh
+        3000 # dev
+        5201 # iperf
+        8080 # dev
+      ];
+
+      trustedInterfaces = [ "virbr0" ];
+    };
   };
 
   #######################
