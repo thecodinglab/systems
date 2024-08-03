@@ -13,6 +13,9 @@
     {
       _1password = stable._1password;
       _1password-gui = stable._1password-gui;
+      incus = stable.incus;
+      incus-lts = stable.incus-lts;
+
       neovim = inputs.neovim-config.packages.${final.system}.default;
     };
 }
