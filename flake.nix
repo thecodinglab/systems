@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -135,7 +136,6 @@
 
           modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
             ./darwin/macbookpro/configuration.nix
-            sops-nix.darwinModules.sops
             stylix.darwinModules.stylix
           ];
         };
