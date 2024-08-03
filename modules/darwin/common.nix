@@ -29,7 +29,7 @@
 
   environment = {
     variables = {
-      EDITOR = lib.getExe pkgs.neovim;
+      EDITOR = "nvim";
     };
 
     shells = [ pkgs.zsh ];
