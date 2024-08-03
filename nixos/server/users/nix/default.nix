@@ -38,7 +38,6 @@
         imports = lib.attrValues outputs.homeManagerModules;
 
         custom = {
-          catppuccin.enable = true;
           fzf.enable = true;
           tmux.enable = true;
           zsh.enable = true;

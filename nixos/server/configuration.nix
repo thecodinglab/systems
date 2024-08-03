@@ -53,20 +53,18 @@
   #######################
 
   networking = {
+    useNetworkd = false;
     useDHCP = false;
+
     hostName = "server";
 
     interfaces.eno1 = {
       useDHCP = true;
     };
 
-    bridges = {
-      br0 = {
-        interfaces = [ "eno2" ];
-      };
+    bridges.br0 = {
+      interfaces = [ "eno2" ];
     };
-
-    nftables.enable = true;
 
     firewall = {
       allowedTCPPorts = [
@@ -75,9 +73,11 @@
         3000 # grafana
         5201 # iperf
       ];
-      allowedUDPPorts = [ ];
 
-      trustedInterfaces = [ "eno2" ];
+      trustedInterfaces = [
+        "eno2"
+        "br0"
+      ];
     };
   };
 

@@ -46,7 +46,7 @@
     };
 
     networking = {
-      useNetworkd = true;
+      useNetworkd = lib.mkDefault true;
       useHostResolvConf = false;
       nftables.enable = true;
       firewall.enable = true;
