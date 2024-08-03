@@ -16,6 +16,10 @@
   home = {
     username = "florian";
     homeDirectory = if pkgs.stdenv.isDarwin then "/Users/florian" else "/home/florian";
+
+    sessionVariables = {
+      LEDGER_FILE = "${config.home.homeDirectory}/finance/All.journal";
+    };
   };
 
   custom = {
