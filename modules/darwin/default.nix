@@ -1,7 +1,7 @@
 {
   common = import ./common.nix;
-  neovim = import ./neovim.nix;
   yabai = import ./yabai.nix;
 
+  neovim = import ../../pkgs/neovim/module.nix;
   unfree = import ../unfree.nix;
 }

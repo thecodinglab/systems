@@ -15,7 +15,7 @@
     ./incus.nix
 
     # User
-    ./users/nix
+    ./users/nix/configuration.nix
   ];
 
   nixpkgs.overlays = [

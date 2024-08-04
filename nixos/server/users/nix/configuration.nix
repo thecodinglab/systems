@@ -1,4 +1,5 @@
 {
+  inputs,
   outputs,
   pkgs,
   lib,
@@ -35,9 +36,10 @@
       {
         home.stateVersion = "23.11";
 
-        imports = lib.attrValues outputs.homeManagerModules;
+        imports = lib.attrValues outputs.homeManagerModules ++ [ inputs.nixvim.homeManagerModules.nixvim ];
 
         custom = {
+          nixvim.enable = true;
           fzf.enable = true;
           tmux.enable = true;
           zsh.enable = true;

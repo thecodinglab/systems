@@ -5,9 +5,9 @@
   container = import ./container.nix;
   desktop = import ./desktop;
   dynamic-brightness = import ./dynamic-brightness.nix;
-  neovim = import ./neovim.nix;
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
 
+  neovim = import ../../pkgs/neovim/module.nix;
   unfree = import ../unfree.nix;
 }

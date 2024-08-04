@@ -6,10 +6,11 @@
   hyprland = import ./hyprland.nix;
   i3 = import ./i3.nix;
   kitty = import ./kitty.nix;
-  neovim = import ./neovim.nix;
+  theme = import ./theme;
   tmux = import ./tmux.nix;
   zathura = import ./zathura.nix;
   zsh = import ./zsh;
 
+  neovim = import ../../pkgs/neovim/module.nix;
   unfree = import ../unfree.nix;
 }

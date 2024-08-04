@@ -70,11 +70,7 @@
       ];
     };
 
-    programs = {
-      zsh.enable = true;
-      nixvim.enable = true;
-    };
-
+    programs.zsh.enable = true;
     services.openssh.enable = true;
   };
 }
