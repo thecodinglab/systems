@@ -5,6 +5,7 @@
   container = import ./container.nix;
   desktop = import ./desktop;
   dynamic-brightness = import ./dynamic-brightness.nix;
+  neovim = import ./neovim.nix;
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
 

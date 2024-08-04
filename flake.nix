@@ -15,9 +15,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    neovim-config = {
-      url = "github:thecodinglab/neovim-config";
-      inputs.nixpkgs.follows = "nixpkgs";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+        nix-darwin.follows = "darwin";
+      };
     };
 
     terranix = {
@@ -51,6 +55,7 @@
       terranix,
       sops-nix,
       stylix,
+      nixvim,
       ...
     }@inputs:
     let
@@ -66,7 +71,10 @@
       forAllSystems = nixpkgs.lib.genAttrs systems;
     in
     {
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+      packages = forAllSystems (
+        system: nixpkgs.legacyPackages.${system}.callPackage ./pkgs { inherit nixvim; }
+      );
+
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
       overlays = import ./overlays { inherit inputs; };
 
@@ -77,6 +85,7 @@
       nixosConfigurations =
         let
           baseModules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            nixvim.nixosModules.nixvim
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
           ];
@@ -125,25 +134,27 @@
           };
         };
 
-      darwinConfigurations = {
-        macbookpro = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-
-          specialArgs = {
-            inherit inputs outputs;
-            something = outputs;
-          };
-
-          modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
-            ./darwin/macbookpro/configuration.nix
+      darwinConfigurations =
+        let
+          baseModules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
+            nixvim.nixDarwinModules.nixvim
             stylix.darwinModules.stylix
           ];
+        in
+        {
+          macbookpro = darwin.lib.darwinSystem {
+            system = "aarch64-darwin";
+            specialArgs = {
+              inherit inputs outputs;
+            };
+            modules = baseModules ++ [ ./darwin/macbookpro/configuration.nix ];
+          };
         };
-      };
 
       homeConfigurations =
         let
           baseModules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
+            nixvim.homeManagerModules.nixvim
             sops-nix.homeManagerModules.sops
             stylix.homeManagerModules.stylix
           ];

@@ -1,6 +1,6 @@
 { inputs }:
 {
-  additions = final: _prev: import ../pkgs final;
+  additions = final: prev: import ../pkgs (prev // inputs);
 
   modifications =
     final: _prev:
@@ -15,7 +15,5 @@
       _1password-gui = stable._1password-gui;
       incus = stable.incus;
       incus-lts = stable.incus-lts;
-
-      neovim = inputs.neovim-config.packages.${final.system}.default;
     };
 }

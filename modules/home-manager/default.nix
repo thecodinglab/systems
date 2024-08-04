@@ -6,6 +6,7 @@
   hyprland = import ./hyprland.nix;
   i3 = import ./i3.nix;
   kitty = import ./kitty.nix;
+  neovim = import ./neovim.nix;
   tmux = import ./tmux.nix;
   zathura = import ./zathura.nix;
   zsh = import ./zsh;

@@ -61,7 +61,6 @@
 
       systemPackages = [
         pkgs.coreutils
-        pkgs.neovim
         pkgs.git
       ];
 
@@ -71,7 +70,11 @@
       ];
     };
 
-    programs.zsh.enable = true;
+    programs = {
+      zsh.enable = true;
+      nixvim.enable = true;
+    };
+
     services.openssh.enable = true;
   };
 }
