@@ -108,7 +108,8 @@
 
       # open file explorer
       {
-        key = "<leader>nf";
+        key = "-";
+        mode = [ "n" ];
         action = "<cmd>Oil<cr>";
       }
 
