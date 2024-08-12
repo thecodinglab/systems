@@ -147,6 +147,12 @@
       pkgs.vimPlugins.nui-nvim
     ];
 
+    files = {
+      "ftplugin/proto.lua" = {
+        opts.commentstring = "// %s";
+      };
+    };
+
     plugins = {
       treesitter = {
         enable = true;
