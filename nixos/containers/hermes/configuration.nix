@@ -68,8 +68,8 @@
     };
   };
 
-  sops.secrets.cloudflare = {
-    sopsFile = ./secrets.yaml;
+  sops.secrets = {
+    cloudflareToken.sopsFile = ./secrets.yaml;
   };
 
   security.acme = {
@@ -77,7 +77,9 @@
     defaults = {
       email = "fw@florian-walter.ch";
       dnsProvider = "cloudflare";
-      credentialsFile = config.sops.secrets.cloudflare.path;
+      credentialFiles = {
+        CF_DNS_API_TOKEN_FILE = config.sops.secrets.cloudflareToken.path;
+      };
     };
   };
 }
