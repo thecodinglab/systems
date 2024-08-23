@@ -388,6 +388,7 @@
 
       vimtex.enable = true;
       ledger.enable = true;
+      markdown-preview.enable = true;
 
       obsidian = {
         enable = config.enableObsidian;
