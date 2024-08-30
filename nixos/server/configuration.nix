@@ -89,6 +89,7 @@
     pkgs.bridge-utils
     pkgs.tcpdump
     pkgs.iperf
+    pkgs.neovim.minimal
   ];
 
   #######################

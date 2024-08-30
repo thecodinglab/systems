@@ -1,5 +1,11 @@
 { pkgs, nixvim }:
-nixvim.legacyPackages.${pkgs.system}.makeNixvimWithModule {
-  inherit pkgs;
-  module = ./config.nix;
+{
+  minimal = nixvim.legacyPackages.${pkgs.system}.makeNixvimWithModule {
+    inherit pkgs;
+    module = ./config/minimal.nix;
+  };
+  dev = nixvim.legacyPackages.${pkgs.system}.makeNixvimWithModule {
+    inherit pkgs;
+    module = ./config/dev.nix;
+  };
 }

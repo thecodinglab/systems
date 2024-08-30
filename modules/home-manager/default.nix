@@ -11,6 +11,5 @@
   zathura = import ./zathura.nix;
   zsh = import ./zsh;
 
-  neovim = import ../../pkgs/neovim/module.nix;
   unfree = import ../unfree.nix;
 }

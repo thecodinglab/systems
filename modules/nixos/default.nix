@@ -8,6 +8,5 @@
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
 
-  neovim = import ../../pkgs/neovim/module.nix;
   unfree = import ../unfree.nix;
 }

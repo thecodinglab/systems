@@ -34,7 +34,5 @@
         name = "Noto Color Emoji";
       };
     };
-
-    targets.nixvim.enable = false;
   };
 }

@@ -85,7 +85,6 @@
       nixosConfigurations =
         let
           baseModules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            nixvim.nixosModules.nixvim
             sops-nix.nixosModules.sops
             stylix.nixosModules.stylix
           ];
@@ -137,7 +136,6 @@
       darwinConfigurations =
         let
           baseModules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
-            nixvim.nixDarwinModules.nixvim
             stylix.darwinModules.stylix
           ];
         in
@@ -154,7 +152,6 @@
       homeConfigurations =
         let
           baseModules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
-            nixvim.homeManagerModules.nixvim
             sops-nix.homeManagerModules.sops
             stylix.homeManagerModules.stylix
           ];

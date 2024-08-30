@@ -23,13 +23,6 @@
   };
 
   custom = {
-    nixvim = {
-      enable = true;
-      enableGit = true;
-      enableSpell = true;
-      enableObsidian = true;
-    };
-
     fzf.enable = true;
     tmux.enable = true;
     chromium.enable = pkgs.stdenv.isLinux;
@@ -100,6 +93,7 @@
       # FIXME: current version of ollama has invalid fixed output hash
       # pkgs.ollama
       pkgs.postman
+      pkgs.neovim.dev
 
       pkgs.exiftool
       pkgs.ffmpeg

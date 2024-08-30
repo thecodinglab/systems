@@ -12,6 +12,13 @@
   imports = [ inputs.home-manager.nixosModules.home-manager ];
 
   config = lib.mkIf config.custom.isContainer {
+    nixpkgs.overlays = [
+      outputs.overlays.additions
+      outputs.overlays.modifications
+    ];
+
+    environment.systemPackages = [ pkgs.neovim.minimal ];
+
     users.users.root = {
       shell = pkgs.zsh;
 
@@ -38,7 +45,6 @@
           imports = lib.attrValues outputs.homeManagerModules;
 
           custom = {
-            catppuccin.enable = true;
             fzf.enable = true;
             zsh.enable = true;
           };
