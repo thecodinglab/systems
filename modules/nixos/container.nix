@@ -17,6 +17,8 @@
       outputs.overlays.modifications
     ];
 
+    networking.nftables.enable = false;
+
     environment.systemPackages = [ pkgs.neovim.minimal ];
 
     users.users.root = {

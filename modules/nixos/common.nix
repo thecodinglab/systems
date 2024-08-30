@@ -48,7 +48,7 @@
     networking = {
       useNetworkd = lib.mkDefault true;
       useHostResolvConf = false;
-      nftables.enable = true;
+      nftables.enable = lib.mkDefault true;
       firewall.enable = true;
     };
 
