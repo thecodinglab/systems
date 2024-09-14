@@ -2,5 +2,5 @@
 {
   fonts = pkgs.callPackage ./fonts/san-francisco.nix { };
   neovim = pkgs.callPackage ./neovim/package.nix { inherit nixvim; };
-  zen = pkgs.callPackage ./zen { };
+  zen-browser = pkgs.callPackage ./zen-browser { };
 }
