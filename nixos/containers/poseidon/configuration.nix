@@ -78,18 +78,20 @@ in
     samba = {
       enable = true;
       openFirewall = true;
-      securityType = "user";
 
-      extraConfig = ''
-        server string = poseidon
-        netbios name = poseidon
-        hosts allow = 192.168.1. 127.0.0.1 localhost
-        hosts deny = 0.0.0.0/0
+      settings = {
+        global = {
+          security = "user";
+          "server string" = "poseidon";
+          "netbios name" = "poseidon";
+          "hosts allow" = "192.168.1. 127.0.0.1 localhost";
+          "hosts deny" = "0.0.0.0/0";
 
-        multicast dns register = no
+          "multicast dns register" = "no";
 
-        guest account = nobody
-      '';
+          "guest account" = "nobody";
+        };
+      };
 
       shares = {
         share = {
