@@ -12,6 +12,7 @@ in
       vim.g.neovide_hide_mouse_when_typing = true
       vim.g.neovide_cursor_animation_length = 0
       vim.g.neovide_show_border = true
+      vim.g.neovide_theme = 'auto'
 
       vim.o.guifont = "FiraCode Nerd Font Mono:h${builtins.toString fontSize}"
 
@@ -169,10 +170,7 @@ in
       };
     };
 
-    lightline = {
-      enable = true;
-      settings.colorscheme = "catppuccin";
-    };
+    lualine.enable = true;
 
     telescope = {
       enable = true;
