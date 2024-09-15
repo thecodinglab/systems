@@ -1,4 +1,7 @@
 { pkgs, neovim, ... }:
+let
+  fontSize = if pkgs.stdenv.isDarwin then 16 else 12;
+in
 {
   package = neovim;
   extraPackages = [ pkgs.ripgrep ];
@@ -8,7 +11,7 @@
       vim.g.neovide_hide_mouse_when_typing = true
       vim.g.neovide_cursor_animation_length = 0
 
-      vim.o.guifont = "FiraCode Nerd Font Mono:h12"
+      vim.o.guifont = "FiraCode Nerd Font Mono:h${builtins.toString fontSize}"
 
       vim.g.neovide_padding_top = 5
       vim.g.neovide_padding_bottom = 5
