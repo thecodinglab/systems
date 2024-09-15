@@ -556,7 +556,7 @@
         pkgs.playerctl
 
         # Font
-        pkgs.fonts.apple-font-sf-pro
+        pkgs.apple-font-sf-pro
       ];
     };
 }

@@ -19,7 +19,7 @@
 
     networking.nftables.enable = false;
 
-    environment.systemPackages = [ pkgs.neovim.minimal ];
+    environment.systemPackages = [ pkgs.neovim-minimal ];
 
     users.users.root = {
       shell = pkgs.zsh;

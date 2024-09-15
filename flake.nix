@@ -23,6 +23,17 @@
         nix-darwin.follows = "darwin";
       };
     };
+    neovim-src = {
+      url = "github:neovim/neovim?ref=nightly";
+      flake = false;
+    };
+    neovim = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        neovim-src.follows = "neovim-src";
+      };
+    };
 
     terranix = {
       url = "github:terranix/terranix";
@@ -72,7 +83,11 @@
     in
     {
       packages = forAllSystems (
-        system: nixpkgs.legacyPackages.${system}.callPackage ./pkgs { inherit nixvim; }
+        system:
+        import ./pkgs {
+          pkgs = nixpkgs.legacyPackages.${system};
+          inherit inputs;
+        }
       );
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);

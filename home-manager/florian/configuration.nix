@@ -78,10 +78,10 @@
       pkgs.hledger-ui
       pkgs.hledger-web
 
-      pkgs.fonts.apple-font-sf-pro
-      pkgs.fonts.apple-font-sf-compact
-      pkgs.fonts.apple-font-sf-mono
-      pkgs.fonts.apple-font-new-york
+      pkgs.apple-font-sf-pro
+      pkgs.apple-font-sf-compact
+      pkgs.apple-font-sf-mono
+      pkgs.apple-font-new-york
 
       # Utilities
       pkgs._1password
@@ -93,7 +93,7 @@
       # FIXME: current version of ollama has invalid fixed output hash
       # pkgs.ollama
       pkgs.postman
-      pkgs.neovim.dev
+      pkgs.neovim-dev
 
       pkgs.exiftool
       pkgs.ffmpeg

@@ -1,8 +1,6 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
-  imports = [
-    ./minimal.nix
-  ];
+  imports = [ ./minimal.nix ];
 
   keymaps = [
     # prettier

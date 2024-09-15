@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, neovim, ... }:
 {
+  package = neovim;
   extraPackages = [ pkgs.ripgrep ];
 
   globals = {

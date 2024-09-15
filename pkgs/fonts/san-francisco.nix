@@ -1,9 +1,4 @@
-{
-  lib,
-  stdenv,
-  p7zip,
-  nerd-font-patcher,
-}:
+{ pkgs }:
 let
   mkFont =
     {
@@ -12,15 +7,15 @@ let
       src,
       patchFont ? false,
     }:
-    stdenv.mkDerivation {
+    pkgs.stdenv.mkDerivation {
       inherit pname version src;
 
       unpackPhase = ''
         runHook preUnpack
 
-        ${lib.getExe' p7zip "7z"} x $src
-        find -name '*.pkg' -exec ${lib.getExe' p7zip "7z"} x {} \;
-        ${lib.getExe' p7zip "7z"} x 'Payload~'
+        ${pkgs.lib.getExe' pkgs.p7zip "7z"} x $src
+        find -name '*.pkg' -exec ${pkgs.lib.getExe' pkgs.p7zip "7z"} x {} \;
+        ${pkgs.lib.getExe' pkgs.p7zip "7z"} x 'Payload~'
 
         runHook postUnpack
       '';
@@ -28,9 +23,9 @@ let
       buildPhase = ''
         runHook preBuild
 
-        ${lib.optionalString patchFont ''
-          find Library/Fonts -name '*.otf' -exec ${lib.getExe nerd-font-patcher} -c {} \;
-          find Library/Fonts -name '*.ttf' -exec ${lib.getExe nerd-font-patcher} -c {} \;
+        ${pkgs.lib.optionalString patchFont ''
+          find Library/Fonts -name '*.otf' -exec ${pkgs.lib.getExe pkgs.nerd-font-patcher} -c {} \;
+          find Library/Fonts -name '*.ttf' -exec ${pkgs.lib.getExe pkgs.nerd-font-patcher} -c {} \;
         ''}
 
         runHook postBuild

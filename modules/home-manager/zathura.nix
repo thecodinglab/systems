@@ -26,6 +26,6 @@
       "${pkgs.zathura}/share/applications/org.pwmt.zathura.desktop"
     ];
 
-    home.packages = [ pkgs.fonts.apple-font-sf-mono ];
+    home.packages = [ pkgs.apple-font-sf-mono ];
   };
 }
