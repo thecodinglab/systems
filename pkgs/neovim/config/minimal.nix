@@ -3,6 +3,12 @@
   package = neovim;
   extraPackages = [ pkgs.ripgrep ];
 
+  extraConfigLua = ''
+    if vim.g.neovide then
+      vim.g.neovide_cursor_animation_length = 0
+    end
+  '';
+
   globals = {
     mapleader = " ";
     maplocalleader = " ";

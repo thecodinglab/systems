@@ -50,6 +50,15 @@
     btop.enable = true;
     sioyek.enable = true;
 
+    neovide = {
+      enable = true;
+      settings = {
+        frame = if pkgs.stdenv.isDarwin then "transparent" else "none";
+        grid = "120x40";
+        title-hidden = true;
+      };
+    };
+
     direnv = {
       enable = true;
       enableZshIntegration = true;
