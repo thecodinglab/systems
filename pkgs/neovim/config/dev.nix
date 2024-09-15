@@ -3,6 +3,12 @@
   imports = [ ./minimal.nix ];
 
   keymaps = [
+    # projects
+    {
+      key = "go";
+      action = "<cmd>Telescope projects<cr>";
+    }
+
     # prettier
     {
       key = "gp";
@@ -260,6 +266,22 @@
             vim.notify("unable to open link: no tool found", vim.log.levels.ERROR)
           end
         '';
+      };
+    };
+
+    project-nvim = {
+      enable = true;
+      enableTelescope = true;
+      settings = {
+        detection_methods = [
+          "lsp"
+          "pattern"
+        ];
+
+        patterns = [
+          ".git"
+          ".obsidian"
+        ];
       };
     };
   };
