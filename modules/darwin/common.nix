@@ -2,7 +2,7 @@
 {
   nix = {
     settings = {
-      auto-optimise-store = true;
+      auto-optimise-store = false;
     };
 
     extraOptions = ''
