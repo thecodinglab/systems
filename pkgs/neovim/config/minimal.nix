@@ -1,6 +1,7 @@
 { pkgs, neovim, ... }:
 let
   fontSize = if pkgs.stdenv.isDarwin then 16 else 12;
+  padding = 10;
 in
 {
   package = neovim;
@@ -10,13 +11,14 @@ in
     if vim.g.neovide then
       vim.g.neovide_hide_mouse_when_typing = true
       vim.g.neovide_cursor_animation_length = 0
+      vim.g.neovide_show_border = true
 
       vim.o.guifont = "FiraCode Nerd Font Mono:h${builtins.toString fontSize}"
 
-      vim.g.neovide_padding_top = 5
-      vim.g.neovide_padding_bottom = 5
-      vim.g.neovide_padding_right = 5
-      vim.g.neovide_padding_left = 5
+      vim.g.neovide_padding_top = ${builtins.toString padding}
+      vim.g.neovide_padding_bottom = ${builtins.toString padding}
+      vim.g.neovide_padding_right = ${builtins.toString padding}
+      vim.g.neovide_padding_left = ${builtins.toString padding}
 
       if vim.fn.has('macunix') == 1 then
         vim.keymap.set('c', '<d-v>', '<c-r>+') -- Paste command mode

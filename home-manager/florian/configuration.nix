@@ -54,7 +54,7 @@
       enable = true;
       settings = {
         fork = true;
-        frame = if pkgs.stdenv.isDarwin then "transparent" else "none";
+        frame = if pkgs.stdenv.isDarwin then "buttonless" else "none";
         grid = "120x40";
         title-hidden = true;
       };
