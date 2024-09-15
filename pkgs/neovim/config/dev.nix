@@ -51,10 +51,21 @@
         end
       '';
 
-      keymaps.lspBuf = {
-        K = "hover";
-        "<leader>rn" = "rename";
-        "<leader>ca" = "code_action";
+      keymaps = {
+        lspBuf = {
+          K = "hover";
+          "grn" = "rename";
+          "gra" = "code_action";
+          "grf" = "format";
+        };
+
+        extra = [
+          {
+            key = "<C-S>";
+            action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
+            mode = [ "i" ];
+          }
+        ];
       };
 
       servers = {
@@ -189,10 +200,10 @@
     };
 
     telescope.keymaps = {
-      "gd" = "lsp_definitions";
-      "gr" = "lsp_references";
-      "gi" = "lsp_implementations";
-      "gt" = "lsp_type_definitions";
+      "grd" = "lsp_definitions";
+      "grr" = "lsp_references";
+      "gri" = "lsp_implementations";
+      "grt" = "lsp_type_definitions";
     };
 
     gitsigns.enable = true;
