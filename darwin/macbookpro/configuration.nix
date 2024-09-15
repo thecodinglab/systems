@@ -19,4 +19,6 @@
     name = "florian";
     home = "/Users/florian/";
   };
+
+  system.stateVersion = 5;
 }
