@@ -53,6 +53,7 @@
     neovide = {
       enable = true;
       settings = {
+        fork = true;
         frame = if pkgs.stdenv.isDarwin then "transparent" else "none";
         grid = "120x40";
         title-hidden = true;

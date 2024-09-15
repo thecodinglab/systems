@@ -5,7 +5,23 @@
 
   extraConfigLua = ''
     if vim.g.neovide then
+      vim.g.neovide_hide_mouse_when_typing = true
       vim.g.neovide_cursor_animation_length = 0
+
+      vim.o.guifont = "FiraCode Nerd Font Mono:h12"
+
+      vim.g.neovide_padding_top = 5
+      vim.g.neovide_padding_bottom = 5
+      vim.g.neovide_padding_right = 5
+      vim.g.neovide_padding_left = 5
+
+      if vim.fn.has('macunix') == 1 then
+        vim.keymap.set('c', '<d-v>', '<c-r>+') -- Paste command mode
+        vim.keymap.set('i', '<d-v>', '<esc>"+pa') -- Paste insert mode
+      else
+        vim.keymap.set('c', '<cs-v>', '<c-r>+') -- Paste command mode
+        vim.keymap.set('i', '<cs-v>', '<esc>"+pa') -- Paste insert mode
+      end
     end
   '';
 
