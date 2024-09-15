@@ -111,6 +111,19 @@
 
         tsserver.enable = true;
         eslint.enable = true;
+        tailwindcss = {
+          enable = true;
+          settings.tailwindCSS.experimental.classRegex = [
+            [
+              "cva\\(([^)]*)\\)"
+              "[\"'`]([^\"'`]*).*?[\"'`]"
+            ]
+            [
+              "cx\\(([^)]*)\\)"
+              "(?:'|\"|`)([^']*)(?:'|\"|`)"
+            ]
+          ];
+        };
 
         clangd = {
           enable = true;
