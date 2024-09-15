@@ -1,35 +1,38 @@
-SSH_SERVER_HOST := server
-SSH_APOLLO_HOST := apollo
-SSH_HERMES_HOST := hermes
-SSH_POSEIDON_HOST := poseidon
-SSH_HESTIA_HOST := hestia
+HOSTNAME ?= $(shell hostname)
+USER ?= $(shell id -un)
 
-CONTAINERS := apollo hermes poseidon hestia
+ifeq ($(HOSTNAME),florian-nixos)
+	HOST ?= desktop
+	REBUILD_CMD ?= nixos-rebuild
+	REBUILD_SWITCH_CMD ?= sudo nixos-rebuild
+else ifeq ($(HOSTNAME),Florians-MacBook-Pro)
+	HOST ?= macbookpro
+	REBUILD_CMD ?= darwin-rebuild
+endif
 
-default:
-	@echo "Usage: make [desktop|macbookpro|server|containers]"
+REBUILD_SWITCH_CMD ?= $(REBUILD_CMD)
 
-desktop:
-	nixos-rebuild switch --flake '.#desktop' |& nom
+build: build-host build-home
+switch: switch-host switch-home
 
-macbookpro:
-	darwin-rebuild switch --flake '.#macbookpro'
+build-host:
+	$(REBUILD_CMD) build --flake ".#$(HOST)"
+
+switch-host:
+	$(REBUILD_SWITCH_CMD) switch --flake ".#$(HOST)"
+
+build-home:
+	home-manager build --flake ".#$(USER)@$(HOST)"
+
+switch-home:
+	home-manager switch --flake ".#$(USER)@$(HOST)"
+
+containers: container-apollo container-hermes container-poseidon container-hestia
 
 server:
-	nixos-rebuild --build-host ${SSH_SERVER_HOST} --target-host ${SSH_SERVER_HOST} --use-remote-sudo switch --flake '.#server' |& nom
+	nixos-rebuild --build-host server --target-host server --use-remote-sudo switch --flake '.#server'
 
-containers: $(CONTAINERS)
+container-%:
+	nixos-rebuild --target-host $(patsubst container-%,%,$@) switch --flake .#$(patsubst container-%,%,$@)
 
-apollo:
-	nixos-rebuild --target-host ${SSH_APOLLO_HOST} switch --flake '.#apollo' |& nom
-
-hermes:
-	nixos-rebuild --target-host ${SSH_HERMES_HOST} switch --flake '.#hermes' |& nom
-
-poseidon:
-	nixos-rebuild --target-host ${SSH_POSEIDON_HOST} switch --flake '.#poseidon' |& nom
-
-hestia:
-	nixos-rebuild --target-host ${SSH_HESTIA_HOST} switch --flake '.#hestia' |& nom
-
-.PHONY: default desktop macbookpro server containers $(CONTAINERS)
+.PHONY: build switch build-host switch-host build-home switch-home server containers
