@@ -2,17 +2,15 @@
 {
   imports = [ ./minimal.nix ];
 
+  extraPlugins = [
+    pkgs.vimPlugins.vim-prettier
+  ];
+
   keymaps = [
     # projects
     {
       key = "go";
       action = "<cmd>Telescope projects<cr>";
-    }
-
-    # prettier
-    {
-      key = "gp";
-      action = "<cmd>%!npx prettier --stdin-filepath %<cr>";
     }
   ];
 
