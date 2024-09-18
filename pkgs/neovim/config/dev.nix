@@ -4,6 +4,7 @@
 
   extraPlugins = [
     pkgs.vimPlugins.vim-prettier
+    pkgs.vimPlugins.vim-vsnip
   ];
 
   keymaps = [
@@ -168,12 +169,19 @@
 
     cmp = {
       enable = true;
+      autoEnableSources = false;
       settings = {
         preselect = "none";
 
         experimental = {
           ghost_text = true;
         };
+
+        snippet.expand = ''
+          function(args)
+            vim.fn["vsnip#anonymous"](args.body)
+          end
+        '';
 
         mapping = {
           "<C-d>" = "cmp.mapping.scroll_docs(-4)";
@@ -197,11 +205,18 @@
 
         sources = [
           { name = "nvim_lsp"; }
+          { name = "vsnip"; }
           { name = "path"; }
           { name = "buffer"; }
         ];
       };
     };
+
+    cmp-nvim-lsp.enable = true;
+    cmp-path.enable = true;
+    cmp-buffer.enable = true;
+    cmp-vsnip.enable = true;
+    friendly-snippets.enable = true;
 
     telescope.keymaps = {
       "grd" = "lsp_definitions";
