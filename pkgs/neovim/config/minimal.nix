@@ -132,6 +132,28 @@ in
       mode = [ "n" ];
       action = "<cmd>Oil<cr>";
     }
+
+    # resize pane
+    {
+      key = "<cs-h>";
+      mode = [ "n" ];
+      action = "<cmd>vertical resize -10<cr>";
+    }
+    {
+      key = "<cs-j>";
+      mode = [ "n" ];
+      action = "<cmd>resize +10<cr>";
+    }
+    {
+      key = "<cs-k>";
+      mode = [ "n" ];
+      action = "<cmd>resize -10<cr>";
+    }
+    {
+      key = "<cs-l>";
+      mode = [ "n" ];
+      action = "<cmd>vertical resize +10<cr>";
+    }
   ];
 
   colorschemes.catppuccin = {

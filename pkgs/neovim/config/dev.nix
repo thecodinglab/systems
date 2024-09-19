@@ -27,12 +27,16 @@
       inlayHints = true;
 
       onAttach = ''
-        if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" then
+        if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" and client.name ~= "ts_ls" then
           vim.api.nvim_create_autocmd({ "BufWritePre" }, {
             buffer = bufnr,
             group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
             callback = function()
-              vim.lsp.buf.format({ bufnr = bufnr, async = false, timeout_ms = 150 })
+              vim.lsp.buf.format({ 
+                bufnr = bufnr,
+                async = false,
+                timeout_ms = 150,
+              })
             end,
           })
         end
@@ -125,7 +129,7 @@
           '';
         };
 
-        tsserver.enable = true;
+        ts-ls.enable = true;
         eslint.enable = true;
         tailwindcss = {
           enable = true;
@@ -135,7 +139,7 @@
               "[\"'`]([^\"'`]*).*?[\"'`]"
             ]
             [
-              "cx\\(([^)]*)\\)"
+              "cn\\(([^)]*)\\)"
               "(?:'|\"|`)([^']*)(?:'|\"|`)"
             ]
           ];
@@ -161,6 +165,20 @@
 
         hls.enable = true;
         texlab.enable = true;
+
+        yamlls = {
+          enable = true;
+          settings = {
+            format = {
+              enable = true;
+              printWidth = 80;
+            };
+            schemas = {
+              kubernetes = "*.yaml";
+              "https://json.schemastore.org/kustomization" = "/kustomization.yaml";
+            };
+          };
+        };
       };
     };
 
@@ -219,16 +237,21 @@
     friendly-snippets.enable = true;
 
     telescope.keymaps = {
-      "grd" = "lsp_definitions";
+      "gd" = "lsp_definitions";
+      "gi" = "lsp_implementations";
+      "gD" = "lsp_type_definitions";
+
       "grr" = "lsp_references";
-      "gri" = "lsp_implementations";
-      "grt" = "lsp_type_definitions";
     };
 
     gitsigns.enable = true;
     lazygit.enable = true;
 
-    vimtex.enable = true;
+    vimtex = {
+      enable = true;
+      texlivePackage = pkgs.texlive.combined.scheme-full;
+      settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
+    };
     ledger.enable = true;
     markdown-preview.enable = true;
 

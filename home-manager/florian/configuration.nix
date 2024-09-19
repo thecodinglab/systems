@@ -39,7 +39,6 @@
       "spotify"
       "obsidian"
       "postman"
-      "lens-desktop"
     ] ++ lib.optionals pkgs.stdenv.isDarwin [ "raycast" ];
   };
 
@@ -108,13 +107,11 @@
       pkgs.exiftool
       pkgs.ffmpeg
 
-      pkgs.nix-output-monitor
-      pkgs.npins
-
       # Kubernetes
       pkgs.kubectl
+      (pkgs.wrapHelm pkgs.kubernetes-helm { plugins = [ pkgs.kubernetes-helmPlugins.helm-diff ]; })
+      pkgs.helmfile
       pkgs.k9s
-      pkgs.lens
 
       # Build Tools
       pkgs.gnumake
@@ -146,12 +143,11 @@
 
       # JavaScript
       pkgs.nodejs
+      pkgs.bun
 
       # Writing
       pkgs.texliveFull
-      pkgs.texlab
       pkgs.typst
-
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       pkgs.signal-desktop
