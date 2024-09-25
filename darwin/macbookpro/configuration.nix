@@ -8,6 +8,7 @@
   custom.unfree = [
     "obsidian"
     "spotify"
+    "1password"
   ];
 
   programs.gnupg.agent.enable = true;
@@ -71,16 +72,40 @@
       "${pkgs.obsidian}/Applications/Obsidian.app"
 
       "${pkgs.spotify}/Applications/Spotify.app"
-      "${pkgs._1password}/Applications/1Password.app"
+      "${pkgs._1password-gui}/Applications/1Password.app"
       "/System/Applications/System Settings.app"
       "/System/Applications/iPhone Mirroring.app"
     ];
-
-    persistent-others = [
-      "/Users/florian/Documents"
-      "/Users/florian/Downloads"
-    ];
   };
+
+  system.defaults.CustomUserPreferences."com.apple.dock".persistent-others = [
+    {
+      tile-data = {
+        arrangement = 1; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
+        displayas = 1; # 0 = stack, 1 = folder
+        showas = 2; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
+
+        file-data = {
+          _CFURLString = "file:///Users/florian/Documents/";
+          _CFURLStringType = 15;
+        };
+      };
+      tile-type = "directory-tile";
+    }
+    {
+      tile-data = {
+        arrangement = 2; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
+        displayas = 1; # 0 = stack, 1 = folder
+        showas = 1; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
+
+        file-data = {
+          _CFURLString = "file:///Users/florian/Downloads/";
+          _CFURLStringType = 15;
+        };
+      };
+      tile-type = "directory-tile";
+    }
+  ];
 
   system.defaults.menuExtraClock = {
     ShowDate = 0;
