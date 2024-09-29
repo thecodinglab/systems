@@ -82,7 +82,8 @@
     gnome.gnome-keyring.enable = true;
 
     printing = {
-      enable = true;
+      # disabled due to security issue: https://dev.to/snyk/zero-day-rce-vulnerability-found-in-cups-common-unix-printing-system-flj
+      enable = false;
       drivers = [ pkgs.splix ];
     };
   };
