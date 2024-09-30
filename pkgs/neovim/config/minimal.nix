@@ -176,6 +176,24 @@ in
       event = [ "TextYankPost" ];
       command = "lua vim.highlight.on_yank()";
     }
+
+    # disable syntax highlight on large files
+    # inspired by https://github.com/LunarVim/bigfile.nvim/blob/33eb067e3d7029ac77e081cfe7c45361887a311a/lua/bigfile/features.lua
+    {
+      event = [ "BufReadPre" ];
+      callback.__raw = ''
+        function (args)
+          local max_filesize = 100 * 1024 -- 100 KB
+          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+          if ok and stats and stats.size > max_filesize then
+            vim.opt_local.swapfile = false
+            vim.opt_local.foldmethod = "manual"
+
+            vim.api.nvim_buf_set_var(args.buf, "bigfile_disable_treesitter", 1)
+          end
+        end
+      '';
+    }
   ];
 
   extraPlugins = [
@@ -187,10 +205,25 @@ in
     treesitter = {
       enable = true;
       folding = true;
-      settings = {
-        highlight.enable = true;
-        indent.enable = true;
-      };
+      settings =
+        builtins.mapAttrs
+          (
+            name: value:
+            value
+            // {
+              disable.__raw = ''
+                function(lang, buf)
+                  local success, detected = pcall(vim.api.nvim_buf_get_var, buf, "bigfile_disable_treesitter")
+                  return success and detected
+                end
+              '';
+            }
+          )
+          {
+            highlight.enable = true;
+            incremental_selection.enable = true;
+            indent.enable = true;
+          };
     };
 
     lualine.enable = true;
