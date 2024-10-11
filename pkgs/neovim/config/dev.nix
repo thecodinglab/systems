@@ -281,12 +281,12 @@
 
         follow_url_func = ''
           function(url)
-            if vim.fn.executable("xdg-open") then
+            if vim.fn.executable("xdg-open") == 1 then
               vim.fn.jobstart({ "xdg-open", url })
               return
             end
 
-            if vim.fn.executable("open") then
+            if vim.fn.executable("open") == 1 then
               vim.fn.jobstart({ "open", url })
               return
             end
