@@ -53,7 +53,12 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
+        tinted-kitty.follows = "tinted-kitty";
       };
+    };
+    tinted-kitty = {
+      url = "github:tinted-theming/tinted-kitty?ref=06bb401fa9a0ffb84365905ffbb959ae5bf40805";
+      flake = false;
     };
   };
 
@@ -66,7 +71,6 @@
       terranix,
       sops-nix,
       stylix,
-      nixvim,
       ...
     }@inputs:
     let

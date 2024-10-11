@@ -121,7 +121,7 @@
           '';
         };
 
-        ts-ls.enable = true;
+        ts_ls.enable = true;
         eslint.enable = true;
         tailwindcss = {
           enable = true;
@@ -149,7 +149,7 @@
           ];
         };
 
-        rust-analyzer = {
+        rust_analyzer = {
           enable = true;
           installCargo = false;
           installRustc = false;
