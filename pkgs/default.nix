@@ -18,7 +18,7 @@ in
 // mkPrefix "neovim" (
   import ./neovim/package.nix {
     inherit pkgs;
-    inherit (inputs) nixvim neovim;
+    inherit (inputs) nixvim;
   }
 )
 // import ./fonts/san-francisco.nix { inherit pkgs; }
