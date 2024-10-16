@@ -66,7 +66,7 @@
 
       persistent-apps = [
         "/Applications/Arc.app" # TODO: move into nix-darwin config
-        "/Applications/Safari.app"
+        "/System/Cryptexes/App/System/Applications/Safari.app"
         "/System/Applications/Mail.app"
         "/Applications/Slack.app" # TODO: move into nix-darwin config
         "/System/Applications/Calendar.app"
