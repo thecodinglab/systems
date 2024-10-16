@@ -70,7 +70,10 @@
       };
 
       servers = {
-        ltex.enable = true;
+        ltex = {
+          enable = true;
+          settings.additionalRules.motherTongue = "de-CH";
+        };
 
         nixd = {
           enable = true;
