@@ -358,7 +358,7 @@
         playerctl
 
         # Font
-        (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+        nerd-fonts.sauce-code-pro
       ];
 
       home.file.".background-image" = {

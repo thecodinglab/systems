@@ -373,7 +373,7 @@
       playerctl
 
       # Font
-      (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+      nerd-fonts.sauce-code-pro
     ];
   };
 }
