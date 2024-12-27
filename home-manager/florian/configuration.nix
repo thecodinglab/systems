@@ -70,7 +70,6 @@
 
   home.packages =
     [
-      pkgs.spotify
       pkgs.obsidian
 
       pkgs.hledger
@@ -140,6 +139,8 @@
       pkgs.typst
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
+      pkgs.spotify
+
       pkgs.signal-desktop
       pkgs.protonmail-desktop
       pkgs.helvum
@@ -148,8 +149,7 @@
       pkgs.mpv
 
       pkgs.prismlauncher
-    ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [ pkgs.raycast ];
+    ];
 
   fonts.fontconfig.enable = true;
 }
