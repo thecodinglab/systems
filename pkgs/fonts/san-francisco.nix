@@ -47,7 +47,7 @@ in
     version = "1.0.0";
     src = builtins.fetchurl {
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
-      sha256 = "sha256:0ycxhncd6if94w5n8cpdwr8rhrqdhgi913plbr2q8fia2266bk07";
+      sha256 = "sha256:1krvzxz7kal6y0l5cx9svmgikqdj5v0fl5vnfjig0z4nwp903ir1";
     };
   };
 
@@ -56,7 +56,7 @@ in
     version = "1.0.0";
     src = builtins.fetchurl {
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Compact.dmg";
-      sha256 = "sha256:0fkxm7nyl180qp8k2alynvy1w1a32zdm78dpq1zhv9q4gr1hp2ig";
+      sha256 = "sha256:0ncybkrzqazw13azy2s30ss7ml5pxaia6hbmqq9wn7xhlhrxlniy";
     };
   };
 
@@ -65,7 +65,7 @@ in
     version = "1.0.0";
     src = builtins.fetchurl {
       url = "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
-      sha256 = "sha256:0psf2fkqpwzw3hifciph7ypvjklb4jkcgh0mair0xvlf6baz3aji";
+      sha256 = "sha256:0ibrk9fvbq52f5qnv1a8xlsazd3x3jnwwhpn2gwhdkdawdw0njkd";
     };
     patchFont = true;
   };
@@ -75,7 +75,7 @@ in
     version = "1.0.0";
     src = builtins.fetchurl {
       url = "https://devimages-cdn.apple.com/design/resources/download/NY.dmg";
-      sha256 = "sha256:1c5h9szggmwspba8gj06jlx30x83m9q6k9cdyg8dkivnij9am369";
+      sha256 = "sha256:1x7qi3dqwq1p4l3md31cd93mcds3ba7rgsmpz0kg7h3caasfsbhw";
     };
   };
 }
