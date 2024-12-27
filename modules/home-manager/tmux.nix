@@ -23,7 +23,12 @@
 
       plugins = [
         pkgs.tmuxPlugins.yank
-        pkgs.tmuxPlugins.sensible
+        {
+          plugin = pkgs.tmuxPlugins.sensible;
+          extraConfig = ''
+            set -g default-command '${lib.getExe pkgs.zsh}'
+          '';
+        }
         {
           plugin = pkgs.tmuxPlugins.resurrect;
           extraConfig = ''
