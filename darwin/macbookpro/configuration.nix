@@ -92,6 +92,8 @@
       "orbstack"
       "tableplus"
 
+      "ghostty"
+
       "google-chrome"
       "firefox@developer-edition"
     ];
