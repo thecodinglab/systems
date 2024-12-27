@@ -84,7 +84,7 @@
       "spotify"
       "1password"
       "raycast"
-      "protonmail-bridge"
+      "proton-mail-bridge"
       "google-drive"
 
       "figma"
