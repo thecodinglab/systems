@@ -1,4 +1,8 @@
-{ outputs, pkgs, ... }:
+{
+  outputs,
+  pkgs,
+  ...
+}:
 {
   nixpkgs.overlays = [
     outputs.overlays.additions
@@ -26,101 +30,80 @@
     home = "/Users/florian/";
   };
 
-  system.defaults = {
-    NSGlobalDomain = {
-      AppleInterfaceStyleSwitchesAutomatically = true;
-      NSAutomaticCapitalizationEnabled = false;
-      KeyRepeat = 2;
-    };
+  system.defaults.dock.persistent-apps = [
+    "/System/Cryptexes/App/System/Applications/Safari.app"
+    "/Applications/Firefox Developer Edition.app"
+    "/System/Applications/Mail.app"
+    "/Applications/Slack.app" # managed through homebrew
+    "/System/Applications/Calendar.app"
 
-    loginwindow.GuestEnabled = false;
+    "${pkgs.kitty}/Applications/kitty.app"
+    "${pkgs.obsidian}/Applications/Obsidian.app"
+    "/Applications/TablePlus.app" # managed through homebrew
+    "/Applications/Figma.app" # managed through homebrew
+    "/Applications/Linear.app" # managed through homebrew
 
-    finder = {
-      AppleShowAllExtensions = true;
-      FXPreferredViewStyle = "Nlsv";
-      FXDefaultSearchScope = "SCcf";
-    };
+    "/Applications/Spotify.app" # managed through homebrew
+    "/Applications/1Password.app" # managed through homebrew
+    "/System/Applications/System Settings.app"
+    "/System/Applications/iPhone Mirroring.app"
+  ];
 
-    WindowManager = {
-      # enable stage manager
-      GloballyEnabled = true;
-      # disable hiding of all applications when clicking on wallpaper
-      EnableStandardClickToShowDesktop = false;
+  system.defaults.CustomUserPreferences."com.apple.dock".persistent-others = [
+    {
+      tile-data = {
+        arrangement = 1; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
+        displayas = 1; # 0 = stack, 1 = folder
+        showas = 2; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
 
-      AppWindowGroupingBehavior = true;
-    };
-
-    dock = {
-      orientation = "bottom";
-      show-recents = false;
-
-      autohide = true;
-      autohide-delay = 0.2;
-
-      tilesize = 48;
-      magnification = true;
-      largesize = 64;
-
-      expose-group-by-app = true;
-      mru-spaces = false;
-
-      persistent-apps = [
-        "/Applications/Arc.app" # TODO: move into nix-darwin config
-        "/System/Cryptexes/App/System/Applications/Safari.app"
-        "/System/Applications/Mail.app"
-        "/Applications/Slack.app" # TODO: move into nix-darwin config
-        "/System/Applications/Calendar.app"
-
-        "${pkgs.kitty}/Applications/kitty.app"
-        "${pkgs.obsidian}/Applications/Obsidian.app"
-
-        "${pkgs.spotify}/Applications/Spotify.app"
-        "${pkgs._1password-gui}/Applications/1Password.app"
-        "/System/Applications/System Settings.app"
-        "/System/Applications/iPhone Mirroring.app"
-      ];
-    };
-
-    CustomUserPreferences."com.apple.dock".persistent-others = [
-      {
-        tile-data = {
-          arrangement = 1; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
-          displayas = 1; # 0 = stack, 1 = folder
-          showas = 2; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
-
-          file-data = {
-            _CFURLString = "file:///Users/florian/Documents/";
-            _CFURLStringType = 15;
-          };
+        file-data = {
+          _CFURLString = "file:///Users/florian/Documents/";
+          _CFURLStringType = 15;
         };
-        tile-type = "directory-tile";
-      }
-      {
-        tile-data = {
-          arrangement = 2; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
-          displayas = 1; # 0 = stack, 1 = folder
-          showas = 1; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
+      };
+      tile-type = "directory-tile";
+    }
+    {
+      tile-data = {
+        arrangement = 2; # 1 = name, 2 = date-added, 3 = date-modified, 4 = date-created, 5 = kind
+        displayas = 1; # 0 = stack, 1 = folder
+        showas = 1; # 0 = automatic, 1 = fan, 2 = grid, 3 = list
 
-          file-data = {
-            _CFURLString = "file:///Users/florian/Downloads/";
-            _CFURLStringType = 15;
-          };
+        file-data = {
+          _CFURLString = "file:///Users/florian/Downloads/";
+          _CFURLStringType = 15;
         };
-        tile-type = "directory-tile";
-      }
+      };
+      tile-type = "directory-tile";
+    }
+  ];
+
+  homebrew = {
+    enable = true;
+    casks = [
+      "spotify"
+      "1password"
+      "raycast"
+      "protonmail-bridge"
+      "google-drive"
+
+      "figma"
+      "linear-linear"
+      "orbstack"
+      "tableplus"
+
+      "google-chrome"
+      "firefox@developer-edition"
     ];
-
-    menuExtraClock = {
-      ShowDate = 0;
-      ShowDayOfMonth = true;
-      ShowDayOfWeek = true;
-
-      Show24Hour = true;
-      ShowSeconds = true;
-
-      IsAnalog = false;
-      ShowAMPM = false;
+    masApps = {
+      "Pages" = 409201541;
+      "Numbers" = 409203825;
+      "1Password for Safari" = 1569813296;
+      "Slack" = 803453959;
+      "Lightroom" = 1451544217;
+      "LanguageTool" = 1534275760;
     };
+    onActivation.cleanup = "zap";
   };
 
   system.stateVersion = 5;

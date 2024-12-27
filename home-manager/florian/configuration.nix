@@ -39,7 +39,7 @@
       "spotify"
       "obsidian"
       "postman"
-    ] ++ lib.optionals pkgs.stdenv.isDarwin [ "raycast" ];
+    ];
   };
 
   stylix.enable = true;

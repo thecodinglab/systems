@@ -14,6 +14,25 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    homebrew = {
+      url = "github:zhaofengli-wip/nix-homebrew";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nix-darwin.follows = "darwin";
+      };
+    };
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
 
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -31,10 +50,7 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nixpkgs-stable.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix = {
@@ -56,6 +72,7 @@
       self,
       nixpkgs,
       darwin,
+      homebrew,
       home-manager,
       terranix,
       sops-nix,
@@ -145,6 +162,7 @@
         let
           baseModules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
             stylix.darwinModules.stylix
+            homebrew.darwinModules.nix-homebrew
           ];
         in
         {
@@ -153,7 +171,25 @@
             specialArgs = {
               inherit inputs outputs;
             };
-            modules = baseModules ++ [ ./darwin/macbookpro/configuration.nix ];
+            modules = baseModules ++ [
+              ./darwin/macbookpro/configuration.nix
+              {
+                nix-homebrew = {
+                  enable = true;
+                  enableRosetta = false;
+
+                  user = "florian";
+
+                  taps = {
+                    "homebrew/homebrew-core" = inputs.homebrew-core;
+                    "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                    "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+                  };
+
+                  mutableTaps = false;
+                };
+              }
+            ];
           };
         };
 
