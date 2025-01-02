@@ -14,7 +14,7 @@
       sizes = {
         desktop = 10;
         popups = 10;
-        terminal = if pkgs.stdenv.isDarwin then 16 else 12;
+        terminal = 12;
       };
 
       serif = config.stylix.fonts.sansSerif;
@@ -25,8 +25,8 @@
       };
 
       monospace = {
-        package = pkgs.nerd-fonts.fira-code;
-        name = "FiraCode Nerd Font Mono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font Mono";
       };
 
       emoji = {

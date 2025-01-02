@@ -37,7 +37,7 @@
     "/Applications/Slack.app" # managed through homebrew
     "/System/Applications/Calendar.app"
 
-    "${pkgs.kitty}/Applications/kitty.app"
+    "/Applications/Ghostty.app" # managed through homebrew
     "${pkgs.obsidian}/Applications/Obsidian.app"
     "/Applications/TablePlus.app" # managed through homebrew
     "/Applications/Figma.app" # managed through homebrew

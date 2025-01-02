@@ -22,6 +22,23 @@
     };
   };
 
+  xdg.configFile."ghostty/config".text = ''
+    theme = catppuccin-mocha
+    shell-integration = zsh
+
+    font-family = "${config.stylix.fonts.monospace.name}"
+    font-size = ${builtins.toString config.stylix.fonts.sizes.terminal}
+
+    quit-after-last-window-closed = true
+
+    window-padding-x = 2
+    window-padding-y = 4
+    window-decoration = false
+    macos-titlebar-style = hidden
+
+    auto-update = off
+  '';
+
   custom = {
     fzf.enable = true;
     tmux.enable = true;
