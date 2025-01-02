@@ -13,6 +13,22 @@
     };
   };
 
+  keymaps = [
+    {
+      key = "<leader>d";
+      mode = [ "n" ];
+      action.__raw = ''
+        function ()
+          if vim.diagnostic.is_enabled() then
+            vim.diagnostic.disable()
+          else
+            vim.diagnostic.enable()
+          end
+        end
+      '';
+    }
+  ];
+
   plugins = {
     lsp = {
       enable = true;
