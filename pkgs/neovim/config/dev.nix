@@ -34,6 +34,18 @@
       enable = true;
       inlayHints = true;
 
+      preConfig = ''
+        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+          vim.lsp.handlers.hover,
+          {max_width = 80}
+        )
+
+        vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+          vim.lsp.handlers.signature_help,
+          {max_width = 80}
+        )
+      '';
+
       onAttach = ''
         if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" and client.name ~= "ts_ls" then
           vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -79,7 +91,7 @@
         extra = [
           {
             key = "<C-S>";
-            action = "<cmd>lua vim.lsp.buf.signature_help()<cr>";
+            action.__raw = "vim.lsp.buf.signature_help";
             mode = [ "i" ];
           }
         ];
