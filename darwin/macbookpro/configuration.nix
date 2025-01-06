@@ -9,11 +9,7 @@
     outputs.overlays.modifications
   ];
 
-  custom.unfree = [
-    "obsidian"
-    "spotify"
-    "1password"
-  ];
+  custom.unfree = [ "obsidian" ];
 
   programs.gnupg.agent.enable = true;
 
@@ -83,16 +79,17 @@
     casks = [
       "spotify"
       "1password"
+      "1password-cli"
       "raycast"
       "proton-mail-bridge"
       "google-drive"
 
+      "ghostty"
       "figma"
       "linear-linear"
       "orbstack"
       "tableplus"
-
-      "ghostty"
+      "postman"
 
       "google-chrome"
       "firefox@developer-edition"

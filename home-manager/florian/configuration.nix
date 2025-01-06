@@ -99,7 +99,6 @@
       pkgs.apple-font-new-york
 
       # Utilities
-      pkgs._1password
       pkgs.openssl
       pkgs.vifm
       pkgs.jq
@@ -107,7 +106,6 @@
       pkgs.unzip
       # FIXME: current version of ollama has invalid fixed output hash
       # pkgs.ollama
-      pkgs.postman
       pkgs.neovim-dev
 
       pkgs.exiftool
@@ -156,7 +154,10 @@
       pkgs.typst
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
+      pkgs._1password
       pkgs.spotify
+
+      pkgs.postman
 
       pkgs.signal-desktop
       pkgs.protonmail-desktop
