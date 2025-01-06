@@ -186,7 +186,10 @@
           installRustc = false;
         };
 
-        hls.enable = true;
+        hls = {
+          enable = true;
+          installGhc = false;
+        };
         texlab.enable = true;
 
         yamlls = {
