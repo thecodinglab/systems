@@ -1,5 +1,4 @@
 {
-  inputs,
   outputs,
   pkgs,
   lib,
@@ -16,15 +15,9 @@
 
     shell = pkgs.zsh;
 
-    openssh.authorizedKeys.keys = lib.splitString "\n" (
-      builtins.readFile (
-        builtins.fetchurl {
-          name = "ssh-authorized-keys-v1";
-          url = "https://github.com/thecodinglab.keys";
-          sha256 = "fobgOm3SyyClt8TM74PXjyM9JjbXrXJ52na7TjJdKA0=";
-        }
-      )
-    );
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKrk+aYPC9+XPBzYI6uuxRbczvimV1Brclkic873p0Uv"
+    ];
   };
 
   home-manager = {
