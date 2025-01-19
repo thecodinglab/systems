@@ -5,6 +5,7 @@
   imports = [
     (modulesPath + "/virtualisation/lxc-container.nix")
     ./nginx.nix
+    ./cloudflared.nix
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
@@ -70,6 +71,11 @@
 
   sops.secrets = {
     cloudflareToken.sopsFile = ./secrets.yaml;
+    cloudflareTunnel = {
+      sopsFile = ./secrets.yaml;
+      owner = "cloudflared";
+      group = "cloudflared";
+    };
   };
 
   security.acme = {
@@ -79,6 +85,18 @@
       dnsProvider = "cloudflare";
       credentialFiles = {
         CF_DNS_API_TOKEN_FILE = config.sops.secrets.cloudflareToken.path;
+      };
+    };
+  };
+
+  services.custom-cloudflared = {
+    enable = true;
+    tunnels = {
+      "6f9a4a59-2d02-4092-8db6-37dd46c80b2f" = {
+        credentialsFile = config.sops.secrets.cloudflareTunnel.path;
+        default = "http_status:404";
+        ingress = builtins.mapAttrs (_: _: "https://localhost:443") config.custom.nginx.vhosts;
+        originRequest.matchSNItoHost = true;
       };
     };
   };
