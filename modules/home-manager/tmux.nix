@@ -29,19 +29,6 @@
             set -g default-command '${lib.getExe pkgs.zsh}'
           '';
         }
-        {
-          plugin = pkgs.tmuxPlugins.resurrect;
-          extraConfig = ''
-            set -g @resurrect-strategy-nvim 'session'
-          '';
-        }
-        {
-          plugin = pkgs.tmuxPlugins.continuum;
-          extraConfig = ''
-            set -g @continuum-restore 'on'
-            set -g @continuum-save-interval '60' # minutes
-          '';
-        }
       ];
 
       extraConfig = lib.concatStringsSep "\n" [
@@ -73,7 +60,7 @@
         ''
         # select project / pane
         ''
-          bind-key o display-popup -E "${lib.getExe pkgs.tmux-sessionizer} switch"
+          bind-key o display-popup -E "${lib.getExe pkgs.tmux-sessionizer}"
         ''
         # tmux and nvim navigation
         ''
