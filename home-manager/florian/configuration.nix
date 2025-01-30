@@ -33,8 +33,9 @@
 
     window-padding-x = 2
     window-padding-y = 4
-    window-decoration = false
-    macos-titlebar-style = hidden
+
+    background-opacity = 0.9
+    background-blur-radius = 20
 
     auto-update = off
   '';
