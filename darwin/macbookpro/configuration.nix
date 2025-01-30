@@ -28,7 +28,7 @@
 
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"
-    "/Applications/Firefox Developer Edition.app"
+    "/Applications/Zen Browser.app" # managed through homebrew
     "/System/Applications/Mail.app"
     "/Applications/Slack.app" # managed through homebrew
     "/System/Applications/Calendar.app"
@@ -91,6 +91,7 @@
       "tableplus"
       "postman"
 
+      "zen-browser"
       "google-chrome"
       "firefox@developer-edition"
     ];
