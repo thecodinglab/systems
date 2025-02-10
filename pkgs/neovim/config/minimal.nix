@@ -196,6 +196,7 @@
             indent.enable = true;
           };
     };
+    treesitter-context.enable = true;
 
     lualine.enable = true;
 
