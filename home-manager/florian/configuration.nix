@@ -109,8 +109,19 @@
       # pkgs.ollama
 
       (pkgs.neovim-dev.extend {
+        plugins.ledger.enable = true;
+
+        plugins.lsp.servers.texlab.enable = true;
+        plugins.vimtex = {
+          enable = true;
+          texlivePackage = pkgs.texlive.combined.scheme-full;
+          settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
+        };
+
+        plugins.markdown-preview.enable = true;
+
         plugins.obsidian = {
-          enable = false;
+          enable = true;
           settings = {
             dir = "~/vaults/singularity";
 
@@ -156,6 +167,20 @@
                 vim.notify("unable to open link: no tool found", vim.log.levels.ERROR)
               end
             '';
+          };
+        };
+
+        plugins.lsp.servers.yamlls = {
+          enable = true;
+          settings = {
+            format = {
+              enable = true;
+              printWidth = 80;
+            };
+            schemas = {
+              kubernetes = "*.yaml";
+              "https://json.schemastore.org/kustomization" = "/kustomization.yaml";
+            };
           };
         };
       })

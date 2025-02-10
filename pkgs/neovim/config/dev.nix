@@ -185,26 +185,6 @@
           installCargo = false;
           installRustc = false;
         };
-
-        hls = {
-          enable = true;
-          installGhc = false;
-        };
-        texlab.enable = true;
-
-        yamlls = {
-          enable = true;
-          settings = {
-            format = {
-              enable = true;
-              printWidth = 80;
-            };
-            schemas = {
-              kubernetes = "*.yaml";
-              "https://json.schemastore.org/kustomization" = "/kustomization.yaml";
-            };
-          };
-        };
       };
     };
 
@@ -272,13 +252,5 @@
 
     gitsigns.enable = true;
     lazygit.enable = true;
-
-    vimtex = {
-      enable = true;
-      texlivePackage = pkgs.texlive.combined.scheme-full;
-      settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
-    };
-    ledger.enable = true;
-    markdown-preview.enable = true;
   };
 }
