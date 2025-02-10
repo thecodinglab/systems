@@ -280,55 +280,5 @@
     };
     ledger.enable = true;
     markdown-preview.enable = true;
-
-    obsidian = {
-      enable = true;
-      settings = {
-        dir = "~/vaults/singularity";
-
-        notes_subdir = "02 - Fleeting/";
-
-        daily_notes = {
-          folder = "04 - Daily/";
-          date_format = "%Y-%m-%d";
-        };
-
-        templates = {
-          subdir = "99 - Meta/00 - Templates/";
-          date_format = "%Y-%m-%d";
-          time_format = "%H:%M";
-        };
-
-        note_id_func = ''
-          function(title)
-            local suffix = ""
-            if title ~= nil then
-              suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-            else
-              for _ = 1, 4 do
-                suffix = suffix .. string.char(math.random(65, 90))
-              end
-            end
-            return os.date("%Y%m%d%H%M") .. "-" .. suffix
-          end
-        '';
-
-        follow_url_func = ''
-          function(url)
-            if vim.fn.executable("xdg-open") == 1 then
-              vim.fn.jobstart({ "xdg-open", url })
-              return
-            end
-
-            if vim.fn.executable("open") == 1 then
-              vim.fn.jobstart({ "open", url })
-              return
-            end
-
-            vim.notify("unable to open link: no tool found", vim.log.levels.ERROR)
-          end
-        '';
-      };
-    };
   };
 }
