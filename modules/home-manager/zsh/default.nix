@@ -25,7 +25,6 @@
 
       starship = {
         enable = true;
-        enableZshIntegration = true;
 
         settings = {
           format = "$character $directory";
@@ -62,9 +61,6 @@
           };
         };
       };
-
-      fzf.enableZshIntegration = config.custom.fzf.enable;
-      kitty.shellIntegration.enableZshIntegration = config.custom.kitty.enable;
     };
 
     home.packages = [ pkgs.coreutils ];

@@ -20,6 +20,8 @@
     sessionVariables = {
       LEDGER_FILE = "${config.home.homeDirectory}/finance/All.journal";
     };
+
+    shell.enableZshIntegration = true;
   };
 
   xdg.configFile."ghostty/config".text = ''
