@@ -57,6 +57,8 @@
       enp14s0.useDHCP = true;
     };
 
+    wireless.enable = true;
+
     firewall = {
       allowedTCPPorts = [
         22 # ssh
