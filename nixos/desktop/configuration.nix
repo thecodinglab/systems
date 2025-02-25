@@ -11,7 +11,7 @@
 
   custom = {
     audio.enable = true;
-    dynamic-brightness.enable = true;
+    dynamic-brightness.enable = false;
 
     nvidia.enable = true;
     desktop.enable = true;
