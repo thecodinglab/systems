@@ -12,6 +12,11 @@
   config =
     let
       mod = "SUPER";
+      monitors = {
+        left = "DP-4";
+        center = "DP-6";
+        right = "DP-7";
+      };
     in
     lib.mkIf config.custom.hyprland.enable {
       home.sessionVariables = {
@@ -50,27 +55,30 @@
           #########################
 
           monitor = [
-            "DP-7, preferred, 0x0, auto"
-            "DP-6, preferred, 6000x0, auto"
-            "DP-5, preferred, 2560x0, auto"
+            # left
+            "${monitors.left}, preferred, 0x0, auto"
+            # center
+            "${monitors.center}, preferred, 2560x0, auto"
+            # right
+            "${monitors.right}, preferred, 6000x0, auto"
           ];
 
           workspace = [
             # left
-            "1, monitor:DP-7"
-            "2, monitor:DP-7"
+            "1, monitor:${monitors.left}"
+            "2, monitor:${monitors.left}"
 
             # center
-            "3, monitor:DP-5, default:true"
-            "6, monitor:DP-5"
-            "7, monitor:DP-5"
-            "8, monitor:DP-5"
-            "9, monitor:DP-5"
-            "10, monitor:DP-5"
+            "3, monitor:${monitors.center}, default:true"
+            "6, monitor:${monitors.center}"
+            "7, monitor:${monitors.center}"
+            "8, monitor:${monitors.center}"
+            "9, monitor:${monitors.center}"
+            "10, monitor:${monitors.center}"
 
             # right
-            "4, monitor:DP-6"
-            "5, monitor:DP-6"
+            "4, monitor:${monitors.right}"
+            "5, monitor:${monitors.right}"
           ];
 
           input = {
@@ -508,7 +516,7 @@
             };
 
             label = {
-              monitor = "DP-5";
+              monitor = monitors.center;
               text = ''cmd[update:1000] echo "$(date +"%H:%M")"'';
 
               color = "rgb(200, 200, 200)";
@@ -521,7 +529,7 @@
             };
 
             input-field = {
-              monitor = "DP-5";
+              monitor = monitors.center;
               size = "200, 50";
 
               dots_size = 0.2;
