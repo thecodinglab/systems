@@ -170,7 +170,7 @@
             "${mod} SHIFT, D, exec, ${pkgs.tofi}/bin/tofi-run | xargs hyprctl dispatch exec --"
 
             # terminal
-            "${mod}, RETURN, exec, ${lib.getExe pkgs.kitty}"
+            "${mod}, RETURN, exec, ${lib.getExe pkgs.ghostty}"
 
             # workspace switching
             "${mod}, 1, workspace, 1"

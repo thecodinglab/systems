@@ -44,7 +44,6 @@
     fzf.enable = true;
     tmux.enable = true;
     chromium.enable = pkgs.stdenv.isLinux;
-    kitty.enable = true;
     git.enable = true;
 
     hyprland.enable = pkgs.stdenv.isLinux;
@@ -239,6 +238,7 @@
       pkgs.signal-desktop
       pkgs.protonmail-desktop
       pkgs.helvum
+      pkgs.ghostty
 
       pkgs.imv
       pkgs.mpv
