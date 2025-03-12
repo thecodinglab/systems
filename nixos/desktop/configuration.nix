@@ -15,7 +15,7 @@
 
     nvidia.enable = true;
     desktop.enable = true;
-    backup.enable = true;
+    backup.enable = false;
     vpn.enable = true;
 
     unfree = [
