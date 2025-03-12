@@ -23,6 +23,7 @@
       "1password-cli"
 
       "steam"
+      "steam-unwrapped"
       "steam-original"
       "steam-run"
     ];
