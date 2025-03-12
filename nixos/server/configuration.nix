@@ -58,12 +58,12 @@
 
     hostName = "server";
 
-    interfaces.eno1 = {
+    interfaces.eno1np0 = {
       useDHCP = true;
     };
 
     bridges.br0 = {
-      interfaces = [ "eno2" ];
+      interfaces = [ "eno2np1" ];
     };
 
     firewall = {
@@ -75,7 +75,7 @@
       ];
 
       trustedInterfaces = [
-        "eno2"
+        "eno2np1"
         "br0"
       ];
     };
