@@ -68,10 +68,10 @@ in
     nfs.server = {
       enable = true;
       exports = ''
-        /export                 192.168.1.0/24(ro,crossmnt,fsid=0,no_subtree_check) 
-        /export/share           192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
-        /export/media/library   192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
-        /export/media/downloads 192.168.1.0/24(ro,nohide,insecure,no_subtree_check)
+        /export                 192.168.0.0/16(ro,crossmnt,fsid=0,no_subtree_check) 
+        /export/share           192.168.0.0/16(ro,nohide,insecure,no_subtree_check)
+        /export/media/library   192.168.0.0/16(ro,nohide,insecure,no_subtree_check)
+        /export/media/downloads 192.168.0.0/16(ro,nohide,insecure,no_subtree_check)
       '';
     };
 
@@ -84,7 +84,7 @@ in
           security = "user";
           "server string" = "poseidon";
           "netbios name" = "poseidon";
-          "hosts allow" = "192.168.1. 127.0.0.1 localhost";
+          "hosts allow" = "192.168. 127.0.0.1 localhost";
           "hosts deny" = "0.0.0.0/0";
 
           "multicast dns register" = "no";
