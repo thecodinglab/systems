@@ -14,8 +14,8 @@
       mod = "SUPER";
       monitors = {
         left = "DP-4";
-        center = "DP-6";
-        right = "DP-7";
+        center = "DP-5";
+        right = "DP-6";
       };
     in
     lib.mkIf config.custom.hyprland.enable {
@@ -124,8 +124,6 @@
               size = 5;
               passes = 2;
             };
-
-            drop_shadow = true;
           };
 
           animations = {
@@ -536,9 +534,6 @@
               dots_spacing = 0.2;
               dots_center = true;
 
-              outer_color = "rgba(0, 0, 0, 0)";
-              inner_color = "rgba(0, 0, 0, 0.5)";
-              font_color = "rgb(200, 200, 200)";
               outline_thickness = 2;
 
               halign = "center";
@@ -551,6 +546,9 @@
           };
         };
       };
+
+      # hyprlock wallpaper is burred and managed above
+      stylix.targets.hyprlock.useWallpaper = false;
 
       home.packages = [
         pkgs.wl-clipboard
