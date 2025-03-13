@@ -101,6 +101,14 @@
     };
   };
 
+  # custom 1password browser integration
+  environment.etc."1password/custom_allowed_browsers" = {
+    mode = "0755";
+    text = ''
+      .zen-wrapped
+    '';
+  };
+
   environment.systemPackages = [
     pkgs.home-manager
 

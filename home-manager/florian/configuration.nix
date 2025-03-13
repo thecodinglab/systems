@@ -238,6 +238,7 @@
       pkgs.signal-desktop
       pkgs.protonmail-desktop
       pkgs.helvum
+      pkgs.zen-browser
       pkgs.ghostty
 
       pkgs.imv
