@@ -153,7 +153,7 @@
         };
 
         ts_ls.enable = true;
-        eslint.enable = true;
+        biome.enable = true;
         tailwindcss = {
           enable = true;
           settings.tailwindCSS.experimental.classRegex = [
