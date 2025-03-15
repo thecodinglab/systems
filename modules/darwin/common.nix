@@ -1,6 +1,8 @@
 { pkgs, lib, ... }:
 {
   nix = {
+    enable = true;
+
     settings = {
       auto-optimise-store = false;
     };
@@ -19,8 +21,6 @@
       ];
     };
   };
-
-  services.nix-daemon.enable = true;
 
   documentation = {
     enable = lib.mkDefault true;
