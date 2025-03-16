@@ -106,8 +106,7 @@
       pkgs.jq
       pkgs.zip
       pkgs.unzip
-      # FIXME: current version of ollama has invalid fixed output hash
-      # pkgs.ollama
+      pkgs.ollama
 
       (pkgs.neovim-dev.extend {
         plugins.ledger.enable = true;
