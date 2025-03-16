@@ -196,7 +196,11 @@
             indent.enable = true;
           };
     };
-    treesitter-context.enable = true;
+
+    treesitter-context = {
+      enable = true;
+      settings.enable = false;
+    };
 
     lualine.enable = true;
 
