@@ -129,8 +129,12 @@
   colorschemes.catppuccin = {
     enable = true;
     settings = {
-      flavour = "mocha";
-      transparent_background = true;
+      flavour = "auto";
+      background = {
+        dark = "mocha";
+        light = "latte";
+      };
+
       integrations = {
         cmp = true;
         treesitter = true;
@@ -171,6 +175,12 @@
     pkgs.vimPlugins.plenary-nvim
     pkgs.vimPlugins.nui-nvim
   ];
+
+  extraConfigLuaPre = pkgs.lib.mkIf pkgs.stdenv.isDarwin ''
+    if vim.trim(vim.fn.system("defaults read -g AppleInterfaceStyle")) == "Dark" then
+      vim.opt.background = "dark"
+    end
+  '';
 
   plugins = {
     treesitter = {
