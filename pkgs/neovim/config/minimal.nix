@@ -182,6 +182,19 @@
     end
   '';
 
+  extraConfigVim = ''
+    function! RemoveQFItem()
+      let curqfidx = line('.') - 1
+      let qfall = getqflist()
+      call remove(qfall, curqfidx)
+      call setqflist(qfall, 'r')
+      execute curqfidx + 1 . "cfirst"
+      :copen
+    endfunction
+
+    autocmd FileType qf map <buffer> dd <cmd>call RemoveQFItem()<cr>
+  '';
+
   plugins = {
     treesitter = {
       enable = true;
