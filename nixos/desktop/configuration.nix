@@ -26,6 +26,12 @@
       "steam-unwrapped"
       "steam-original"
       "steam-run"
+
+      # cuda
+      "cuda_cccl"
+      "cuda_cudart"
+      "cuda_nvcc"
+      "libcublas"
     ];
   };
 
@@ -81,6 +87,11 @@
   services = {
     avahi.enable = true;
     gnome.gnome-keyring.enable = true;
+
+    ollama = {
+      enable = true;
+      acceleration = "cuda";
+    };
 
     printing = {
       # disabled due to security issue: https://dev.to/snyk/zero-day-rce-vulnerability-found-in-cups-common-unix-printing-system-flj
