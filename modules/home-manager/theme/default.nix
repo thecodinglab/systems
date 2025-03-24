@@ -15,7 +15,7 @@
       sizes = {
         desktop = 10;
         popups = 10;
-        terminal = 10;
+        terminal = if pkgs.stdenv.isDarwin then 14 else 10;
       };
 
       serif = config.stylix.fonts.sansSerif;
