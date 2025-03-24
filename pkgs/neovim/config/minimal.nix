@@ -142,6 +142,9 @@
         fidget = true;
         gitsigns = true;
       };
+
+      show_end_of_buffer = true;
+      dim_inactive.enabled = true;
     };
   };
 
