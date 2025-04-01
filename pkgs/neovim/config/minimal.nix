@@ -64,6 +64,9 @@
     foldlevel = 99;
     foldlevelstart = 99;
     foldenable = true;
+
+    # do not select first item automatically during autocomplete
+    completeopt = "menu,popup,fuzzy,noselect";
   };
 
   keymaps = [
