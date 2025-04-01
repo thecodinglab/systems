@@ -13,6 +13,10 @@
     };
   };
 
+  diagnostics.virtual_lines = {
+    current_line = true;
+  };
+
   keymaps = [
     {
       key = "<leader>d";
