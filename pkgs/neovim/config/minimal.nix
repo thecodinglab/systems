@@ -202,6 +202,11 @@
     treesitter = {
       enable = true;
       folding = true;
+
+      grammarPackages = builtins.filter (
+        pkg: !(pkgs.lib.strings.hasPrefix "ocamllex" pkg.name) # FIXME: ocamllex derivation is currently broken (2025-04-01)
+      ) pkgs.vimPlugins.nvim-treesitter.passthru.allGrammars;
+
       settings =
         builtins.mapAttrs
           (
