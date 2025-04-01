@@ -78,23 +78,14 @@
             end,
           })
         end
+
+        if client:supports_method('textDocument/completion') then
+          vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+        end
       '';
 
-      keymaps = {
-        lspBuf = {
-          K = "hover";
-          "grn" = "rename";
-          "gra" = "code_action";
-          "grf" = "format";
-        };
-
-        extra = [
-          {
-            key = "<C-S>";
-            action.__raw = "vim.lsp.buf.signature_help";
-            mode = [ "i" ];
-          }
-        ];
+      keymaps.lspBuf = {
+        "grf" = "format";
       };
 
       servers = {
@@ -190,57 +181,6 @@
 
     trouble.enable = true;
     fidget.enable = true;
-
-    cmp = {
-      enable = true;
-      autoEnableSources = false;
-      settings = {
-        preselect = "none";
-
-        experimental = {
-          ghost_text = true;
-        };
-
-        snippet.expand = ''
-          function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-          end
-        '';
-
-        mapping = {
-          "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-          "<C-f>" = "cmp.mapping.scroll_docs(4)";
-
-          "<C-e>" = "cmp.mapping.close()";
-          "<C-c>" = "cmp.mapping.abort()";
-
-          "<C-y>" = "cmp.mapping.confirm({ select = true })";
-          "<C-p>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
-          "<C-n>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
-        };
-
-        formatting = {
-          fields = [
-            "abbr"
-            "kind"
-            "menu"
-          ];
-        };
-
-        sources = [
-          { name = "nvim_lsp"; }
-          { name = "vsnip"; }
-          { name = "path"; }
-          { name = "buffer"; }
-        ];
-      };
-    };
-
-    cmp-nvim-lsp.enable = true;
-    cmp-path.enable = true;
-    cmp-buffer.enable = true;
-    cmp-vsnip.enable = true;
-    friendly-snippets.enable = true;
 
     telescope.keymaps = {
       "gd" = "lsp_definitions";
