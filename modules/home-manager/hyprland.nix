@@ -148,6 +148,11 @@
             default_split_ratio = 1.2;
           };
 
+          misc = {
+            disable_hyprland_logo = true;
+            disable_splash_rendering = true;
+          };
+
           #########################
           # Startup Programs      #
           #########################
