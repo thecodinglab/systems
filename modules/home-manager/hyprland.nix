@@ -15,7 +15,7 @@
       monitors = {
         left = "DP-4";
         center = "DP-5";
-        right = "DP-6";
+        right = "DP-7";
       };
     in
     lib.mkIf config.custom.hyprland.enable {
