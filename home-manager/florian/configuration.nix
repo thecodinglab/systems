@@ -166,20 +166,6 @@
             '';
           };
         };
-
-        plugins.lsp.servers.yamlls = {
-          enable = true;
-          settings = {
-            format = {
-              enable = true;
-              printWidth = 80;
-            };
-            schemas = {
-              kubernetes = "*.yaml";
-              "https://json.schemastore.org/kustomization" = "/kustomization.yaml";
-            };
-          };
-        };
       })
 
       pkgs.exiftool
