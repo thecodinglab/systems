@@ -185,6 +185,8 @@
   extraConfigLuaPre = pkgs.lib.mkIf pkgs.stdenv.isDarwin ''
     if vim.trim(vim.fn.system("defaults read -g AppleInterfaceStyle")) == "Dark" then
       vim.opt.background = "dark"
+    else
+      vim.opt.background = "light"
     end
   '';
 
