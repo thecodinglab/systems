@@ -189,8 +189,5 @@
 
       "grr" = "lsp_references";
     };
-
-    gitsigns.enable = true;
-    lazygit.enable = true;
   };
 }

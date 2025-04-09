@@ -299,5 +299,8 @@
         icons = { };
       };
     };
+
+    gitsigns.enable = true;
+    neogit.enable = true;
   };
 }
