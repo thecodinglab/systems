@@ -292,13 +292,7 @@
       ];
     };
 
-    mini = {
-      enable = true;
-      mockDevIcons = true;
-      modules = {
-        icons = { };
-      };
-    };
+    web-devicons.enable = true;
 
     gitsigns.enable = true;
     neogit.enable = true;
