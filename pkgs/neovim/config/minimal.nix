@@ -127,28 +127,6 @@
       mode = [ "n" ];
       action = "<cmd>vertical resize +10<cr>";
     }
-
-    # keep cursor centered
-    {
-      key = "j";
-      mode = [ "n" ];
-      action = "jzz";
-    }
-    {
-      key = "k";
-      mode = [ "n" ];
-      action = "kzz";
-    }
-    {
-      key = "<c-d>";
-      mode = [ "n" ];
-      action = "<c-d>zz";
-    }
-    {
-      key = "<c-u>";
-      mode = [ "n" ];
-      action = "<c-u>zz";
-    }
   ];
 
   colorschemes.catppuccin = {
