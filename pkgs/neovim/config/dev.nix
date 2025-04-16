@@ -78,10 +78,6 @@
             end,
           })
         end
-
-        if client:supports_method('textDocument/completion') then
-          vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
-        end
       '';
 
       keymaps.lspBuf = {
@@ -188,6 +184,73 @@
       "gD" = "lsp_type_definitions";
 
       "grr" = "lsp_references";
+    };
+
+    blink-cmp = {
+      enable = true;
+      settings = {
+        appearance.nerd_font_variant = "normal";
+
+        completion = {
+          keyword.range = "full";
+
+          accept = {
+            auto_brackets = {
+              enabled = true;
+              semantic_token_resolution = {
+                enabled = false;
+              };
+            };
+          };
+
+          documentation.auto_show = true;
+        };
+
+        signature.enabled = true;
+
+        sources = { };
+
+        keymap = {
+          preset = "none";
+
+          "<C-e>" = [ "hide" ];
+          "<C-y>" = [ "select_and_accept" ];
+
+          "<C-p>" = [
+            "select_prev"
+            "fallback_to_mappings"
+          ];
+          "<C-n>" = [
+            "show"
+            "select_next"
+            "fallback_to_mappings"
+          ];
+
+          "<C-b>" = [
+            "scroll_documentation_up"
+            "fallback"
+          ];
+          "<C-f>" = [
+            "scroll_documentation_down"
+            "fallback"
+          ];
+
+          "<Tab>" = [
+            "snippet_forward"
+            "fallback"
+          ];
+          "<S-Tab>" = [
+            "snippet_backward"
+            "fallback"
+          ];
+
+          "<C-k>" = [
+            "show_signature"
+            "hide_signature"
+            "fallback"
+          ];
+        };
+      };
     };
   };
 }
