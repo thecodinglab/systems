@@ -63,7 +63,7 @@
 
     teslamate-postgres = {
       hostname = "teslamate-postgres";
-      image = "docker.io/postgres:15";
+      image = "docker.io/postgres:17";
       autoStart = true;
 
       labels = {
@@ -75,7 +75,7 @@
         POSTGRES_PASSWORD = "teslamate";
         POSTGRES_DB = "teslamate";
       };
-      volumes = [ "teslamate-postgres-data:/var/lib/postgresql/data" ];
+      volumes = [ "teslamate-postgres-17-data:/var/lib/postgresql/data" ];
 
       extraOptions = [ "--ip=10.88.0.4" ];
     };
