@@ -256,6 +256,10 @@
             # Spotify
             "workspace special, class:^Spotify$"
           ];
+
+          layerrule = [
+            "noanim, notifications"
+          ];
         };
       };
 
@@ -295,14 +299,15 @@
 
               ### Geometry ###
 
-              origin = "top-center";
-              offset = "0x-30";
-              width = 512;
+              origin = "top-right";
+              offset = "30x0";
+              width = 320;
 
               padding = "8";
               horizontal_padding = "10";
               text_icon_padding = "0";
               corner_radius = "16";
+              gap_size = "5";
 
               ### Color ###
 
