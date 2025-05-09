@@ -56,11 +56,11 @@
 
           monitor = [
             # left
-            "${monitors.left}, preferred, 0x0, auto"
+            "${monitors.left}, preferred, 0x0, 1"
             # center
-            "${monitors.center}, preferred, 2560x0, auto"
+            "${monitors.center}, preferred, 2560x0, 1"
             # right
-            "${monitors.right}, preferred, 6000x0, auto"
+            "${monitors.right}, preferred, 6000x0, 1"
           ];
 
           workspace = [
