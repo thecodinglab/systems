@@ -103,6 +103,43 @@
       action = "<cmd>Oil<cr>";
     }
 
+    # search
+    {
+      key = "<leader>fp";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua resume<cr>";
+    }
+    {
+      key = "<leader>ff";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua files<cr>";
+    }
+    {
+      key = "<leader>fs";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua live_grep<cr>";
+    }
+    {
+      key = "<leader>fs";
+      mode = [ "v" ];
+      action = "<cmd>FzfLua grep_visual<cr>";
+    }
+    {
+      key = "<leader>fb";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua buffers<cr>";
+    }
+    {
+      key = "<leader>fh";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua helptags<cr>";
+    }
+    {
+      key = "<leader>fd";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua diagnostics_workspace<cr>";
+    }
+
     # resize pane
     {
       key = "<cs-h>";
@@ -236,22 +273,9 @@
 
     lualine.enable = true;
 
-    telescope = {
+    fzf-lua = {
       enable = true;
-      extensions = {
-        fzf-native.enable = true;
-        ui-select.enable = true;
-      };
-      keymaps = {
-        "<leader>fp" = "previous";
-        "<leader>ff" = "find_files";
-        "<leader>fb" = "buffers";
-        "<leader>fh" = "help_tags";
-        "<leader>fd" = "diagnostics";
-        "<leader>fg" = "git_branches";
-        "<leader>fc" = "git_commits";
-        "<leader>fC" = "git_bcommits";
-      };
+      profile = "max-perf";
     };
 
     oil = {

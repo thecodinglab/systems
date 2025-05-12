@@ -18,6 +18,7 @@
   };
 
   keymaps = [
+    # toggle diagnostics
     {
       key = "<leader>d";
       mode = [ "n" ];
@@ -26,6 +27,23 @@
           vim.diagnostic.enable(not vim.diagnostic.is_enabled())
         end
       '';
+    }
+
+    # lsp
+    {
+      key = "gd";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua lsp_definitions<cr>";
+    }
+    {
+      key = "grr";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua lsp_references<cr>";
+    }
+    {
+      key = "gra";
+      mode = [ "n" ];
+      action = "<cmd>FzfLua lsp_code_actions<cr>";
     }
   ];
 
