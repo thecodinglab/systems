@@ -13,7 +13,7 @@
     };
   };
 
-  diagnostics.virtual_lines = {
+  diagnostic.settings.virtual_lines = {
     current_line = true;
   };
 
