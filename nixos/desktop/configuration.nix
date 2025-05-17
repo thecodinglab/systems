@@ -161,6 +161,7 @@
       "wheel"
       "docker"
       "libvirtd"
+      "plugdev"
     ];
     initialPassword = "changeme";
 
