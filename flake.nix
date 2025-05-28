@@ -14,13 +14,7 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    homebrew = {
-      url = "github:zhaofengli-wip/nix-homebrew";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        nix-darwin.follows = "darwin";
-      };
-    };
+    homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -188,7 +182,7 @@
         let
           baseModules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
             sops-nix.homeManagerModules.sops
-            stylix.homeManagerModules.stylix
+            stylix.homeModules.stylix
           ];
         in
         {
