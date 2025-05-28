@@ -21,6 +21,7 @@
 
   environment.systemPackages = [ pkgs.home-manager ];
 
+  system.primaryUser = "florian";
   users.users.florian = {
     name = "florian";
     home = "/Users/florian/";

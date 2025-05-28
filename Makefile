@@ -7,7 +7,7 @@ ifeq ($(HOSTNAME),florian-nixos)
 	REBUILD_SWITCH_CMD ?= sudo nixos-rebuild
 else ifeq ($(HOSTNAME),Florians-MacBook-Pro)
 	HOST ?= macbookpro
-	REBUILD_CMD ?= darwin-rebuild
+	REBUILD_CMD ?= sudo darwin-rebuild
 endif
 
 REBUILD_SWITCH_CMD ?= $(REBUILD_CMD)
