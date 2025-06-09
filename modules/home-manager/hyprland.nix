@@ -528,7 +528,7 @@
               text = ''cmd[update:1000] echo "$(date +"%H:%M")"'';
 
               color = "rgb(200, 200, 200)";
-              font_family = "Inter";
+              font_family = config.stylix.fonts.sansSerif.name;
               font_size = 100;
 
               halign = "center";
@@ -570,9 +570,6 @@
         # Audio Control
         pkgs.pulseaudio
         pkgs.playerctl
-
-        # Font
-        pkgs.apple-font-sf-pro
       ];
     };
 }
