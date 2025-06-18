@@ -53,6 +53,7 @@
       "1password"
       "1password-cli"
       "spotify"
+      "slack"
       "obsidian"
       "postman"
     ];
@@ -64,6 +65,7 @@
     bat.enable = true;
     btop.enable = true;
     sioyek.enable = true;
+    yazi.enable = true;
 
     direnv = {
       enable = true;
@@ -99,7 +101,6 @@
 
       # Utilities
       pkgs.openssl
-      pkgs.vifm
       pkgs.jq
       pkgs.zip
       pkgs.unzip
@@ -216,14 +217,15 @@
     ++ lib.optionals pkgs.stdenv.isLinux [
       pkgs._1password
       pkgs.spotify
+      pkgs.slack
 
       pkgs.postman
 
-      pkgs.signal-desktop
-      pkgs.protonmail-desktop
-      pkgs.helvum
-      pkgs.zen-browser
       pkgs.ghostty
+      pkgs.zen-browser
+      pkgs.helvum
+      pkgs.fragments
+      pkgs.obs-studio
 
       pkgs.imv
       pkgs.mpv
