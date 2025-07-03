@@ -273,10 +273,7 @@
 
     lualine.enable = true;
 
-    fzf-lua = {
-      enable = true;
-      profile = "max-perf";
-    };
+    fzf-lua.enable = true;
 
     oil = {
       enable = true;
