@@ -39,6 +39,8 @@
     auto-update = off
   '';
 
+  xdg.mimeApps.enable = pkgs.stdenv.isLinux;
+
   custom = {
     fzf.enable = true;
     tmux.enable = true;
@@ -48,6 +50,7 @@
     hyprland.enable = pkgs.stdenv.isLinux;
     zsh.enable = true;
     zathura.enable = true;
+    zen-browser.enable = true;
 
     unfree = [
       "1password"
@@ -222,7 +225,6 @@
       pkgs.postman
 
       pkgs.ghostty
-      pkgs.zen-browser
       pkgs.helvum
       pkgs.fragments
       pkgs.obs-studio
