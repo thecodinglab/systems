@@ -84,7 +84,7 @@
           input = {
             kb_layout = "us";
             kb_variant = "altgr-intl";
-            kb_options = "compose:rwin";
+            kb_options = "compose:rwin,caps:escape";
 
             numlock_by_default = true;
 
