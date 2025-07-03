@@ -113,7 +113,7 @@
 
             border_size = 2;
 
-            layout = "dwindle";
+            layout = "master";
           };
 
           decoration = {
@@ -138,6 +138,8 @@
               "workspaces, 1, 5, ease"
             ];
           };
+
+          master.mfact = 0.7;
 
           dwindle = {
             pseudotile = true;
