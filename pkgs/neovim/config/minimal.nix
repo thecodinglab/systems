@@ -208,6 +208,27 @@
         end
       '';
     }
+
+    # keep cursor centered
+    {
+      event = [ "CursorMoved" ];
+      callback.__raw = ''
+        function ()
+          vim.cmd("norm! zz")
+        end
+      '';
+    }
+    {
+      event = [ "CursorMovedI" ];
+      callback.__raw = ''
+        function ()
+          local cursor = vim.fn.getcurpos()
+
+          vim.cmd("norm! zz")
+          vim.fn.cursor({ cursor[2], cursor[3] })
+        end
+      '';
+    }
   ];
 
   extraPlugins = [
