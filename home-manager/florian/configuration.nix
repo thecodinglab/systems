@@ -216,6 +216,10 @@
       # Writing
       pkgs.texliveFull
       pkgs.typst
+
+      # Minecraft
+      pkgs.prismlauncher
+      pkgs.jdk
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       pkgs._1password
@@ -231,8 +235,6 @@
 
       pkgs.imv
       pkgs.mpv
-
-      pkgs.prismlauncher
     ];
 
   fonts.fontconfig.enable = true;
