@@ -29,24 +29,19 @@
       ];
     };
 
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
+    home-manager.users.root =
+      { ... }:
+      {
+        home.stateVersion = "23.11";
 
-      users.root =
-        { ... }:
-        {
-          home.stateVersion = "23.11";
+        imports = lib.attrValues outputs.homeManagerModules;
 
-          imports = lib.attrValues outputs.homeManagerModules;
-
-          custom = {
-            fzf.enable = true;
-            zsh.enable = true;
-          };
-
-          programs.btop.enable = true;
+        custom = {
+          fzf.enable = true;
+          zsh.enable = true;
         };
-    };
+
+        programs.btop.enable = true;
+      };
   };
 }

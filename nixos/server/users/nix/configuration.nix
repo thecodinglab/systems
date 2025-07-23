@@ -1,4 +1,5 @@
 {
+  inputs,
   outputs,
   pkgs,
   lib,
@@ -20,25 +21,20 @@
     ];
   };
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
+  home-manager.users.nix = (
+    { ... }:
+    {
+      home.stateVersion = "23.11";
 
-    users.nix = (
-      { ... }:
-      {
-        home.stateVersion = "23.11";
+      imports = lib.attrValues outputs.homeManagerModules;
 
-        imports = lib.attrValues outputs.homeManagerModules;
+      custom = {
+        fzf.enable = true;
+        tmux.enable = true;
+        zsh.enable = true;
+      };
 
-        custom = {
-          fzf.enable = true;
-          tmux.enable = true;
-          zsh.enable = true;
-        };
-
-        programs.btop.enable = true;
-      }
-    );
-  };
+      programs.btop.enable = true;
+    }
+  );
 }
