@@ -6,11 +6,9 @@
 
   config = lib.mkIf config.custom.audio.enable {
     sops = {
-      defaultSopsFile = ./secrets.yaml;
-
       secrets = {
-        proton-username = { };
-        proton-password = { };
+        proton-username.sopsFile = ./secrets.yaml;
+        proton-password.sopsFile = ./secrets.yaml;
       };
 
       templates.proton-openvpn-credentials.content = ''
