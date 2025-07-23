@@ -301,7 +301,6 @@
 
     vim-surround.enable = true;
     undotree.enable = true;
-    hardtime.enable = true;
 
     tmux-navigator = {
       enable = true;
