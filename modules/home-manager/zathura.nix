@@ -23,7 +23,7 @@
     };
 
     xdg.mimeApps.defaultApplications."application/pdf" = [
-      "${pkgs.zathura}/share/applications/org.pwmt.zathura.desktop"
+      "org.pwmt.zathura.desktop"
     ];
   };
 }
