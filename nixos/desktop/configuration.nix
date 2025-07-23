@@ -3,6 +3,7 @@
   system.stateVersion = "23.11";
 
   imports = [ ./hardware.nix ];
+  sops.defaultSopsFile = ./secrets.yaml;
 
   nixpkgs.overlays = [
     outputs.overlays.additions

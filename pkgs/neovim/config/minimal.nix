@@ -120,11 +120,6 @@
       action = "<cmd>FzfLua live_grep<cr>";
     }
     {
-      key = "<leader>fs";
-      mode = [ "v" ];
-      action = "<cmd>FzfLua grep_visual<cr>";
-    }
-    {
       key = "<leader>fb";
       mode = [ "n" ];
       action = "<cmd>FzfLua buffers<cr>";
@@ -142,22 +137,22 @@
 
     # resize pane
     {
-      key = "<cs-h>";
+      key = "<A-h>";
       mode = [ "n" ];
       action = "<cmd>vertical resize -10<cr>";
     }
     {
-      key = "<cs-j>";
+      key = "<A-j>";
       mode = [ "n" ];
       action = "<cmd>resize +10<cr>";
     }
     {
-      key = "<cs-k>";
+      key = "<A-k>";
       mode = [ "n" ];
       action = "<cmd>resize -10<cr>";
     }
     {
-      key = "<cs-l>";
+      key = "<A-l>";
       mode = [ "n" ];
       action = "<cmd>vertical resize +10<cr>";
     }

@@ -39,6 +39,19 @@
     ];
   };
 
+  sops.secrets.unas_credentials = { };
+
+  fileSystems."/media/unas/personal" = {
+    device = "//192.168.32.185/Personal-Drive";
+    fsType = "cifs";
+    options = [
+      "credentials=${config.sops.secrets.unas_credentials.path}"
+      "uid=florian"
+      "gid=users"
+      "noauto"
+    ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
