@@ -89,153 +89,153 @@
     };
   };
 
-  home.packages =
-    [
-      pkgs.obsidian
+  home.packages = [
+    pkgs.obsidian
 
-      pkgs.hledger
-      pkgs.hledger-ui
-      pkgs.hledger-web
+    pkgs.hledger
+    pkgs.hledger-ui
+    pkgs.hledger-web
 
-      pkgs.apple-font-sf-pro
-      pkgs.apple-font-sf-compact
-      pkgs.apple-font-sf-mono
-      pkgs.apple-font-new-york
+    pkgs.apple-font-sf-pro
+    pkgs.apple-font-sf-compact
+    pkgs.apple-font-sf-mono
+    pkgs.apple-font-new-york
 
-      # Utilities
-      pkgs.openssl
-      pkgs.jq
-      pkgs.zip
-      pkgs.unzip
-      pkgs.ollama
+    # Utilities
+    pkgs.openssl
+    pkgs.jq
+    pkgs.zip
+    pkgs.unzip
+    pkgs.ollama
 
-      (pkgs.neovim-dev.extend {
-        plugins.ledger.enable = true;
+    (pkgs.neovim-dev.extend {
+      plugins.ledger.enable = true;
 
-        plugins.lsp.servers.texlab.enable = true;
-        plugins.vimtex = {
-          enable = true;
-          texlivePackage = pkgs.texlive.combined.scheme-full;
-          settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
-        };
+      plugins.lsp.servers.texlab.enable = true;
+      plugins.vimtex = {
+        enable = true;
+        texlivePackage = pkgs.texlive.combined.scheme-full;
+        settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
+      };
 
-        plugins.markdown-preview.enable = true;
+      plugins.markdown-preview.enable = true;
 
-        plugins.obsidian = {
-          enable = true;
-          settings = {
-            dir = "~/vaults/singularity";
+      plugins.obsidian = {
+        enable = true;
+        settings = {
+          legacy_commands = false;
 
-            notes_subdir = "02 - Fleeting/";
+          workspaces = [
+            {
+              name = "singularity";
+              path = "~/vaults/singularity";
+            }
+          ];
 
-            daily_notes = {
-              folder = "04 - Daily/";
-              date_format = "%Y-%m-%d";
-            };
+          completion.blink = true;
 
-            templates = {
-              subdir = "99 - Meta/00 - Templates/";
-              date_format = "%Y-%m-%d";
-              time_format = "%H:%M";
-            };
+          notes_subdir = "02 - Fleeting/";
 
-            note_id_func = ''
-              function(title)
-                local suffix = ""
-                if title ~= nil then
-                  suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-                else
-                  for _ = 1, 4 do
-                    suffix = suffix .. string.char(math.random(65, 90))
-                  end
-                end
-                return os.date("%Y%m%d%H%M") .. "-" .. suffix
-              end
-            '';
-
-            follow_url_func = ''
-              function(url)
-                if vim.fn.executable("xdg-open") == 1 then
-                  vim.fn.jobstart({ "xdg-open", url })
-                  return
-                end
-
-                if vim.fn.executable("open") == 1 then
-                  vim.fn.jobstart({ "open", url })
-                  return
-                end
-
-                vim.notify("unable to open link: no tool found", vim.log.levels.ERROR)
-              end
-            '';
+          daily_notes = {
+            folder = "04 - Daily/";
+            date_format = "%Y-%m-%d";
           };
+
+          templates = {
+            subdir = "99 - Meta/00 - Templates/";
+            date_format = "%Y-%m-%d";
+            time_format = "%H:%M";
+          };
+
+          note_id_func = ''
+            function(title)
+              local suffix = ""
+              if title ~= nil then
+                suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+              else
+                for _ = 1, 4 do
+                  suffix = suffix .. string.char(math.random(65, 90))
+                end
+              end
+              return os.date("%Y%m%d%H%M") .. "-" .. suffix
+            end
+          '';
+
+          follow_url_func = ''
+            function(url)
+              vim.ui.open(url)
+            end
+          '';
         };
-      })
+      };
+    })
 
-      pkgs.exiftool
-      pkgs.ffmpeg
+    pkgs.exiftool
+    pkgs.ffmpeg
 
-      # Kubernetes
-      pkgs.kubectl
-      (pkgs.wrapHelm pkgs.kubernetes-helm { plugins = [ pkgs.kubernetes-helmPlugins.helm-diff ]; })
-      pkgs.helmfile
-      pkgs.k9s
+    # Kubernetes
+    pkgs.kubectl
+    (pkgs.wrapHelm pkgs.kubernetes-helm { plugins = [ pkgs.kubernetes-helmPlugins.helm-diff ]; })
+    pkgs.helmfile
+    pkgs.k9s
 
-      # Build Tools
-      pkgs.gnumake
-      pkgs.cmake
+    # Build Tools
+    pkgs.gnumake
+    pkgs.cmake
 
-      # Git
-      pkgs.git
-      pkgs.git-crypt
-      pkgs.gh
-      pkgs.glab
-      pkgs.sops
+    # Git
+    pkgs.git
+    pkgs.git-crypt
+    pkgs.gh
+    pkgs.glab
+    pkgs.sops
 
-      # C/C++
-      pkgs.gcc
+    # C/C++
+    pkgs.gcc
 
-      # Golang
-      pkgs.go
-      pkgs.gopls
-      pkgs.gotools
+    # Golang
+    pkgs.go
+    pkgs.gopls
+    pkgs.gotools
 
-      # Rust
-      pkgs.cargo
-      pkgs.rust-analyzer
+    # Rust
+    pkgs.cargo
+    pkgs.rust-analyzer
 
-      # Haskell
-      pkgs.ghc
-      pkgs.cabal-install
-      pkgs.haskell-language-server
+    # Haskell
+    pkgs.ghc
+    pkgs.cabal-install
+    pkgs.haskell-language-server
 
-      # JavaScript
-      pkgs.nodejs
-      pkgs.bun
+    # JavaScript
+    pkgs.nodejs
+    pkgs.bun
 
-      # Writing
-      pkgs.texliveFull
-      pkgs.typst
+    # Writing
+    pkgs.texlive.combined.scheme-full
+    pkgs.typst
 
-      # Minecraft
-      pkgs.prismlauncher
-      pkgs.jdk
-    ]
-    ++ lib.optionals pkgs.stdenv.isLinux [
-      pkgs._1password
-      pkgs.spotify
-      pkgs.slack
+    # Minecraft
+    pkgs.prismlauncher
+    pkgs.jdk
+  ]
+  ++ lib.optionals pkgs.stdenv.isLinux [
+    # pkgs._1password-cli
+    pkgs.spotify
+    pkgs.slack
 
-      pkgs.postman
+    pkgs.postman
 
-      pkgs.ghostty
-      pkgs.helvum
-      pkgs.fragments
-      pkgs.obs-studio
+    pkgs.ghostty
+    pkgs.helvum
+    pkgs.fragments
+    pkgs.obs-studio
 
-      pkgs.imv
-      pkgs.mpv
-    ];
+    pkgs.imv
+    pkgs.mpv
+
+    pkgs.chatterino7
+  ];
 
   fonts.fontconfig.enable = true;
 }

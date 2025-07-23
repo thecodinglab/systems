@@ -16,10 +16,6 @@
       };
     in
     {
-      _1password = stable._1password;
-      _1password-gui = stable._1password-gui;
-
-      incus = stable.incus;
-      incus-lts = stable.incus-lts;
+      chatterino7 = stable.chatterino7;
     };
 }
