@@ -126,18 +126,7 @@
             };
           };
 
-          animations = {
-            enabled = true;
-
-            bezier = "ease, 0.5, 0.0, 0.5, 1.0";
-
-            animation = [
-              "windows, 1, 5, ease"
-              "windowsOut, 1, 5, ease, popin 80%"
-              "fade, 1, 5, default"
-              "workspaces, 1, 5, ease"
-            ];
-          };
+          animations.enabled = false;
 
           master.mfact = 0.7;
 
