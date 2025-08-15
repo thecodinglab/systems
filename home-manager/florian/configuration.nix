@@ -59,6 +59,7 @@
       "slack"
       "obsidian"
       "postman"
+      "claude-code"
     ];
   };
 
@@ -89,6 +90,10 @@
     };
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "beekeeper-studio-5.2.12"
+  ];
+
   home.packages = [
     pkgs.obsidian
 
@@ -107,6 +112,12 @@
     pkgs.zip
     pkgs.unzip
     pkgs.ollama
+
+    # Coding
+    pkgs.neovide
+    pkgs.zed-editor
+    pkgs.beekeeper-studio
+    pkgs.claude-code
 
     (pkgs.neovim-dev.extend {
       plugins.ledger.enable = true;
