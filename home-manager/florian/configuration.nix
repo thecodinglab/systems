@@ -24,21 +24,6 @@
     shell.enableZshIntegration = true;
   };
 
-  xdg.configFile."ghostty/config".text = ''
-    theme = dark:catppuccin-mocha,light:catppuccin-latte
-    shell-integration = zsh
-
-    font-family = "${config.stylix.fonts.monospace.name}"
-    font-size = ${builtins.toString config.stylix.fonts.sizes.terminal}
-
-    quit-after-last-window-closed = true
-
-    window-padding-x = 2
-    window-padding-y = 4
-
-    auto-update = off
-  '';
-
   xdg.mimeApps.enable = pkgs.stdenv.isLinux;
 
   custom = {
@@ -51,6 +36,7 @@
     zsh.enable = true;
     zathura.enable = true;
     zen-browser.enable = true;
+    ghostty.enable = true;
 
     unfree = [
       "1password"
@@ -237,7 +223,6 @@
 
     pkgs.postman
 
-    pkgs.ghostty
     pkgs.helvum
     pkgs.fragments
     pkgs.obs-studio

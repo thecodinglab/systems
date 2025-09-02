@@ -85,7 +85,6 @@
       "proton-mail-bridge"
       "google-drive"
 
-      "ghostty"
       "figma"
       "linear-linear"
       "orbstack"
