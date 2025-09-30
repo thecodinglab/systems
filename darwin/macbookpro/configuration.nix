@@ -29,13 +29,13 @@
 
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"
-    "/Applications/Zen Browser.app" # managed through homebrew
+    "/Applications/Zen.app" # managed through homebrew
     "/System/Applications/Mail.app"
     "/Applications/Slack.app" # managed through homebrew
     "/System/Applications/Calendar.app"
 
-    "/Applications/Ghostty.app" # managed through homebrew
-    "${pkgs.obsidian}/Applications/Obsidian.app"
+    "/Users/florian/Applications/Home Manager Apps/Ghostty.app" # managed through home-manager
+    "/Users/florian/Applications/Home Manager Apps/Obsidian.app" # managed through home-manager
     "/Applications/TablePlus.app" # managed through homebrew
     "/Applications/Figma.app" # managed through homebrew
     "/Applications/Linear.app" # managed through homebrew
@@ -81,7 +81,6 @@
       "spotify"
       "1password"
       "1password-cli"
-      "raycast"
       "proton-mail-bridge"
       "google-drive"
 
@@ -91,7 +90,7 @@
       "tableplus"
       "postman"
 
-      "zen-browser"
+      "zen"
       "google-chrome"
       "firefox@developer-edition"
     ];
