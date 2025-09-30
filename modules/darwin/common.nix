@@ -66,7 +66,7 @@
 
     WindowManager = {
       # enable stage manager
-      GloballyEnabled = true;
+      GloballyEnabled = false;
       # disable hiding of all applications when clicking on wallpaper
       EnableStandardClickToShowDesktop = false;
 
