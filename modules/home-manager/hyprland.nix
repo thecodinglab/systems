@@ -258,19 +258,24 @@
           enable = true;
           settings = {
             general = {
-              lock_cmd = lib.getExe pkgs.hyprlock;
+              lock_cmd = "pidof hyprlock || ${lib.getExe pkgs.hyprlock}";
+              before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
               after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
             };
 
             listener = [
               {
-                timeout = 900;
-                on-timeout = lib.getExe pkgs.hyprlock;
+                timeout = 300; # 5min
+                on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
               }
               {
-                timeout = 1200;
+                timeout = 330; # 5.5min
                 on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
                 on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+              }
+              {
+                timeout = 1200; # 20min
+                on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
               }
             ];
 
