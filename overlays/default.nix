@@ -8,14 +8,23 @@
     };
 
   modifications =
-    final: _prev:
+    final: prev:
     let
       stable = import inputs.nixpkgs-stable {
         inherit (final) system;
         inherit (final) config;
       };
+
+      bleeding = import inputs.nixpkgs-bleeding {
+        inherit (final) system;
+        inherit (final) config;
+      };
     in
     {
-      chatterino7 = stable.chatterino7;
+      # stable packages
+      plex = stable.plex;
+
+      # bleeding packages
+      claude-code = bleeding.claude-code;
     };
 }
