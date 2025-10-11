@@ -165,8 +165,7 @@
             "${mod} CONTROL, Q , exec, ${pkgs.systemd}/bin/loginctl lock-session"
 
             # application launcher
-            "${mod}, D, exec, ${pkgs.tofi}/bin/tofi-drun | xargs hyprctl dispatch exec --"
-            "${mod} SHIFT, D, exec, ${pkgs.tofi}/bin/tofi-run | xargs hyprctl dispatch exec --"
+            "${mod}, D, exec, ${lib.getExe pkgs.vicinae} toggle"
 
             # terminal
             "${mod}, RETURN, exec, ${lib.getExe pkgs.ghostty}"
@@ -490,27 +489,6 @@
           };
         };
 
-        tofi = {
-          enable = true;
-          settings = {
-            anchor = "top";
-            width = "100%";
-            height = 24;
-
-            horizontal = true;
-            prompt-text = " run: ";
-            min-input-width = 120;
-            result-spacing = 15;
-
-            outline-width = 0;
-            border-width = 0;
-            padding-top = 4;
-            padding-bottom = 4;
-            padding-left = 0;
-            padding-right = 0;
-          };
-        };
-
         hyprlock = {
           enable = true;
           settings = {
@@ -556,6 +534,8 @@
           };
         };
       };
+
+      services.vicinae.enable = true;
 
       # hyprlock wallpaper is burred and managed above
       stylix.targets.hyprlock.useWallpaper = false;
