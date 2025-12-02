@@ -14,9 +14,6 @@
       enable = true;
       lfs.enable = true;
 
-      userName = "Florian Walter";
-      userEmail = "fw@florian-walter.ch";
-
       signing = {
         key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG";
         signByDefault = true;
@@ -28,7 +25,12 @@
         ".DS_Store"
       ];
 
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Florian Walter";
+          email = "fw@florian-walter.ch";
+        };
+
         init.defaultBranch = "main";
         pull.rebase = "true";
 
@@ -57,9 +59,9 @@
         credential."https://git.overleaf.com".helper =
           ''!f() { test "$1" = get && echo "password=$(op item get Overleaf --fields 'git auth token')"; }; f'';
       };
-
-      delta.enable = true;
     };
+
+    programs.delta.enable = true;
 
     programs.gpg = {
       enable = true;

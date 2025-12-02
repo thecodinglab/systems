@@ -63,12 +63,12 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "zen-browser-bin";
-  version = "1.14.1b";
+  version = "1.15.2b";
 
   src = fetchzip {
     url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
     # nix store prefetch-file "https://github.com/zen-browser/desktop/releases/download/VERSION/zen.linux-x86_64.tar.xz" --unpack --json | jq -r .hash
-    hash = "sha256-A80Q6xBhprXGWUzYTT4/c0gbDM/ha3KJkuaHeBEK2+g=";
+    hash = "sha256-E2OWSvZ1sJ7wn1NtW93+ohR5heAuERMzeePUzgAh3cM=";
   };
 
   desktopItems = [

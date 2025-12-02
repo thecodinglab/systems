@@ -28,6 +28,5 @@
       claude-code = bleeding.claude-code;
 
       # external packages
-      vicinae = inputs.vicinae.packages.${prev.system}.default;
     };
 }
