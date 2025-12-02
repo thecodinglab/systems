@@ -218,6 +218,7 @@
   ]
   ++ lib.optionals pkgs.stdenv.isLinux [
     # pkgs._1password-cli
+    pkgs.helium
     pkgs.spotify
     pkgs.slack
 

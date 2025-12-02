@@ -14,10 +14,11 @@ let
 in
 {
   zen-browser = pkgs.callPackage ./zen-browser { };
+  helium = pkgs.callPackage ./helium.nix { };
 }
 // mkPrefix "neovim" (
   import ./neovim/package.nix {
-    inherit pkgs;
+    inherit pkgs inputs;
     inherit (inputs) nixvim;
   }
 )
