@@ -48,11 +48,6 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    vicinae = {
-      url = "github:vicinaehq/vicinae";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -65,7 +60,6 @@
       terranix,
       sops-nix,
       stylix,
-      vicinae,
       ...
     }@inputs:
     let
@@ -105,7 +99,6 @@
       homeManagerModules = (import ./modules/home-manager) // {
         sops = sops-nix.homeManagerModules.sops;
         stylix = stylix.homeModules.stylix;
-        vicinae = vicinae.homeManagerModules.default;
       };
 
       nixosConfigurations = {

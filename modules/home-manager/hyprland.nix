@@ -535,7 +535,14 @@
         };
       };
 
-      services.vicinae.enable = true;
+      programs.vicinae = {
+        enable = true;
+        systemd.enable = true;
+        settings = {
+          font.size = 10;
+          theme.name = "vicinae-dark";
+        };
+      };
 
       # hyprlock wallpaper is burred and managed above
       stylix.targets.hyprlock.useWallpaper = false;
