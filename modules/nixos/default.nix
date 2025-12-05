@@ -8,6 +8,4 @@
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
   zsa = import ./zsa.nix;
-
-  unfree = import ../unfree.nix;
 }

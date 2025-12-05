@@ -12,11 +12,6 @@
   imports = [ inputs.home-manager.nixosModules.home-manager ];
 
   config = lib.mkIf config.custom.isContainer {
-    nixpkgs.overlays = [
-      outputs.overlays.additions
-      outputs.overlays.modifications
-    ];
-
     networking.nftables.enable = false;
 
     environment.systemPackages = [ pkgs.neovim-minimal ];

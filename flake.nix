@@ -30,7 +30,7 @@
     };
 
     nixvim = {
-      url = "github:nix-community/nixvim";
+      url = "github:nix-community/nixvim?ref=1cca516a54462a76fa117357d57cbb7ff5df0338";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -73,18 +73,72 @@
       ];
 
       forAllSystems = nixpkgs.lib.genAttrs systems;
+
+      overlays = import ./overlays { inherit inputs; };
+
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system;
+
+          overlays = [
+            overlays.additions
+            overlays.modifications
+          ];
+
+          config = {
+            allowUnfreePredicate =
+              pkg:
+              builtins.elem (nixpkgs.lib.getName pkg) [
+                "1password"
+                "1password-cli"
+                "spotify"
+                "obsidian"
+
+                # Work
+                "slack"
+                "postman"
+
+                # AI
+                "gemini-cli"
+                "claude-code"
+
+                # Gaming
+                "steam"
+                "steam-unwrapped"
+                "steam-original"
+                "steam-run"
+                "discord"
+
+                # Server
+                "plexmediaserver"
+
+                # Nvidia
+                "nvidia-x11"
+                "nvidia-settings"
+                "cuda_cccl"
+                "cuda_cudart"
+                "cuda_nvcc"
+                "libcublas"
+              ];
+
+            permittedInsecurePackages = [
+              "beekeeper-studio-5.3.4"
+            ];
+          };
+        };
     in
     {
       packages = forAllSystems (
         system:
         import ./pkgs {
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = mkPkgs system;
           inherit inputs;
         }
       );
 
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
-      overlays = import ./overlays { inherit inputs; };
+      formatter = forAllSystems (system: (mkPkgs system).nixfmt-rfc-style);
+      inherit overlays;
 
       nixosModules = import ./modules/nixos // {
         sops = sops-nix.nixosModules.sops;
@@ -103,20 +157,27 @@
 
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/desktop/configuration.nix ];
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/desktop/configuration.nix
+          ];
         };
 
         server = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [ ./nixos/server/configuration.nix ];
+          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
+            ./nixos/server/configuration.nix
+          ];
         };
 
         apollo = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -126,6 +187,7 @@
         };
 
         hestia = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -135,6 +197,7 @@
         };
 
         hermes = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -144,6 +207,7 @@
         };
 
         poseidon = nixpkgs.lib.nixosSystem {
+          pkgs = mkPkgs "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -155,7 +219,7 @@
 
       darwinConfigurations = {
         macbookpro = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
+          pkgs = mkPkgs "aarch64-darwin";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -183,7 +247,7 @@
 
       homeConfigurations = {
         "florian@desktop" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          pkgs = mkPkgs "x86_64-linux";
           extraSpecialArgs = {
             inherit inputs outputs;
           };
@@ -193,7 +257,7 @@
         };
 
         "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+          pkgs = mkPkgs "aarch64-darwin";
           extraSpecialArgs = {
             inherit inputs outputs;
           };
@@ -225,7 +289,7 @@
       apps = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = mkPkgs system;
           mkTerraformCmd =
             cmd:
             toString (

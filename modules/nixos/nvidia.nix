@@ -27,10 +27,5 @@
         package = config.boot.kernelPackages.nvidiaPackages.stable;
       };
     };
-
-    custom.unfree = [
-      "nvidia-x11"
-      "nvidia-settings"
-    ];
   };
 }

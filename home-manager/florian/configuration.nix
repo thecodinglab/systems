@@ -1,17 +1,11 @@
 {
   config,
-  outputs,
   pkgs,
   lib,
   ...
 }:
 {
   home.stateVersion = "23.11";
-
-  nixpkgs.overlays = [
-    outputs.overlays.additions
-    outputs.overlays.modifications
-  ];
 
   home = {
     username = "florian";
@@ -38,15 +32,6 @@
     zen-browser.enable = true;
     ghostty.enable = true;
 
-    unfree = [
-      "1password"
-      "1password-cli"
-      "spotify"
-      "slack"
-      "obsidian"
-      "postman"
-      "claude-code"
-    ];
   };
 
   stylix.enable = true;

@@ -1,14 +1,9 @@
-{ outputs, pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   system.stateVersion = "23.11";
 
   imports = [ ./hardware.nix ];
   sops.defaultSopsFile = ./secrets.yaml;
-
-  nixpkgs.overlays = [
-    outputs.overlays.additions
-    outputs.overlays.modifications
-  ];
 
   custom = {
     audio.enable = true;
@@ -18,22 +13,6 @@
     desktop.enable = true;
     backup.enable = false;
     vpn.enable = true;
-
-    unfree = [
-      "1password"
-      "1password-cli"
-
-      "steam"
-      "steam-unwrapped"
-      "steam-original"
-      "steam-run"
-
-      # cuda
-      "cuda_cccl"
-      "cuda_cudart"
-      "cuda_nvcc"
-      "libcublas"
-    ];
   };
 
   #######################

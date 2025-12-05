@@ -1,6 +1,5 @@
 {
   config,
-  outputs,
   pkgs,
   ...
 }:
@@ -16,11 +15,6 @@
 
     # User
     ./users/nix/configuration.nix
-  ];
-
-  nixpkgs.overlays = [
-    outputs.overlays.additions
-    outputs.overlays.modifications
   ];
 
   #######################

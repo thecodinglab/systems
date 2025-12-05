@@ -12,6 +12,4 @@
   zathura = import ./zathura.nix;
   zen-browser = import ./zen-browser.nix;
   zsh = import ./zsh;
-
-  unfree = import ../unfree.nix;
 }

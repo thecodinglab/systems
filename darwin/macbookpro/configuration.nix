@@ -1,16 +1,5 @@
+{ pkgs, ... }:
 {
-  outputs,
-  pkgs,
-  ...
-}:
-{
-  nixpkgs.overlays = [
-    outputs.overlays.additions
-    outputs.overlays.modifications
-  ];
-
-  custom.unfree = [ "obsidian" ];
-
   programs.gnupg.agent.enable = true;
 
   networking = {

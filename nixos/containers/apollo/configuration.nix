@@ -10,10 +10,7 @@ in
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  custom = {
-    isContainer = true;
-    unfree = [ "plexmediaserver" ];
-  };
+  custom.isContainer = true;
 
   networking = {
     hostName = "apollo";
