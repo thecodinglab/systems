@@ -250,6 +250,7 @@
           pkgs = mkPkgs "x86_64-linux";
           extraSpecialArgs = {
             inherit inputs outputs;
+            systemName = "x86_64-linux";
           };
           modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
             ./home-manager/florian/configuration.nix
@@ -260,6 +261,7 @@
           pkgs = mkPkgs "aarch64-darwin";
           extraSpecialArgs = {
             inherit inputs outputs;
+            systemName = "aarch64-darwin";
           };
           modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
             ./home-manager/florian/configuration.nix

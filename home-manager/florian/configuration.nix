@@ -2,8 +2,12 @@
   config,
   pkgs,
   lib,
+  systemName,
   ...
 }:
+let
+  isLinux = lib.hasSuffix "linux" systemName;
+in
 {
   home.stateVersion = "23.11";
 
@@ -18,15 +22,15 @@
     shell.enableZshIntegration = true;
   };
 
-  xdg.mimeApps.enable = pkgs.stdenv.isLinux;
+  xdg.mimeApps.enable = isLinux;
 
   custom = {
     fzf.enable = true;
     tmux.enable = true;
-    chromium.enable = pkgs.stdenv.isLinux;
+    chromium.enable = isLinux;
     git.enable = true;
 
-    hyprland.enable = pkgs.stdenv.isLinux;
+    hyprland.enable = isLinux;
     zsh.enable = true;
     zathura.enable = true;
     zen-browser.enable = true;
@@ -60,10 +64,6 @@
       };
     };
   };
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "beekeeper-studio-5.3.4"
-  ];
 
   home.packages = [
     pkgs.obsidian
@@ -201,8 +201,7 @@
     pkgs.prismlauncher
     pkgs.jdk
   ]
-  ++ lib.optionals pkgs.stdenv.isLinux [
-    # pkgs._1password-cli
+  ++ lib.optionals isLinux [
     pkgs.helium
     pkgs.spotify
     pkgs.slack
