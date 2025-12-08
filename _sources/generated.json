@@ -1,0 +1,31 @@
+{
+    "helium": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "helium",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-PwXgpmauBN6EXoZE6HnpgrisrO5a9VzQEDv3T2OsPnc=",
+            "type": "url",
+            "url": "https://github.com/imputnet/helium-linux/releases/download/0.7.2.1/helium-0.7.2.1-x86_64.AppImage"
+        },
+        "version": "0.7.2.1"
+    },
+    "zen-browser": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "zen-browser",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "sha256": "sha256-cQsOz3Iibq1TSH6oeY3+a3/AkJnSfr1vqKtb84bvQ6E=",
+            "type": "tarball",
+            "url": "https://github.com/zen-browser/desktop/releases/download/1.17.12b/zen.linux-x86_64.tar.xz"
+        },
+        "version": "1.17.12b"
+    }
+}

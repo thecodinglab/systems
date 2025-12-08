@@ -1,0 +1,7 @@
+[helium]
+src.github = "imputnet/helium-linux"
+fetch.url = "https://github.com/imputnet/helium-linux/releases/download/$ver/helium-$ver-x86_64.AppImage"
+
+[zen-browser]
+src.github = "zen-browser/desktop"
+fetch.tarball = "https://github.com/zen-browser/desktop/releases/download/$ver/zen.linux-x86_64.tar.xz"

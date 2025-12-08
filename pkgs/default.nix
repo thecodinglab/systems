@@ -3,6 +3,17 @@
   inputs,
 }:
 let
+  deps = import ../_sources/generated.nix {
+    inherit (pkgs)
+      fetchgit
+      fetchurl
+      fetchFromGitHub
+      dockerTools
+      ;
+  };
+
+  callPackage = input: (args: pkgs.callPackage input ({ inherit deps; } // args));
+
   mkPrefix =
     prefix: attrs:
     builtins.listToAttrs (
@@ -13,8 +24,8 @@ let
     );
 in
 {
-  zen-browser = pkgs.callPackage ./zen-browser { };
-  helium = pkgs.callPackage ./helium.nix { };
+  zen-browser = callPackage ./zen-browser.nix { };
+  helium = callPackage ./helium.nix { };
 }
 // mkPrefix "neovim" (
   import ./neovim/package.nix {
