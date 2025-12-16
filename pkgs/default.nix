@@ -29,7 +29,7 @@ in
 }
 // mkPrefix "neovim" (
   import ./neovim/package.nix {
-    inherit pkgs inputs;
+    inherit pkgs;
     inherit (inputs) nixvim;
   }
 )
