@@ -27,8 +27,8 @@
         enable = true;
 
         settings = {
-          format = "$character $directory";
-          right_format = "$cmd_duration$shlvl[$username@$hostname](cyan)";
+          format = "$os $directory$character ";
+          right_format = "$cmd_duration$shlvl$direnv";
           add_newline = false;
 
           character = {
@@ -36,6 +36,15 @@
             success_symbol = "[➜](bold green)";
             error_symbol = "[➜](bold red)";
             vimcmd_symbol = "[➜](bold purple)";
+          };
+
+          os = {
+            disabled = false;
+            style = "#777777";
+            symbols = {
+              Macos = " ";
+              NixOS = " ";
+            };
           };
 
           username = {
