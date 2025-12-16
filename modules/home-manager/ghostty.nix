@@ -14,7 +14,6 @@
       enable = true;
       package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
       settings = {
-        theme = "stylix";
         shell-integration = "zsh";
 
         quit-after-last-window-closed = true;
