@@ -8,7 +8,12 @@
     localHostName = "Florians-MacBook-Pro";
   };
 
-  environment.systemPackages = [ pkgs.home-manager ];
+  environment.systemPackages = [
+    pkgs.home-manager
+
+    pkgs.ghostty-bin
+    pkgs.obsidian
+  ];
 
   system.primaryUser = "florian";
   users.users.florian = {
@@ -23,8 +28,8 @@
     "/Applications/Slack.app" # managed through homebrew
     "/System/Applications/Calendar.app"
 
-    "/Users/florian/Applications/Home Manager Apps/Ghostty.app" # managed through home-manager
-    "/Users/florian/Applications/Home Manager Apps/Obsidian.app" # managed through home-manager
+    "/Applications/Nix Apps/Ghostty.app" # managed through nix-darwin
+    "/Applications/Nix Apps/Obsidian.app" # managed through nix-darwin
     "/Applications/TablePlus.app" # managed through homebrew
     "/Applications/Figma.app" # managed through homebrew
     "/Applications/Linear.app" # managed through homebrew

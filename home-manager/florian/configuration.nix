@@ -24,8 +24,6 @@ in
 
   xdg.mimeApps.enable = isLinux;
 
-  services.easyeffects.enable = true;
-
   custom = {
     fzf.enable = true;
     tmux.enable = true;
@@ -83,6 +81,8 @@ in
       };
     };
   };
+
+  services.easyeffects.enable = isLinux;
 
   home.packages = [
     pkgs.obsidian
@@ -173,7 +173,6 @@ in
 
     pkgs.exiftool
     pkgs.ffmpeg
-    pkgs.easyeffects
 
     # Kubernetes
     pkgs.kubectl
@@ -229,6 +228,7 @@ in
     pkgs.postman
 
     pkgs.helvum
+    pkgs.easyeffects
     pkgs.fragments
     pkgs.obs-studio
 
