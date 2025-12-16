@@ -99,10 +99,6 @@
             sensitivity = 0.2;
           };
 
-          gestures = {
-            workspace_swipe = false;
-          };
-
           #########################
           # General               #
           #########################
@@ -116,15 +112,7 @@
             layout = "master";
           };
 
-          decoration = {
-            rounding = 10;
-
-            blur = {
-              enabled = false;
-              size = 5;
-              passes = 2;
-            };
-          };
+          decoration.rounding = 10;
 
           animations.enabled = false;
 
@@ -277,12 +265,7 @@
                 on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
                 on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
               }
-              {
-                timeout = 1200; # 20min
-                on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
-              }
             ];
-
           };
         };
 
@@ -426,7 +409,6 @@
               modules-center = [ "clock" ];
               modules-right = [
                 "disk#root"
-                "disk#data"
                 "pulseaudio"
                 "cpu"
                 "memory"
