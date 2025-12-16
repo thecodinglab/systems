@@ -10,6 +10,8 @@
   };
 
   config = lib.mkIf config.custom.audio.enable {
+    programs.dconf.enable = true;
+
     services.pipewire = {
       enable = true;
       alsa.enable = true;

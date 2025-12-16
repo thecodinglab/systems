@@ -24,6 +24,8 @@ in
 
   xdg.mimeApps.enable = isLinux;
 
+  services.easyeffects.enable = true;
+
   custom = {
     fzf.enable = true;
     tmux.enable = true;
@@ -171,6 +173,7 @@ in
 
     pkgs.exiftool
     pkgs.ffmpeg
+    pkgs.easyeffects
 
     # Kubernetes
     pkgs.kubectl
