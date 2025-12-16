@@ -10,6 +10,5 @@
   theme = import ./theme;
   tmux = import ./tmux.nix;
   zathura = import ./zathura.nix;
-  zen-browser = import ./zen-browser.nix;
   zsh = import ./zsh;
 }

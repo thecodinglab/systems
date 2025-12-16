@@ -12,7 +12,7 @@
   config = lib.mkIf config.custom.zathura.enable {
     programs.zathura = {
       enable = true;
-      package = pkgs.zathura;
+      package = pkgs.zathura.override { useMupdf = true; };
 
       options = {
         font = config.stylix.fonts.monospace.name + " 10";
@@ -21,9 +21,5 @@
         page-padding = 10;
       };
     };
-
-    xdg.mimeApps.defaultApplications."application/pdf" = [
-      "org.pwmt.zathura.desktop"
-    ];
   };
 }
