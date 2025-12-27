@@ -213,11 +213,16 @@
             ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
             ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
 
-            # player control
-            ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} play-pause"
-            ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} pause-pause"
-            ", XF86AudioNext, exec, ${lib.getExe pkgs.playerctl} next"
-            ", XF86AudioPrev, exec, ${lib.getExe pkgs.playerctl} previous"
+            # spotify controls
+            ", XF86AudioPlay,  exec, ${lib.getExe pkgs.playerctl} -p spotify play-pause"
+            ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} -p spotify pause-pause"
+            ", XF86AudioNext,  exec, ${lib.getExe pkgs.playerctl} -p spotify next"
+            ", XF86AudioPrev,  exec, ${lib.getExe pkgs.playerctl} -p spotify previous"
+            ", XF86Launch6,    exec, ${pkgs.writers.writeBash "focus-spotify" ''
+              ${lib.getExe pkgs.playerctl} -l | grep -v spotify | xargs -I {} ${lib.getExe pkgs.playerctl} -p {} pause
+              ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
+            ''}"
+            ", XF86Launch5,    exec, ${lib.getExe pkgs.playerctl} -p spotify volume 0.3"
 
           ];
 
