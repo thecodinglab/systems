@@ -26,6 +26,7 @@
 
       # bleeding packages
       claude-code = bleeding.claude-code;
+      gemini-cli = bleeding.gemini-cli;
 
       # external packages
     };

@@ -3,18 +3,18 @@
 {
   helium = {
     pname = "helium";
-    version = "0.7.5.1";
+    version = "0.7.7.1";
     src = fetchurl {
-      url = "https://github.com/imputnet/helium-linux/releases/download/0.7.5.1/helium-0.7.5.1-x86_64.AppImage";
-      sha256 = "sha256-Rn08KobbfMh3vlM2o0PA9OhQx/syMTBKWG/eapF45eo=";
+      url = "https://github.com/imputnet/helium-linux/releases/download/0.7.7.1/helium-0.7.7.1-x86_64.AppImage";
+      sha256 = "sha256-qEHUFzCwsCyFNLFCC62wo2x1lr/boAI/UDsaaNP1vrc=";
     };
   };
   zen-browser = {
     pname = "zen-browser";
-    version = "1.17.14b";
+    version = "1.17.15b";
     src = fetchTarball {
-      url = "https://github.com/zen-browser/desktop/releases/download/1.17.14b/zen.linux-x86_64.tar.xz";
-      sha256 = "sha256-5Wp8SuQIxC7w6fIFhFsET/W+t05b9STde2LkwMJR+fc=";
+      url = "https://github.com/zen-browser/desktop/releases/download/1.17.15b/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-utI3bD6zIAC5oO2wPDCJjPRqeHZj+16EfsCFBslS5oE=";
     };
   };
 }
