@@ -208,6 +208,23 @@
             # scratchpad
             "${mod} SHIFT, MINUS, movetoworkspace, special"
             "${mod}, MINUS, togglespecialworkspace,"
+
+            # screenshot
+            "${mod} SHIFT, F4, exec, ${lib.getExe pkgs.grim} -g \"\$(${lib.getExe pkgs.slurp})\" -t png - | ${lib.getExe' pkgs.wl-clipboard "wl-copy"} -t image/png"
+            "${mod} SHIFT, F3, exec, ${pkgs.writers.writeBash "screenshot-window" ''
+              set -e
+
+              hyprctl=${lib.getExe' pkgs.hyprland "hyprctl"}
+              jq=${lib.getExe pkgs.jq}
+              slurp=${lib.getExe pkgs.slurp}
+              grim=${lib.getExe pkgs.grim}
+              copy=${lib.getExe' pkgs.wl-clipboard "wl-copy"}
+
+              # select area
+              area=$($hyprctl clients -j | $jq --argjson active $($hyprctl monitors -j | $jq -c '[.[].activeWorkspace.id]') '.[] | select((.hidden | not) and (.workspace.id as $id | $active | contains([$id]))) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' -r | $slurp)
+              # make screenshot
+              $grim -g "$area" -t png - | $copy -t image/png
+            ''}"
           ];
 
           bindl =
