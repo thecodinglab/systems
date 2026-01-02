@@ -157,6 +157,7 @@
 
             # terminal
             "${mod}, RETURN, exec, ${lib.getExe pkgs.ghostty}"
+            "${mod} SHIFT, RETURN, exec, ${lib.getExe pkgs.ghostty} --class=com.mitchellh.ghostty-floating"
 
             # workspace switching
             "${mod}, 1, workspace, 1"
@@ -207,24 +208,37 @@
             # scratchpad
             "${mod} SHIFT, MINUS, movetoworkspace, special"
             "${mod}, MINUS, togglespecialworkspace,"
-
-            # volume control
-            ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-            ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-            ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-
-            # spotify controls
-            ", XF86AudioPlay,  exec, ${lib.getExe pkgs.playerctl} -p spotify play-pause"
-            ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} -p spotify pause-pause"
-            ", XF86AudioNext,  exec, ${lib.getExe pkgs.playerctl} -p spotify next"
-            ", XF86AudioPrev,  exec, ${lib.getExe pkgs.playerctl} -p spotify previous"
-            ", XF86Launch6,    exec, ${pkgs.writers.writeBash "focus-spotify" ''
-              ${lib.getExe pkgs.playerctl} -l | grep -v spotify | xargs -I {} ${lib.getExe pkgs.playerctl} -p {} pause
-              ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
-            ''}"
-            ", XF86Launch5,    exec, ${lib.getExe pkgs.playerctl} -p spotify volume 0.3"
-
           ];
+
+          bindl =
+            let
+              focusSpotify = pkgs.writers.writeBash "focus-spotify" ''
+                ${lib.getExe pkgs.playerctl} -l | grep -v spotify | xargs -I {} ${lib.getExe pkgs.playerctl} -p {} pause
+                ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
+              '';
+              unfocusSpotify = pkgs.writers.writeBash "unfocus-spotify" ''
+                ${lib.getExe pkgs.playerctl} -p spotify volume 0.2
+              '';
+            in
+            [
+              # volume control
+              ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+              ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+              ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+
+              # spotify controls
+              ", XF86AudioPlay,  exec, ${lib.getExe pkgs.playerctl} -p spotify play-pause"
+              ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} -a pause"
+              ", XF86AudioStop,  exec, ${lib.getExe pkgs.playerctl} -a pause"
+              ", XF86AudioNext,  exec, ${lib.getExe pkgs.playerctl} -p spotify next"
+              ", XF86AudioPrev,  exec, ${lib.getExe pkgs.playerctl} -p spotify previous"
+
+              ", XF86Launch6,           exec, ${focusSpotify}"
+              ", XF86MonBrightnessUp,   exec, ${focusSpotify}"
+              ", XF86Launch5,           exec, ${unfocusSpotify}"
+              ", XF86MonBrightnessDown, exec, ${unfocusSpotify}"
+
+            ];
 
           bindm = [
             "${mod}, mouse:272, movewindow"
@@ -235,17 +249,19 @@
           # Window Rules          #
           #########################
 
-          windowrulev2 = [
+          windowrule = [
             # 1Password
-            "float, class:^1Password$"
-            "center, class:^1Password$"
+            "match:class 1password, float on"
+            "match:class 1password, center on"
+            "match:class 1password, size 1024 720"
 
             # Spotify
-            "workspace special, class:^Spotify$"
-          ];
+            "match:class Spotify, workspace special"
 
-          layerrule = [
-            "noanim, notifications"
+            # Ghostty
+            "match:class com.mitchellh.ghostty-floating, float on"
+            "match:class com.mitchellh.ghostty-floating, center on"
+            "match:class com.mitchellh.ghostty-floating, size 1024 720"
           ];
         };
       };
