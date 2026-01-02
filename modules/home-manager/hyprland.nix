@@ -114,7 +114,7 @@
 
           decoration.rounding = 10;
 
-          animations.enabled = false;
+          animations.enabled = true;
 
           master.mfact = 0.7;
 
