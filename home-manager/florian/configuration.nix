@@ -22,8 +22,6 @@ in
     shell.enableZshIntegration = true;
   };
 
-  xdg.mimeApps.enable = isLinux;
-
   custom = {
     fzf.enable = true;
     tmux.enable = true;
@@ -36,23 +34,26 @@ in
     ghostty.enable = true;
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/http" = [ "helium.desktop" ];
-    "x-scheme-handler/https" = [ "helium.desktop" ];
-    "x-scheme-handler/chrome" = [ "helium.desktop" ];
+  xdg.mimeApps = {
+    enable = isLinux;
+    defaultApplications = {
+      "x-scheme-handler/http" = [ "helium.desktop" ];
+      "x-scheme-handler/https" = [ "helium.desktop" ];
+      "x-scheme-handler/chrome" = [ "helium.desktop" ];
 
-    "text/html" = [ "helium.desktop" ];
-    "application/x-extension-htm" = [ "helium.desktop" ];
-    "application/x-extension-html" = [ "helium.desktop" ];
-    "application/x-extension-shtml" = [ "helium.desktop" ];
-    "application/xhtml+xml" = [ "helium.desktop" ];
-    "application/x-extension-xhtml" = [ "helium.desktop" ];
-    "application/x-extension-xht" = [ "helium.desktop" ];
+      "text/html" = [ "helium.desktop" ];
+      "application/x-extension-htm" = [ "helium.desktop" ];
+      "application/x-extension-html" = [ "helium.desktop" ];
+      "application/x-extension-shtml" = [ "helium.desktop" ];
+      "application/xhtml+xml" = [ "helium.desktop" ];
+      "application/x-extension-xhtml" = [ "helium.desktop" ];
+      "application/x-extension-xht" = [ "helium.desktop" ];
 
-    "application/pdf" = [ "org.pwmt.zathura.desktop" ];
-    "application/oxps" = [ "org.pwmt.zathura.desktop" ];
-    "application/epub+zip" = [ "org.pwmt.zathura.desktop" ];
-    "application/x-fictionbook" = [ "org.pwmt.zathura.desktop" ];
+      "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+      "application/oxps" = [ "org.pwmt.zathura.desktop" ];
+      "application/epub+zip" = [ "org.pwmt.zathura.desktop" ];
+      "application/x-fictionbook" = [ "org.pwmt.zathura.desktop" ];
+    };
   };
 
   stylix.enable = true;
