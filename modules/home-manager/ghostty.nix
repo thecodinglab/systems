@@ -22,6 +22,10 @@
         window-padding-y = 4;
 
         auto-update = "off";
+
+        keybind = [
+          "shift+enter=text:\\x1b\\r"
+        ];
       };
     };
   };
