@@ -2,7 +2,7 @@
 {
   resource = {
     incus_instance.apollo = {
-      depends_on = [ "incus_storage_volume.media" ];
+      depends_on = [ "incus_storage_volume.downloads" ];
 
       name = "apollo";
       image = "images:nixos/23.11";
@@ -17,14 +17,38 @@
         cpu = 18;
       };
 
-      device = {
-        name = "library";
-        type = "disk";
-        properties = {
-          source = config.resource.incus_storage_volume.media.name;
-          pool = config.resource.incus_storage_volume.media.pool;
-          path = "/media";
-        };
+      device = [
+        {
+          name = "library";
+          type = "disk";
+          properties = {
+            source = config.resource.incus_storage_volume.downloads.name;
+            pool = config.resource.incus_storage_volume.downloads.pool;
+            path = "/media/downloads";
+          };
+        }
+        {
+          name = "media";
+          type = "disk";
+          properties = {
+            source = "/media/unas/media";
+            path = "/mnt";
+          };
+        }
+      ];
+    };
+
+    incus_storage_volume.downloads = {
+      name = "media-downloads";
+      pool = "data";
+      type = "custom";
+
+      config = {
+        "block.filesystem" = "btrfs";
+        "block.mount_options" = "noatime,discard";
+        "snapshots.expiry" = "4w";
+        "snapshots.schedule" = "@midnight";
+        "security.shifted" = "true";
       };
     };
 

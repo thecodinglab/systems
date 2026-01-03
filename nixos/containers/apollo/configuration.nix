@@ -147,7 +147,11 @@ in
       );
 
       makeRadarrContainer = (
-        { lang, port }:
+        {
+          lang,
+          port,
+          mountpoint,
+        }:
         makeLinuxserverContainer {
           name = "radarr-${lang}";
           image = "radarr:latest";
@@ -157,13 +161,17 @@ in
           };
           volumes = [
             "/media/downloads:/downloads"
-            "/media/libraries/movies/${lang}:/movies"
+            "${mountpoint}:/movies"
           ];
         }
       );
 
       makeSonarrContainer = (
-        { lang, port }:
+        {
+          lang,
+          port,
+          mountpoint,
+        }:
         makeLinuxserverContainer {
           name = "sonarr-${lang}";
           image = "sonarr:latest";
@@ -173,13 +181,17 @@ in
           };
           volumes = [
             "/media/downloads:/downloads"
-            "/media/libraries/series/${lang}:/tv"
+            "${mountpoint}:/tv"
           ];
         }
       );
 
       makeReadarrContainer = (
-        { lang, port }:
+        {
+          lang,
+          port,
+          mountpoint,
+        }:
         makeLinuxserverContainer {
           name = "readarr-${lang}";
           image = "readarr:develop";
@@ -189,7 +201,7 @@ in
           };
           volumes = [
             "/media/downloads:/downloads"
-            "/media/libraries/books/${lang}:/books"
+            "${mountpoint}:/books"
           ];
         }
       );
@@ -218,23 +230,28 @@ in
       radarr-english = makeRadarrContainer {
         lang = "english";
         port = 41001;
+        mountpoint = "/mnt/Movies/English";
       };
       sonarr-english = makeSonarrContainer {
         lang = "english";
         port = 41002;
+        mountpoint = "/mnt/TV/English";
       };
 
       radarr-german = makeRadarrContainer {
         lang = "german";
         port = 42001;
+        mountpoint = "/mnt/Movies/German";
       };
       sonarr-german = makeSonarrContainer {
         lang = "german";
         port = 42002;
+        mountpoint = "/mnt/TV/German";
       };
       readarr-german = makeReadarrContainer {
         lang = "german";
         port = 42003;
+        mountpoint = "/mnt/Books/German";
       };
     };
 }
