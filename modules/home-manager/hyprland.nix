@@ -234,7 +234,7 @@
                 ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
               '';
               unfocusSpotify = pkgs.writers.writeBash "unfocus-spotify" ''
-                ${lib.getExe pkgs.playerctl} -p spotify volume 0.2
+                ${lib.getExe pkgs.playerctl} -p spotify volume 0.3
               '';
             in
             [
@@ -268,9 +268,9 @@
 
           windowrule = [
             # 1Password
-            "match:class 1password, float on"
-            "match:class 1password, center on"
-            "match:class 1password, size 1024 720"
+            "match:class 1Password, float on"
+            "match:class 1Password, center on"
+            "match:class 1Password, size 1024 720"
 
             # Spotify
             "match:class Spotify, workspace special"
