@@ -7,6 +7,7 @@
 {
   options.custom.zsh = {
     enable = lib.mkEnableOption "enable zsh";
+    hostname = lib.mkEnableOption "enable hostname in prompt";
   };
 
   config = lib.mkIf config.custom.zsh.enable {
@@ -29,7 +30,7 @@
         enable = true;
 
         settings = {
-          format = "$os $directory$character ";
+          format = (if config.custom.zsh.hostname then "$hostname " else "") + "$os $directory$character ";
           right_format = "$cmd_duration$shlvl$direnv";
           add_newline = false;
 
@@ -55,8 +56,9 @@
           };
 
           hostname = {
-            format = "$hostname";
+            format = "[$hostname]($style)";
             ssh_only = false;
+            style = "#777777";
           };
 
           shlvl = {

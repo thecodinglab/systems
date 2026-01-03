@@ -33,7 +33,10 @@
 
         custom = {
           fzf.enable = true;
-          zsh.enable = true;
+          zsh = {
+            enable = true;
+            hostname = true;
+          };
         };
 
         programs.btop.enable = true;
