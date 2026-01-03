@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   extraPackages = [ pkgs.ripgrep ];
 
@@ -24,6 +24,7 @@
 
     cursorline = true;
     cursorlineopt = "number";
+    splitright = true;
 
     # file backups
     backup = false;
@@ -65,6 +66,26 @@
     foldlevelstart = 99;
     foldenable = true;
   };
+
+  extraConfigLuaPre = lib.strings.concatStrings (
+    [
+      ''
+        if vim.g.neovide then
+          vim.o.guifont = "JetBrainsMono Nerd Font Mono:h14"
+          vim.g.neovide_cursor_trail_size = 0
+        end
+      ''
+    ]
+    ++ lib.optionals pkgs.stdenv.isDarwin [
+      ''
+        if vim.trim(vim.fn.system("defaults read -g AppleInterfaceStyle")) == "Dark" then
+          vim.opt.background = "dark"
+        else
+          vim.opt.background = "light"
+        end
+      ''
+    ]
+  );
 
   keymaps = [
     # clear highlights
@@ -183,46 +204,7 @@
     # highlight text on yank
     {
       event = [ "TextYankPost" ];
-      command = "lua vim.highlight.on_yank()";
-    }
-
-    # disable syntax highlight on large files
-    # inspired by https://github.com/LunarVim/bigfile.nvim/blob/33eb067e3d7029ac77e081cfe7c45361887a311a/lua/bigfile/features.lua
-    {
-      event = [ "BufReadPre" ];
-      callback.__raw = ''
-        function (args)
-          local max_filesize = 100 * 1024 -- 100 KB
-          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
-          if ok and stats and stats.size > max_filesize then
-            vim.opt_local.swapfile = false
-            vim.opt_local.foldmethod = "manual"
-
-            vim.api.nvim_buf_set_var(args.buf, "bigfile_disable_treesitter", 1)
-          end
-        end
-      '';
-    }
-
-    # keep cursor centered
-    {
-      event = [ "CursorMoved" ];
-      callback.__raw = ''
-        function ()
-          vim.cmd("norm! zz")
-        end
-      '';
-    }
-    {
-      event = [ "CursorMovedI" ];
-      callback.__raw = ''
-        function ()
-          local cursor = vim.fn.getcurpos()
-
-          vim.cmd("norm! zz")
-          vim.fn.cursor({ cursor[2], cursor[3] })
-        end
-      '';
+      command = "lua vim.hl.on_yank()";
     }
   ];
 
@@ -230,14 +212,6 @@
     pkgs.vimPlugins.plenary-nvim
     pkgs.vimPlugins.nui-nvim
   ];
-
-  extraConfigLuaPre = pkgs.lib.mkIf pkgs.stdenv.isDarwin ''
-    if vim.trim(vim.fn.system("defaults read -g AppleInterfaceStyle")) == "Dark" then
-      vim.opt.background = "dark"
-    else
-      vim.opt.background = "light"
-    end
-  '';
 
   extraConfigVim = ''
     function! RemoveQFItem()
@@ -253,40 +227,6 @@
   '';
 
   plugins = {
-    treesitter = {
-      enable = true;
-      folding = true;
-
-      grammarPackages = builtins.filter (
-        pkg: !(pkgs.lib.strings.hasPrefix "ocamllex" pkg.name) # FIXME: ocamllex derivation is currently broken (2025-04-01)
-      ) pkgs.vimPlugins.nvim-treesitter.passthru.allGrammars;
-
-      settings =
-        builtins.mapAttrs
-          (
-            name: value:
-            value
-            // {
-              disable.__raw = ''
-                function(lang, buf)
-                  local success, detected = pcall(vim.api.nvim_buf_get_var, buf, "bigfile_disable_treesitter")
-                  return success and detected
-                end
-              '';
-            }
-          )
-          {
-            highlight.enable = true;
-            incremental_selection.enable = true;
-            indent.enable = true;
-          };
-    };
-
-    treesitter-context = {
-      enable = true;
-      settings.enable = false;
-    };
-
     lualine.enable = true;
 
     fzf-lua.enable = true;
@@ -325,8 +265,5 @@
     };
 
     web-devicons.enable = true;
-
-    gitsigns.enable = true;
-    neogit.enable = true;
   };
 }
