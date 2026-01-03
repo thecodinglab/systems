@@ -36,6 +36,9 @@
             "boot.autostart" = "false";
             "snapshots.schedule" = "@daily";
             "snapshots.expiry" = "4w";
+
+            # required for the nix sandbox
+            "security.nesting" = "true";
           };
           devices = {
             root = {
@@ -60,7 +63,6 @@
         {
           name = "nesting";
           config = {
-            "security.nesting" = "true";
             "security.syscalls.intercept.mknod" = "true";
             "security.syscalls.intercept.setxattr" = "true";
           };
