@@ -52,25 +52,18 @@
 
     hostName = "server";
 
-    interfaces.eno1np0 = {
-      useDHCP = true;
-    };
+    interfaces.eno1np0.useDHCP = true;
 
-    bridges.br0 = {
-      interfaces = [ "eno2np1" ];
-    };
+    bridges.br0.interfaces = [ "eno2np1" ];
 
     firewall = {
+      checkReversePath = "loose";
+
       allowedTCPPorts = [
         22 # ssh
         8443 # incus api
         3000 # grafana
         5201 # iperf
-      ];
-
-      trustedInterfaces = [
-        "eno2np1"
-        "br0"
       ];
     };
   };
