@@ -2,8 +2,6 @@
 {
   resource = {
     incus_instance.apollo = {
-      depends_on = [ "incus_storage_volume.downloads" ];
-
       name = "apollo";
       image = "images:nixos/23.11";
 
@@ -19,15 +17,6 @@
 
       device = [
         {
-          name = "library";
-          type = "disk";
-          properties = {
-            source = config.resource.incus_storage_volume.downloads.name;
-            pool = config.resource.incus_storage_volume.downloads.pool;
-            path = "/media/downloads";
-          };
-        }
-        {
           name = "media";
           type = "disk";
           properties = {
@@ -36,34 +25,6 @@
           };
         }
       ];
-    };
-
-    incus_storage_volume.downloads = {
-      name = "media-downloads";
-      pool = "data";
-      type = "custom";
-
-      config = {
-        "block.filesystem" = "btrfs";
-        "block.mount_options" = "noatime,discard";
-        "snapshots.expiry" = "4w";
-        "snapshots.schedule" = "@midnight";
-        "security.shifted" = "true";
-      };
-    };
-
-    incus_storage_volume.media = {
-      name = "media-library";
-      pool = "data";
-      type = "custom";
-
-      config = {
-        "block.filesystem" = "btrfs";
-        "block.mount_options" = "noatime,discard";
-        "snapshots.expiry" = "4w";
-        "snapshots.schedule" = "@midnight";
-        "security.shifted" = "true";
-      };
     };
 
     cloudflare_record = {

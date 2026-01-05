@@ -160,7 +160,7 @@ in
             dst = 7878;
           };
           volumes = [
-            "/media/downloads:/downloads"
+            "/mnt/Downloads:/downloads"
             "${mountpoint}:/movies"
           ];
         }
@@ -180,7 +180,7 @@ in
             dst = 8989;
           };
           volumes = [
-            "/media/downloads:/downloads"
+            "/mnt/Downloads:/downloads"
             "${mountpoint}:/tv"
           ];
         }
@@ -200,7 +200,7 @@ in
             dst = 8787;
           };
           volumes = [
-            "/media/downloads:/downloads"
+            "/mnt/Downloads:/downloads"
             "${mountpoint}:/books"
           ];
         }
@@ -214,7 +214,7 @@ in
           src = 40001;
           dst = 8080;
         };
-        volumes = [ "/media/downloads:/downloads" ];
+        volumes = [ "/mnt/Downloads:/downloads" ];
       };
 
       overseerr = makeLinuxserverContainer {
