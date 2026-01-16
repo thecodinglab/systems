@@ -61,6 +61,75 @@
         end
       '';
     }
+
+    {
+      event = "LspAttach";
+      callback = lib.nixvim.mkRaw ''
+        function (args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+          if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" and client.name ~= "ts_ls" then
+            vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
+              callback = function()
+                vim.lsp.buf.format({ 
+                  bufnr = args.buf,
+                  async = false,
+                  timeout_ms = 150,
+                })
+              end,
+            })
+          end
+
+          if client.server_capabilities.documentHighlightProvider then
+            vim.api.nvim_create_autocmd({ "CursorHold" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
+              callback = function()
+                vim.lsp.buf.document_highlight()
+              end,
+            })
+
+            vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
+              callback = function()
+                vim.lsp.buf.clear_references()
+              end,
+            })
+          end
+        end
+      '';
+    }
+    {
+      event = "LspDetach";
+      callback = lib.nixvim.mkRaw ''
+        function (args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+          if client.server_capabilities.documentFormattingProvider then
+            vim.api.nvim_clear_autocmds({ 
+              group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
+              buffer = args.buf,
+            })
+          end
+
+          if client.server_capabilities.documentHighlightProvider then
+            vim.lsp.buf.clear_references()
+
+            vim.api.nvim_clear_autocmds({ 
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
+              buffer = args.buf,
+            })
+            vim.api.nvim_clear_autocmds({ 
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
+              buffer = args.buf,
+            })
+          end
+        end
+      '';
+    }
   ];
 
   plugins = {
@@ -110,40 +179,6 @@
           vim.lsp.handlers.signature_help,
           {max_width = 80}
         )
-      '';
-
-      onAttach = ''
-        if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" and client.name ~= "ts_ls" then
-          vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-            buffer = bufnr,
-            group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
-            callback = function()
-              vim.lsp.buf.format({ 
-                bufnr = bufnr,
-                async = false,
-                timeout_ms = 150,
-              })
-            end,
-          })
-        end
-
-        if client.server_capabilities.documentHighlightProvider then
-          vim.api.nvim_create_autocmd({ "CursorHold" }, {
-            buffer = bufnr,
-            group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
-            callback = function()
-              vim.lsp.buf.document_highlight()
-            end,
-          })
-
-          vim.api.nvim_create_autocmd({ "CursorMoved" }, {
-            buffer = bufnr,
-            group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
-            callback = function()
-              vim.lsp.buf.clear_references()
-            end,
-          })
-        end
       '';
 
       keymaps.lspBuf = {
