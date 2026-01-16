@@ -18,7 +18,7 @@
     {
       key = "<leader>d";
       mode = [ "n" ];
-      action.__raw = ''
+      action = lib.nixvim.mkRaw ''
         function ()
           vim.diagnostic.enable(not vim.diagnostic.is_enabled())
         end
@@ -82,6 +82,30 @@
             })
           end
 
+          if client.name == "gopls" then
+            vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_go_organize_imports", { clear = false }),
+              callback = function()
+                local params = vim.lsp.util.make_formatting_params()
+                params.context = {
+                  only = { "source.organizeImports" }
+                }
+
+                local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout)
+                for _, res in pairs(result or {}) do
+                  for _, r in pairs(res.result or {}) do
+                    if r.edit then
+                      vim.lsp.util.apply_workspace_edit(r.edit, "utf-8")
+                    else
+                      vim.lsp.buf.execute_command(r.command)
+                    end
+                  end
+                end
+              end,
+            })
+          end
+
           if client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_autocmd({ "CursorHold" }, {
               buffer = args.buf,
@@ -110,8 +134,15 @@
 
           if client.server_capabilities.documentFormattingProvider then
             vim.api.nvim_clear_autocmds({ 
-              group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
               buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
+            })
+          end
+
+          if client.name == "gopls" then
+            vim.api.nvim_clear_autocmds({ 
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_go_organize_imports", { clear = false }),
             })
           end
 
@@ -119,12 +150,12 @@
             vim.lsp.buf.clear_references()
 
             vim.api.nvim_clear_autocmds({ 
-              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
               buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
             })
             vim.api.nvim_clear_autocmds({ 
-              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
               buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
             })
           end
         end
@@ -164,6 +195,16 @@
 
         client.request("workspace/executeCommand", { command = "_ltex.checkDocument", arguments = { { uri = args.uri } } })
       end
+
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+        vim.lsp.handlers.hover,
+        { max_width = 80 }
+      )
+
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+        vim.lsp.handlers.signature_help,
+        { max_width = 80 }
+      )
     end
     -- }}}
   '';
@@ -205,18 +246,6 @@
       enable = true;
       inlayHints = true;
 
-      preConfig = ''
-        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-          vim.lsp.handlers.hover,
-          {max_width = 80}
-        )
-
-        vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-          vim.lsp.handlers.signature_help,
-          {max_width = 80}
-        )
-      '';
-
       keymaps.lspBuf = {
         "grf" = "format";
       };
@@ -243,8 +272,7 @@
         gopls = {
           enable = true;
           settings.gopls.gofumpt = true;
-
-          extraOptions.on_new_config.__raw = ''
+          extraOptions.on_new_config = lib.nixvim.mkRaw ''
             function(new_config, new_root_dir)
               if vim.uv.fs_stat(new_root_dir .. "/go.mod") then
                 local res = vim.system({ "go", "list", "-m" }, {
@@ -257,30 +285,6 @@
                 end
               end
             end
-          '';
-
-          onAttach.function = ''
-            vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-              buffer = bufnr,
-              group = vim.api.nvim_create_augroup("lsp_go_organize_imports", { clear = false }),
-              callback = function()
-                local params = vim.lsp.util.make_formatting_params()
-                params.context = {
-                  only = { "source.organizeImports" }
-                }
-
-                local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout)
-                for _, res in pairs(result or {}) do
-                  for _, r in pairs(res.result or {}) do
-                    if r.edit then
-                      vim.lsp.util.apply_workspace_edit(r.edit, "utf-8")
-                    else
-                      vim.lsp.buf.execute_command(r.command)
-                    end
-                  end
-                end
-              end,
-            })
           '';
         };
 
