@@ -153,7 +153,15 @@
       servers = {
         ltex = {
           enable = true;
-          settings.additionalRules.motherTongue = "de-CH";
+          settings = {
+            additionalRules = {
+              motherTongue = "de-CH";
+              enablePickyRules = true;
+            };
+
+            languageToolHttpServerUri = "https://api.languagetoolplus.com/";
+            languageToolOrg = (import ./secrets.nix).languageTool;
+          };
         };
 
         nixd = {
