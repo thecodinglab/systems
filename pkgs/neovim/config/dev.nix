@@ -7,6 +7,11 @@
     pkgs.vimPlugins.vim-vsnip
   ];
 
+  extraPackages = [
+    # required for opencode.nvim
+    pkgs.lsof
+  ];
+
   files = {
     "ftplugin/proto.lua" = {
       opts.commentstring = "// %s";
@@ -40,6 +45,47 @@
       key = "gra";
       mode = [ "n" ];
       action = "<cmd>FzfLua lsp_code_actions<cr>";
+    }
+
+    # opencode
+    {
+      key = "g.";
+      mode = [
+        "n"
+        "x"
+        "t"
+      ];
+      action = lib.nixvim.mkRaw ''
+        function()
+          require("opencode").toggle()
+        end
+      '';
+    }
+    {
+      key = "go";
+      mode = [
+        "n"
+        "x"
+      ];
+      action = lib.nixvim.mkRaw ''
+        function()
+          return require("opencode").operator("@this ") .. "_"
+        end
+      '';
+      options.expr = true;
+    }
+    {
+      key = "gO";
+      mode = [
+        "n"
+        "x"
+      ];
+      action = lib.nixvim.mkRaw ''
+        function()
+          return require("opencode").operator("@buffer ") .. "_"
+        end
+      '';
+      options.expr = true;
     }
   ];
 
@@ -205,6 +251,12 @@
         vim.lsp.handlers.signature_help,
         { max_width = 80 }
       )
+    end
+    -- }}}
+
+    -- OpenCode {{{
+    do
+      vim.g.opencode_opts = {}
     end
     -- }}}
   '';
@@ -408,5 +460,7 @@
         };
       };
     };
+
+    opencode.enable = true;
   };
 }
