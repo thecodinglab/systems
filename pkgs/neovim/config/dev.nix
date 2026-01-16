@@ -132,6 +132,42 @@
     }
   ];
 
+  extraConfigLua = ''
+    -- Custom LSP {{{
+    do
+      local curl = require("plenary.curl")
+
+      vim.lsp.commands["_ltex.addToDictionary"] = function (command, context)
+        local args = command.arguments[1]
+        local client = vim.lsp.get_client_by_id(context.client_id)
+
+        local settings = client.settings and client.settings.ltex
+        local endpoint = settings and settings.languageToolHttpServerUri
+        local username = settings and settings.languageToolOrg and settings.languageToolOrg.username
+        local apiKey = settings and settings.languageToolOrg and settings.languageToolOrg.apiKey
+
+        if not (endpoint and username and apiKey) then
+          return
+        end
+
+        for lang, words in pairs(args.words) do
+          for _, word in pairs(words) do
+            curl.post(endpoint .. "v2/words/add", {
+              body = {
+                word = word,
+                username = username,
+                apiKey = apiKey,
+              },
+            })
+          end
+        end
+
+        client.request("workspace/executeCommand", { command = "_ltex.checkDocument", arguments = { { uri = args.uri } } })
+      end
+    end
+    -- }}}
+  '';
+
   plugins = {
     treesitter = {
       enable = true;
