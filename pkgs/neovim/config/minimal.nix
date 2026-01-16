@@ -229,7 +229,10 @@
   plugins = {
     lualine.enable = true;
 
-    fzf-lua.enable = true;
+    fzf-lua = {
+      enable = true;
+      settings.ui_select = true;
+    };
 
     oil = {
       enable = true;
