@@ -30,7 +30,7 @@
     };
 
     nixvim = {
-      url = "github:nix-community/nixvim?ref=1cca516a54462a76fa117357d57cbb7ff5df0338";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -123,7 +123,7 @@
               ];
 
             permittedInsecurePackages = [
-              "beekeeper-studio-5.3.4"
+              "beekeeper-studio-5.5.3"
             ];
           };
         };
@@ -137,7 +137,7 @@
         }
       );
 
-      formatter = forAllSystems (system: (mkPkgs system).nixfmt-rfc-style);
+      formatter = forAllSystems (system: (mkPkgs system).nixfmt);
       inherit overlays;
 
       nixosModules = import ./modules/nixos // {

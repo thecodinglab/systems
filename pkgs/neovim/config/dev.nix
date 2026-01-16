@@ -171,7 +171,7 @@
   plugins = {
     treesitter = {
       enable = true;
-      folding = true;
+      folding.enable = true;
 
       grammarPackages = pkgs.vimPlugins.nvim-treesitter.passthru.allGrammars;
 
@@ -237,7 +237,7 @@
 
         nixd = {
           enable = true;
-          settings.formatting.command = [ (lib.getExe' pkgs.nixfmt-rfc-style "nixfmt") ];
+          settings.formatting.command = [ (lib.getExe pkgs.nixfmt) ];
         };
 
         gopls = {

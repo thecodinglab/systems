@@ -162,12 +162,6 @@ in
               return os.date("%Y%m%d%H%M") .. "-" .. suffix
             end
           '';
-
-          follow_url_func = ''
-            function(url)
-              vim.ui.open(url)
-            end
-          '';
         };
       };
     })

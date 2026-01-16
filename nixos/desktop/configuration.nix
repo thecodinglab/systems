@@ -40,8 +40,9 @@
     useDHCP = false;
     hostName = "florian-nixos";
 
-    interfaces = {
-      enp14s0.useDHCP = true;
+    interfaces.enp13s0 = {
+      useDHCP = true;
+      wakeOnLan.enable = true;
     };
 
     firewall = {

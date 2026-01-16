@@ -307,6 +307,11 @@
           };
         };
 
+        hyprpaper = {
+          enable = true;
+          settings.splash = false;
+        };
+
         dunst = {
           enable = true;
 
@@ -481,7 +486,7 @@
               };
 
               "network#ethernet" = {
-                interface = "enp14s0";
+                interface = "enp13s0";
                 format-ethernet = "󰛳   {ipaddr}";
                 format-linked = "󰅛   (no ip)";
                 format-disconnected = "󰅛 ";
@@ -553,14 +558,14 @@
             };
           };
         };
-      };
 
-      programs.vicinae = {
-        enable = true;
-        systemd.enable = true;
-        settings = {
-          font.size = 10;
-          theme.name = "vicinae-dark";
+        vicinae = {
+          enable = true;
+          systemd.enable = true;
+          settings = {
+            font.size = 10;
+            theme.name = "vicinae-dark";
+          };
         };
       };
 
