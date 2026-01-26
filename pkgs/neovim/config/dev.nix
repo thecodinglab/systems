@@ -373,6 +373,17 @@
           installCargo = false;
           installRustc = false;
         };
+
+        sourcekit = {
+          enable = true;
+          cmd = lib.mkIf pkgs.stdenv.isDarwin [
+            "xcrun"
+            "sourcekit-lsp"
+          ];
+          extraOptions = {
+            capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true;
+          };
+        };
       };
     };
 
