@@ -205,16 +205,6 @@
             ./nixos/containers/hermes/configuration.nix
           ];
         };
-
-        poseidon = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/poseidon/configuration.nix
-          ];
-        };
       };
 
       darwinConfigurations = {

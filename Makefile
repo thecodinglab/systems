@@ -27,7 +27,7 @@ build-home:
 switch-home:
 	home-manager switch --flake ".#$(USER)@$(HOST)"
 
-containers: container-apollo container-hermes container-poseidon container-hestia
+containers: container-apollo container-hermes container-hestia
 
 server:
 	nixos-rebuild --build-host server --target-host server --use-remote-sudo switch --flake '.#server'
