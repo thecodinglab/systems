@@ -27,6 +27,8 @@
           plugin = pkgs.tmuxPlugins.sensible;
           extraConfig = ''
             set -g default-command '${lib.getExe pkgs.zsh}'
+            set-environment -g TINTED_TMUX_OPTION_ACTIVE 1
+            set-environment -g TINTED_TMUX_OPTION_STATUSBAR 1
           '';
         }
       ];

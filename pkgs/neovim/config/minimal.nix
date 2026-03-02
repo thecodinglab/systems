@@ -188,6 +188,8 @@
         light = "latte";
       };
 
+      transparent_background = lib.nixvim.mkRaw ''vim.env.TINTED_TMUX_OPTION_ACTIVE == "1"'';
+
       integrations = {
         treesitter = true;
 
