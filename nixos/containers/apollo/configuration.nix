@@ -2,6 +2,9 @@
 let
   uid = 1000;
   gid = 1000;
+
+  unasMediaMountpoint = "/mnt/media";
+  unasDocumentsMountpoint = "/mnt/documents";
 in
 {
   system.stateVersion = "23.11";
@@ -91,6 +94,8 @@ in
             proxyWebsockets = true;
           };
         };
+
+        "paperless.thecodinglab.ch".forceSSL = false;
       };
     };
 
@@ -105,6 +110,16 @@ in
       enable = true;
       user = "media";
       group = "media";
+    };
+
+    paperless = {
+      enable = true;
+      domain = "paperless.thecodinglab.ch";
+      mediaDir = "${unasDocumentsMountpoint}/";
+
+      configureNginx = true;
+      configureTika = true;
+      database.createLocally = true;
     };
   };
 
@@ -160,7 +175,7 @@ in
             dst = 7878;
           };
           volumes = [
-            "/mnt/Downloads:/downloads"
+            "${unasMediaMountpoint}/Downloads:/downloads"
             "${mountpoint}:/movies"
           ];
         }
@@ -180,7 +195,7 @@ in
             dst = 8989;
           };
           volumes = [
-            "/mnt/Downloads:/downloads"
+            "${unasMediaMountpoint}/Downloads:/downloads"
             "${mountpoint}:/tv"
           ];
         }
@@ -200,7 +215,7 @@ in
             dst = 8787;
           };
           volumes = [
-            "/mnt/Downloads:/downloads"
+            "${unasMediaMountpoint}/Downloads:/downloads"
             "${mountpoint}:/books"
           ];
         }
@@ -214,7 +229,7 @@ in
           src = 40001;
           dst = 8080;
         };
-        volumes = [ "/mnt/Downloads:/downloads" ];
+        volumes = [ "${unasMediaMountpoint}/Downloads:/downloads" ];
       };
 
       overseerr = makeLinuxserverContainer {
@@ -230,28 +245,28 @@ in
       radarr-english = makeRadarrContainer {
         lang = "english";
         port = 41001;
-        mountpoint = "/mnt/Movies/English";
+        mountpoint = "${unasMediaMountpoint}/Movies/English";
       };
       sonarr-english = makeSonarrContainer {
         lang = "english";
         port = 41002;
-        mountpoint = "/mnt/TV/English";
+        mountpoint = "${unasMediaMountpoint}/TV/English";
       };
 
       radarr-german = makeRadarrContainer {
         lang = "german";
         port = 42001;
-        mountpoint = "/mnt/Movies/German";
+        mountpoint = "${unasMediaMountpoint}/Movies/German";
       };
       sonarr-german = makeSonarrContainer {
         lang = "german";
         port = 42002;
-        mountpoint = "/mnt/TV/German";
+        mountpoint = "${unasMediaMountpoint}/TV/German";
       };
       readarr-german = makeReadarrContainer {
         lang = "german";
         port = 42003;
-        mountpoint = "/mnt/Books/German";
+        mountpoint = "${unasMediaMountpoint}/Books/German";
       };
     };
 }

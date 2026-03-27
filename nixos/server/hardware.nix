@@ -39,6 +39,16 @@
     ];
   };
 
+  fileSystems."/media/unas/documents" = {
+    device = "192.168.32.185:/var/nfs/shared/Documents";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=600"
+      "noauto"
+    ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = "x86_64-linux";

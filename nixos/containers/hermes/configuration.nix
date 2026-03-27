@@ -28,6 +28,7 @@
         "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
         "requests.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
         "media-tools.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
+        "paperless.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
 
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
         "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";

@@ -21,7 +21,15 @@
           type = "disk";
           properties = {
             source = "/media/unas/media";
-            path = "/mnt";
+            path = "/mnt/media";
+          };
+        }
+        {
+          name = "documents";
+          type = "disk";
+          properties = {
+            source = "/media/unas/documents";
+            path = "/mnt/documents";
           };
         }
       ];
@@ -31,6 +39,7 @@
       media = lib.cloudflare.makeDNSRecord "media";
       requests = lib.cloudflare.makeDNSRecord "requests";
       media-tools = lib.cloudflare.makeDNSRecord "media-tools";
+      paperless = lib.cloudflare.makeDNSRecord "paperless";
     };
 
     cloudflare_access_application.media-tools = lib.cloudflare.makeDefaultApplication "media-tools";
