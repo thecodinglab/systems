@@ -102,7 +102,6 @@ in
     pkgs.jq
     pkgs.zip
     pkgs.unzip
-    pkgs.ollama
 
     # Coding
     pkgs.neovide
