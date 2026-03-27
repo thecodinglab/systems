@@ -15,11 +15,13 @@
     cloudflare_record = {
       hermes = lib.cloudflare.makeDNSRecord "hermes";
       uptime = lib.cloudflare.makeDNSRecord "uptime";
+      home-assistant = lib.cloudflare.makeDNSRecord "home-assistant";
     };
 
     cloudflare_access_application = {
       hermes = lib.cloudflare.makeDefaultApplication "hermes";
       uptime = lib.cloudflare.makeDefaultApplication "uptime";
+      home-assistant = lib.cloudflare.makeDefaultApplication "home-assistant";
     };
 
     cloudflare_access_policy = {
@@ -38,6 +40,15 @@
       };
       uptime-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
         application_id = "\${cloudflare_access_application.uptime.id}";
+        precedence = "1";
+      };
+
+      home-assistant-policy-home = lib.cloudflare.makeHomeBypassAccessPolicy {
+        application_id = "\${cloudflare_access_application.home-assistant.id}";
+        precedence = "2";
+      };
+      home-assistant-policy-github = lib.cloudflare.makeGithubAllowancePolicy {
+        application_id = "\${cloudflare_access_application.home-assistant.id}";
         precedence = "1";
       };
     };

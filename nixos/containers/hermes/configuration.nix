@@ -23,7 +23,7 @@
           locations."/".proxyPass = "http://172.16.0.92:4000";
         };
 
-        "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92:8123";
+        "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://192.168.96.47:8123/";
 
         "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
         "requests.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";

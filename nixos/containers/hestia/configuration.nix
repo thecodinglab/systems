@@ -130,18 +130,4 @@
       extraOptions = [ "--ip=10.88.0.3" ];
     };
   };
-
-  services.home-assistant = {
-    enable = true;
-
-    extraComponents = [ "hue" ];
-
-    config = {
-      default_config = { };
-      http = {
-        use_x_forwarded_for = true;
-        trusted_proxies = "172.16.0.132";
-      };
-    };
-  };
 }
