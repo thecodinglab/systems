@@ -19,10 +19,6 @@
       };
     in
     lib.mkIf config.custom.hyprland.enable {
-      home.sessionVariables = {
-        GDK_BACKEND = "wayland";
-      };
-
       xdg.portal = {
         enable = true;
         extraPortals = [
@@ -41,15 +37,6 @@
         enable = true;
 
         settings = {
-          env = [
-            "XCURSOR_SIZE,24"
-            "XDG_SESSION_TYPE,wayland"
-            "WLR_NO_HARDWARE_CURSORS,1"
-
-            "GBM_BACKEND,nvidia-drm"
-            "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-          ];
-
           #########################
           # Hardware              #
           #########################
@@ -98,6 +85,8 @@
 
             sensitivity = 0.2;
           };
+
+          cursor.no_hardware_cursors = 0;
 
           #########################
           # General               #
@@ -281,6 +270,11 @@
             "match:class com.mitchellh.ghostty-floating, size 1024 720"
           ];
         };
+      };
+
+      home.pointerCursor = {
+        enable = true;
+        hyprcursor.enable = true;
       };
 
       services = {
