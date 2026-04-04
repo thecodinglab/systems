@@ -324,16 +324,21 @@
         gopls = {
           enable = true;
           settings.gopls.gofumpt = true;
-          extraOptions.on_new_config = lib.nixvim.mkRaw ''
-            function(new_config, new_root_dir)
-              if vim.uv.fs_stat(new_root_dir .. "/go.mod") then
+          extraOptions.on_init = lib.nixvim.mkRaw ''
+            function(client)
+              local root_dir = client.root_dir or (client.config and client.config.root_dir)
+
+              if root_dir and vim.uv.fs_stat(root_dir .. "/go.mod") then
                 local res = vim.system({ "go", "list", "-m" }, {
-                  cwd = new_root_dir,
+                  cwd = root_dir,
                   text = true
                 }):wait()
 
                 if res.code == 0 then
-                  new_config.settings.gopls["local"] = vim.trim(res.stdout)
+                  client.settings = vim.tbl_deep_extend("force", client.settings or {}, {
+                    gopls = { ["local"] = vim.trim(res.stdout) }
+                  })
+                  client:notify("workspace/didChangeConfiguration", { settings = client.settings })
                 end
               end
             end
