@@ -242,15 +242,13 @@
         client.request("workspace/executeCommand", { command = "_ltex.checkDocument", arguments = { { uri = args.uri } } })
       end
 
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { max_width = 80 }
-      )
+      vim.keymap.set('n', 'K', function()
+        vim.lsp.buf.hover({ max_width = 80 })
+      end, { desc = 'Hover Documentation' })
 
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { max_width = 80 }
-      )
+      vim.keymap.set({ 'i' }, '<C-K>', function()
+        vim.lsp.buf.signature_help({ max_width = 80 })
+      end, { desc = 'Signature Help' })
     end
     -- }}}
 
