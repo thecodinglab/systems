@@ -25,8 +25,9 @@
       plex = stable.plex;
 
       # bleeding packages
-      claude-code = bleeding.claude-code;
       gemini-cli = bleeding.gemini-cli;
+      claude-code = bleeding.claude-code;
+      codex = bleeding.codex;
 
       # external packages
     };

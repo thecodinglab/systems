@@ -107,7 +107,6 @@ in
     pkgs.neovide
     pkgs.zed-editor
     pkgs.beekeeper-studio
-    pkgs.claude-code
 
     (pkgs.neovim-dev.extend {
       plugins.ledger.enable = true;
@@ -167,6 +166,11 @@ in
 
     pkgs.exiftool
     pkgs.ffmpeg
+
+    # AI
+    pkgs.gemini-cli
+    pkgs.claude-code
+    pkgs.codex
 
     # Kubernetes
     pkgs.kubectl
