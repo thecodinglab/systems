@@ -121,10 +121,6 @@
                 "cuda_nvcc"
                 "libcublas"
               ];
-
-            permittedInsecurePackages = [
-              "beekeeper-studio-5.5.3"
-            ];
           };
         };
     in
