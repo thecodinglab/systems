@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   options.custom.nvidia = {
     enable = lib.mkEnableOption "enable nvidia configurations";
@@ -15,6 +20,10 @@
       graphics = {
         enable = true;
         enable32Bit = true;
+        extraPackages = [
+          pkgs.egl-wayland
+          pkgs.nvidia-vaapi-driver
+        ];
       };
 
       nvidia = {
