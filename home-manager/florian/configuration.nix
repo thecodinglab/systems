@@ -86,8 +86,6 @@ in
   services.easyeffects.enable = isLinux;
 
   home.packages = [
-    pkgs.obsidian
-
     pkgs.hledger
     pkgs.hledger-ui
     pkgs.hledger-web
@@ -219,6 +217,9 @@ in
     pkgs.jdk
   ]
   ++ lib.optionals isLinux [
+    # obsidian on mac is installed through a `environment.systemPackage` on macos
+    pkgs.obsidian
+
     pkgs.helium
     pkgs.spotify
     pkgs.slack
