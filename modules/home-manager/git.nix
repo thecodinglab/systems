@@ -32,6 +32,7 @@
         };
 
         init.defaultBranch = "main";
+        push.autoSetupRemote = "true";
         pull.rebase = "true";
 
         gpg = {
@@ -42,13 +43,11 @@
                 "${pkgs._1password-gui}/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
               else
                 lib.getExe' pkgs._1password-gui "op-ssh-sign";
-            allowedSignersFile =
-              let
-                allowedSigners = pkgs.writeText "git-ssh-allowed-signers" ''
-                  fw@florian-walter.ch ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG
-                '';
-              in
-              "${allowedSigners}";
+            allowedSignersFile = toString (
+              pkgs.writeText "git-ssh-allowed-signers" ''
+                fw@florian-walter.ch ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG
+              ''
+            );
           };
         };
 
@@ -61,21 +60,14 @@
       };
     };
 
-    programs.delta.enable = true;
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+    };
 
     programs.gpg = {
       enable = true;
       package = pkgs.gnupg;
-    };
-
-    programs.lazygit = {
-      enable = true;
-      settings = {
-        git.paging = {
-          colorArg = "always";
-          pager = "${lib.getExe pkgs.delta} --dark --paging=never";
-        };
-      };
     };
   };
 }
