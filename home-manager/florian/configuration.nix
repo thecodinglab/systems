@@ -90,11 +90,6 @@ in
     pkgs.hledger-ui
     pkgs.hledger-web
 
-    pkgs.apple-font-sf-pro
-    pkgs.apple-font-sf-compact
-    pkgs.apple-font-sf-mono
-    pkgs.apple-font-new-york
-
     # Utilities
     pkgs.openssl
     pkgs.jq
