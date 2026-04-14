@@ -157,13 +157,11 @@ in
       };
     })
 
-    pkgs.exiftool
-    pkgs.ffmpeg
-
     # AI
     pkgs.gemini-cli
     pkgs.claude-code
     pkgs.codex
+    pkgs.pi-coding-agent
 
     # Kubernetes
     pkgs.kubectl
@@ -192,6 +190,7 @@ in
 
     # Rust
     pkgs.cargo
+    pkgs.rustfmt
     pkgs.rust-analyzer
 
     # Haskell
@@ -206,30 +205,24 @@ in
     # Writing
     pkgs.texlive.combined.scheme-full
     pkgs.typst
-
-    # Minecraft
-    pkgs.prismlauncher
-    pkgs.jdk
   ]
   ++ lib.optionals isLinux [
-    # obsidian on mac is installed through a `environment.systemPackage` on macos
-    pkgs.obsidian
-
-    pkgs.helium
-    pkgs.spotify
-    pkgs.slack
-
-    pkgs.postman
-
-    pkgs.helvum
-    pkgs.easyeffects
-    pkgs.fragments
-    pkgs.obs-studio
-
+    # Media
+    pkgs.exiftool
+    pkgs.ffmpeg
     pkgs.imv
     pkgs.mpv
+    pkgs.spotify
 
-    pkgs.chatterino7
+    pkgs.easyeffects
+    pkgs.obs-studio
+    pkgs.remmina
+
+    # Other
+    pkgs.obsidian # on mac it is installed through `environment.systemPackage`
+    pkgs.helium # on mac it is installed through `homebrew.casks`
+    pkgs.slack # on mac it is installed through `homebrew.casks`
+    pkgs.fragments
   ];
 
   fonts.fontconfig.enable = true;
