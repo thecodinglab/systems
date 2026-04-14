@@ -269,7 +269,6 @@
             ./infra/apollo.nix
             ./infra/hermes.nix
             ./infra/hestia.nix
-            ./infra/poseidon.nix
           ];
         }
       );
