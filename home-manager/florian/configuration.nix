@@ -20,6 +20,7 @@ in
     };
 
     shell.enableZshIntegration = true;
+    preferXdgDirectories = true;
   };
 
   custom = {
