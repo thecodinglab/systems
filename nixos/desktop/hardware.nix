@@ -28,17 +28,6 @@
     fsType = "btrfs";
   };
 
-  fileSystems."/media/server" = {
-    device = "172.16.0.54:/";
-    fsType = "nfs4";
-
-    options = [
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=600"
-      "noauto"
-    ];
-  };
-
   sops.secrets.unas_credentials = { };
 
   fileSystems."/media/unas/personal" = {
