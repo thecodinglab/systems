@@ -101,8 +101,7 @@
           if ok and stats and stats.size > max_filesize then
             vim.opt_local.swapfile = false
             vim.opt_local.foldmethod = "manual"
-
-            vim.api.nvim_buf_set_var(args.buf, "bigfile_disable_treesitter", 1)
+            pcall(vim.treesitter.stop, args.buf)
           end
         end
       '';
@@ -266,25 +265,11 @@
 
       grammarPackages = pkgs.vimPlugins.nvim-treesitter.passthru.allGrammars;
 
-      settings =
-        builtins.mapAttrs
-          (
-            name: value:
-            value
-            // {
-              disable = lib.nixvim.mkRaw ''
-                function(lang, buf)
-                  local success, detected = pcall(vim.api.nvim_buf_get_var, buf, "bigfile_disable_treesitter")
-                  return success and detected
-                end
-              '';
-            }
-          )
-          {
-            highlight.enable = true;
-            incremental_selection.enable = true;
-            indent.enable = true;
-          };
+      settings = {
+        highlight.enable = true;
+        incremental_selection.enable = true;
+        indent.enable = true;
+      };
     };
 
     treesitter-context = {
