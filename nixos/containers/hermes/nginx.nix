@@ -39,6 +39,19 @@ in
     services.nginx = {
       enable = true;
 
+      recommendedGzipSettings = true;
+      recommendedOptimisation = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = true;
+
+      # paperless document uploads, home-assistant backups, and media imports
+      # all push large files through the reverse proxy
+      clientMaxBodySize = "4G";
+
+      # streaming endpoints (jellyfin/plex on media.*) need long-lived
+      # upstream connections; bump the default 60s proxy timeouts
+      proxyTimeout = "1h";
+
       commonHttpConfig =
         let
           realIPsFromList = lib.strings.concatMapStringsSep "\n" (x: "set_real_ip_from  ${x};");
@@ -73,35 +86,32 @@ in
           sslCertificateKey = "/etc/certs/cloudflare-origin-key.pem";
 
           # require client certificate (mtls)
-          extraConfig =
-            ''
-              ssl_client_certificate ${cloudflare.originPullCA};
-              ssl_verify_client optional;
+          extraConfig = ''
+            ssl_client_certificate ${cloudflare.originPullCA};
+            ssl_verify_client optional;
 
-              set $access $ssl_client_verify;
+            set $access $ssl_client_verify;
 
-              if ($local_address) {
-                set $access "SUCCESS";
-              }
-            ''
-            + (config.extraConfig or "");
+            if ($local_address) {
+              set $access "SUCCESS";
+            }
+          ''
+          + (config.extraConfig or "");
 
-          locations = builtins.mapAttrs (
+          locations = lib.mapAttrs (
             _: location:
             location
             // {
-              recommendedProxySettings = true;
               proxyWebsockets = true;
 
-              extraConfig =
-                ''
-                  if ($access != 'SUCCESS') {
-                    return 403;
-                  }
-                ''
-                + (location.extraConfig or "");
+              extraConfig = ''
+                if ($access != 'SUCCESS') {
+                  return 403;
+                }
+              ''
+              + (location.extraConfig or "");
             }
-          ) (config.locations or [ ]);
+          ) (config.locations or { });
         }
       ) config.custom.nginx.vhosts;
     };
