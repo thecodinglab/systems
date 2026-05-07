@@ -3,11 +3,11 @@
   nixvim,
 }:
 {
-  minimal = nixvim.legacyPackages.${pkgs.system}.makeNixvimWithModule {
+  minimal = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvimWithModule {
     inherit pkgs;
     module = ./config/minimal.nix;
   };
-  dev = nixvim.legacyPackages.${pkgs.system}.makeNixvimWithModule {
+  dev = nixvim.legacyPackages.${pkgs.stdenv.hostPlatform.system}.makeNixvimWithModule {
     inherit pkgs;
     module = ./config/dev.nix;
   };

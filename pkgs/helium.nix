@@ -12,7 +12,7 @@ appimageTools.wrapType2 rec {
   extraInstallCommands = ''
     mkdir -p $out/share/applications
     install ${appimageContent}/helium.desktop $out/share/applications/helium.desktop
-    substituteInPlace $out/share/applications/helium.desktop --replace-fail 'Exec=AppRun' 'Exec=helium'
+    substituteInPlace $out/share/applications/helium.desktop --replace-fail 'Exec=helium' 'Exec=helium --ozone-platform=wayland'
 
     mkdir -p $out/share/icons/hicolor/256x256/apps
     install ${appimageContent}/helium.png $out/share/icons/hicolor/256x256/apps/helium.png

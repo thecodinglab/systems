@@ -15,6 +15,7 @@
       lfs.enable = true;
 
       signing = {
+        format = "ssh";
         key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG";
         signByDefault = true;
       };

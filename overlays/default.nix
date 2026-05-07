@@ -11,12 +11,12 @@
     final: prev:
     let
       stable = import inputs.nixpkgs-stable {
-        inherit (final) system;
+        inherit (final.stdenv.hostPlatform) system;
         inherit (final) config;
       };
 
       bleeding = import inputs.nixpkgs-bleeding {
-        inherit (final) system;
+        inherit (final.stdenv.hostPlatform) system;
         inherit (final) config;
       };
     in

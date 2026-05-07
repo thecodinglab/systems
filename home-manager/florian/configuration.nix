@@ -59,11 +59,16 @@ in
 
   stylix.enable = true;
 
+  gtk.gtk4.theme = config.gtk.theme;
+
   programs = {
     bat.enable = true;
     btop.enable = true;
     sioyek.enable = true;
-    yazi.enable = true;
+    yazi = {
+      enable = true;
+      shellWrapperName = "yy";
+    };
 
     direnv = {
       enable = true;
@@ -186,7 +191,6 @@ in
 
     # Golang
     pkgs.go
-    pkgs.gopls
     pkgs.gotools
 
     # Rust
