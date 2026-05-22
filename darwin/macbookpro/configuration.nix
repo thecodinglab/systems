@@ -21,6 +21,10 @@
     home = "/Users/florian/";
   };
 
+  security.sudo.extraConfig = ''
+    %admin ALL=(ALL) NOPASSWD: ALL
+  '';
+
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"
     "/Applications/Helium.app" # managed through homebrew
