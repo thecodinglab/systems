@@ -42,6 +42,7 @@
 
     interfaces.enp13s0 = {
       useDHCP = true;
+      mtu = 9000;
       wakeOnLan.enable = true;
     };
 
