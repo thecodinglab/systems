@@ -81,6 +81,25 @@
             })
           end
 
+          if client.server_capabilities.documentHighlightProvider then
+            vim.api.nvim_create_autocmd({ "CursorHold" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
+              callback = function()
+                vim.lsp.buf.document_highlight()
+              end,
+            })
+
+            vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+              buffer = args.buf,
+              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
+              callback = function()
+                vim.lsp.buf.clear_references()
+              end,
+            })
+          end
+
+          -- automatically organize imports in golang
           if client.name == "gopls" then
             vim.api.nvim_create_autocmd({ "BufWritePre" }, {
               buffer = args.buf,
@@ -101,24 +120,6 @@
                     end
                   end
                 end
-              end,
-            })
-          end
-
-          if client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_autocmd({ "CursorHold" }, {
-              buffer = args.buf,
-              group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
-              callback = function()
-                vim.lsp.buf.document_highlight()
-              end,
-            })
-
-            vim.api.nvim_create_autocmd({ "CursorMoved" }, {
-              buffer = args.buf,
-              group = vim.api.nvim_create_augroup("lsp_document_highlight_moved", { clear = false }),
-              callback = function()
-                vim.lsp.buf.clear_references()
               end,
             })
           end
