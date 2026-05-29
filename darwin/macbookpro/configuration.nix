@@ -34,14 +34,15 @@
 
     "/Applications/Nix Apps/Ghostty.app" # managed through nix-darwin
     "/Applications/Nix Apps/Obsidian.app" # managed through nix-darwin
-    "/Applications/TablePlus.app" # managed through homebrew
-    "/Applications/Figma.app" # managed through homebrew
     "/Applications/Linear.app" # managed through homebrew
+
+    "/Applications/Claude.app" # managed through homebrew
+    "/Applications/ChatGPT.app" # managed through homebrew
+    "/Applications/Codex.app" # managed through homebrew
 
     "/Applications/Spotify.app" # managed through homebrew
     "/Applications/1Password.app" # managed through homebrew
     "/System/Applications/System Settings.app"
-    "/System/Applications/iPhone Mirroring.app"
   ];
 
   system.defaults.CustomUserPreferences."com.apple.dock".persistent-others = [
@@ -81,14 +82,16 @@
       "1password-cli"
 
       "figma"
-      "linear-linear"
+      "linear"
       "orbstack"
-      "tableplus"
-      "postman"
 
       "helium-browser"
       "google-chrome"
-      "firefox@developer-edition"
+      "whatsapp"
+
+      "claude"
+      "chatgpt"
+      "codex-app"
     ];
     masApps = {
       "Pages" = 409201541;
@@ -97,7 +100,10 @@
       "Slack" = 803453959;
       "LanguageTool" = 1534275760;
     };
-    onActivation.cleanup = "zap";
+    onActivation = {
+      cleanup = "zap";
+      upgrade = true;
+    };
   };
 
   system.stateVersion = 5;
