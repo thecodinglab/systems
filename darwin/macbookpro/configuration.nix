@@ -79,8 +79,6 @@
       "spotify"
       "1password"
       "1password-cli"
-      "proton-mail-bridge"
-      "google-drive"
 
       "figma"
       "linear-linear"
