@@ -5,6 +5,8 @@
     image = ./wallpaper.jpg;
     base16Scheme = ./theme.yaml;
 
+    opacity.terminal = 0.88;
+
     cursor = {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";

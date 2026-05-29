@@ -17,6 +17,7 @@ in
 
     sessionVariables = {
       LEDGER_FILE = "${config.home.homeDirectory}/finance/All.journal";
+      TERMINAL_BACKGROUND_TRANSPARENT = "1";
     };
 
     shell.enableZshIntegration = true;

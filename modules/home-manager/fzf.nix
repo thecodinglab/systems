@@ -13,6 +13,12 @@
     programs.fzf = {
       enable = true;
       defaultCommand = "${lib.getExe pkgs.fd} --type f";
+
+      colors = {
+        bg = lib.mkForce "-1";
+        "bg+" = lib.mkForce "-1";
+        gutter = lib.mkForce "-1";
+      };
     };
 
     home.packages = [

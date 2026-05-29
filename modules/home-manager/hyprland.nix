@@ -101,7 +101,16 @@
             layout = "master";
           };
 
-          decoration.rounding = 10;
+          decoration = {
+            rounding = 10;
+
+            blur = {
+              enabled = true;
+              size = 8;
+              passes = 3;
+              new_optimizations = true;
+            };
+          };
 
           animations.enabled = true;
 

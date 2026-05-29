@@ -23,6 +23,9 @@
 
         auto-update = "off";
 
+        background-blur = true;
+        background-opacity-cells = false;
+
         keybind = [
           "shift+enter=text:\\x1b\\r"
         ];
