@@ -52,6 +52,9 @@
           ''
           # status bar length
           ''
+            # Hide stale theme output while the login shell is starting.
+            # The zsh theme hook turns this back on after applying colors.
+            set -g status off
             set -g status-left-length 80
             set -g status-right-length 80
           ''

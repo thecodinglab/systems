@@ -29,6 +29,7 @@ in
     tmux.enable = true;
     chromium.enable = isLinux;
     git.enable = true;
+    theme-switcher.enable = true;
 
     hyprland.enable = isLinux;
     zsh.enable = true;
