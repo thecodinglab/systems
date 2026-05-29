@@ -33,7 +33,7 @@ in
 
     hyprland.enable = isLinux;
     zsh.enable = true;
-    zathura.enable = true;
+    zathura.enable = isLinux;
     ghostty.enable = true;
   };
 
