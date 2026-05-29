@@ -4,10 +4,9 @@ USER ?= $(shell id -un)
 ifeq ($(HOSTNAME),florian-nixos)
 	HOST ?= desktop
 	REBUILD_CMD ?= nixos-rebuild
-	REBUILD_SWITCH_CMD ?= sudo nixos-rebuild
 else ifeq ($(HOSTNAME),Florians-MacBook-Pro)
 	HOST ?= macbookpro
-	REBUILD_CMD ?= sudo darwin-rebuild
+	REBUILD_CMD ?= darwin-rebuild
 endif
 
 REBUILD_SWITCH_CMD ?= $(REBUILD_CMD)
@@ -19,7 +18,7 @@ build-host:
 	$(REBUILD_CMD) build --flake ".#$(HOST)"
 
 switch-host:
-	$(REBUILD_SWITCH_CMD) switch --flake ".#$(HOST)"
+	sudo $(REBUILD_CMD) switch --flake ".#$(HOST)"
 
 build-home:
 	home-manager build --flake ".#$(USER)@$(HOST)"
