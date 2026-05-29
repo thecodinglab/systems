@@ -244,7 +244,6 @@
             };
 
             languageToolHttpServerUri = "https://api.languagetoolplus.com/";
-            languageToolOrg = (import ./secrets.nix).languageTool;
           };
         };
 

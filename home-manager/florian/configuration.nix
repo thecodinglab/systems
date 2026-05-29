@@ -112,6 +112,9 @@ in
     (pkgs.neovim-dev.extend {
       plugins.ledger.enable = true;
 
+      plugins.lsp.servers.ltex.settings.languageToolOrg =
+        (import ./secrets.nix).languageTool;
+
       plugins.lsp.servers.texlab.enable = true;
       plugins.vimtex = {
         enable = true;
