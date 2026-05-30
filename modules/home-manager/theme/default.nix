@@ -17,7 +17,7 @@
       sizes = {
         desktop = 10;
         popups = 10;
-        terminal = 12;
+        terminal = 14;
       };
 
       serif = config.stylix.fonts.sansSerif;
