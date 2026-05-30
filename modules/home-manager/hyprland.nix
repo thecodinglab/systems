@@ -97,8 +97,8 @@
           #########################
 
           general = {
-            gaps_in = 10;
-            gaps_out = "5,30,30,30";
+            gaps_in = 8;
+            gaps_out = "4,8,8,8";
 
             border_size = 2;
 
@@ -322,7 +322,7 @@
               ### Geometry ###
 
               origin = "top-right";
-              offset = "30x0";
+              offset = "8x0";
               width = 320;
 
               padding = "8";
@@ -399,7 +399,7 @@
           style = ''
             * {
               border: none;
-              border-radius: 5px;
+              border-radius: 8px;
             }
 
             window#waybar {
@@ -407,18 +407,18 @@
             }
 
             .modules-left, .modules-center, .modules-right {
-              margin: 10px 30px;
+              margin: 8px;
 
               background: @base00;
               color: @base05;
             }
 
             .modules-center, .modules-right {
-              padding: 0 10px;
+              padding: 0 8px;
             }
 
             .modules-left #workspaces button {
-              padding: 1px 10px;
+              padding: 1px 8px;
               background: transparent;
               border-bottom: none;
             }
@@ -560,8 +560,13 @@
           enable = true;
           systemd.enable = true;
           settings = {
-            font.size = 10;
+            font.normal.size = 12;
             theme.name = "vicinae-dark";
+
+            close_on_focus_loss = true;
+            launcher_window.compact_mode.enabled = true;
+
+            favorites = [ ];
           };
         };
       };
