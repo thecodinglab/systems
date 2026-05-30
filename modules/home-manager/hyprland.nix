@@ -86,7 +86,11 @@
             sensitivity = 0.2;
           };
 
-          cursor.no_hardware_cursors = 0;
+          cursor = {
+            no_hardware_cursors = 0;
+            default_monitor = monitors.center;
+            hide_on_key_press = true;
+          };
 
           #########################
           # General               #
@@ -115,15 +119,6 @@
           animations.enabled = true;
 
           master.mfact = 0.7;
-
-          dwindle = {
-            pseudotile = true;
-            preserve_split = true;
-
-            force_split = 2; # always split to the right
-
-            default_split_ratio = 1.2;
-          };
 
           misc = {
             disable_hyprland_logo = true;
@@ -193,9 +188,8 @@
             "${mod}, K, movefocus, u"
             "${mod}, J, movefocus, d"
 
-            # toggle fullscreen (monocle), split, floating
+            # toggle fullscreen, floating
             "${mod}, M, fullscreen, 1"
-            "${mod}, S, togglesplit,"
 
             "${mod}, SPACE, cyclenext, floating"
             "${mod} SHIFT, SPACE, togglefloating,"
