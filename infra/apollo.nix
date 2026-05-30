@@ -11,10 +11,6 @@
         "autostart"
       ];
 
-      limits = {
-        cpu = 18;
-      };
-
       device = [
         {
           name = "media";
