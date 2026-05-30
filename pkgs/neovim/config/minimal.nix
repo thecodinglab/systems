@@ -229,7 +229,35 @@
   '';
 
   plugins = {
-    lualine.enable = true;
+    lualine = {
+      enable = true;
+      settings = {
+        options = {
+          icons_enabled = false;
+          theme = "auto";
+          # square boxes instead of angled powerline separators
+          component_separators = "";
+          section_separators = "";
+          globalstatus = true;
+        };
+        sections = {
+          lualine_a = [ "mode" ];
+          lualine_b = [ "branch" ];
+          lualine_c = [ "filename" ];
+          lualine_x = [ "diagnostics" ];
+          lualine_y = [ "filetype" ];
+          lualine_z = [ "location" ];
+        };
+        inactive_sections = {
+          lualine_a = [ ];
+          lualine_b = [ ];
+          lualine_c = [ "filename" ];
+          lualine_x = [ "location" ];
+          lualine_y = [ ];
+          lualine_z = [ ];
+        };
+      };
+    };
 
     fzf-lua = {
       enable = true;
