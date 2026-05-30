@@ -55,6 +55,15 @@
     environment = {
       variables = {
         EDITOR = "nvim";
+        VISUAL = "nvim";
+      };
+
+      shellAliases = {
+        vi = "nvim";
+        vim = "nvim";
+        view = "nvim -R";
+        vimdiff = "nvim -d";
+        ex = "nvim -e";
       };
 
       shells = [ pkgs.zsh ];
@@ -62,6 +71,7 @@
       systemPackages = [
         pkgs.coreutils
         pkgs.git
+        pkgs.neovim-minimal
       ];
 
       pathsToLink = [
