@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-bleeding.url = "github:nixos/nixpkgs/master";
 
     home-manager = {
@@ -46,6 +46,11 @@
 
     stylix = {
       url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    devtools = {
+      url = "github:thecodinglab/devtools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

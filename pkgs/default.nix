@@ -26,6 +26,7 @@ in
 {
   zen-browser = callPackage ./zen-browser.nix { };
   helium = callPackage ./helium.nix { };
+  devtools = inputs.devtools.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }
 // mkPrefix "neovim" (
   import ./neovim/package.nix {

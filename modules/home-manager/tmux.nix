@@ -77,7 +77,7 @@
           ''
           # select project / pane
           ''
-            bind-key o display-popup -E "${lib.getExe pkgs.tmux-sessionizer}"
+            bind-key o display-popup -E "${lib.getExe pkgs.devtools} pick"
           ''
           # tmux and nvim navigation
           ''
@@ -101,6 +101,6 @@
 
     programs.fzf.tmux.enableShellIntegration = true;
 
-    home.packages = [ pkgs.tmux-sessionizer ];
+    home.packages = [ pkgs.devtools ];
   };
 }
