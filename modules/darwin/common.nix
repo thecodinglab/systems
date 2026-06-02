@@ -54,7 +54,10 @@
     ];
   };
 
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableGlobalCompInit = false;
+  };
 
   system.defaults = {
     NSGlobalDomain = {

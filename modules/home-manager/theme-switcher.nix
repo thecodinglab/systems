@@ -83,9 +83,10 @@ let
 
   zshIntegration = ''
     zmodload zsh/datetime 2>/dev/null || true
+    zmodload zsh/stat 2>/dev/null || true
 
     __terminal_theme_preference() {
-      if (( ''${+__terminal_theme_cached_mode} && EPOCHSECONDS - ''${__terminal_theme_last_check:-0} < 2 )); then
+      if (( ''${+__terminal_theme_cached_mode} && EPOCHSECONDS - ''${__terminal_theme_last_check:-0} < 300 )); then
         print -r -- "$__terminal_theme_cached_mode"
         return
       fi
@@ -93,11 +94,25 @@ let
       local mode
 
       if [[ "$OSTYPE" == darwin* ]]; then
+        local cache_file="''${XDG_CACHE_HOME:-$HOME/.cache}/terminal-theme-mode"
+        local -a cache_mtime
+
+        if [[ -r "$cache_file" ]] && zstat -A cache_mtime -F %s +mtime "$cache_file" 2>/dev/null && (( EPOCHSECONDS - ''${cache_mtime[1]:-0} < 300 )); then
+          mode="$(<"$cache_file")"
+          if [[ "$mode" == dark || "$mode" == light ]]; then
+            __terminal_theme_cached_mode="$mode"
+            __terminal_theme_last_check="$EPOCHSECONDS"
+            print -r -- "$mode"
+            return
+          fi
+        fi
+
         if [[ "$(/usr/bin/defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
           mode=dark
         else
           mode=light
         fi
+        [[ -d "''${cache_file:h}" ]] && { print -r -- "$mode" >| "$cache_file" } 2>/dev/null
         __terminal_theme_cached_mode="$mode"
         __terminal_theme_last_check="$EPOCHSECONDS"
         print -r -- "$mode"
