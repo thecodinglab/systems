@@ -98,7 +98,6 @@
       "Numbers" = 409203825;
       "1Password for Safari" = 1569813296;
       "Slack" = 803453959;
-      "LanguageTool" = 1534275760;
     };
     onActivation = {
       cleanup = "zap";
