@@ -77,7 +77,8 @@
           ''
           # select project / pane
           ''
-            bind-key o display-popup -E "${lib.getExe pkgs.devtools} pick"
+            bind-key o display-popup -w 90% -h 80% -E "devtools pick"
+            bind-key s display-popup -w 90% -h 80% -E "devtools sessions"
           ''
           # tmux and nvim navigation
           ''
