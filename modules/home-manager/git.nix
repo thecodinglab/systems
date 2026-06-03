@@ -34,6 +34,9 @@
 
         init.defaultBranch = "main";
         push.autoSetupRemote = "true";
+        checkout.defaultRemote = "origin";
+        branch.autoSetupMerge = "simple";
+        worktree.guessRemote = "true";
         pull.rebase = "true";
 
         gpg = {
