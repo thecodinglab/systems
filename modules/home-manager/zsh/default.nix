@@ -23,6 +23,10 @@
         shellAliases = {
           ls = "${pkgs.coreutils}/bin/ls -l --color=auto --group-directories-first -I . -I ..";
           ip = "ip --color=auto";
+
+          dt = "devtools";
+          ds = "devtools switch";
+
           vi = "nvim";
           vim = "nvim";
           view = "nvim -R";
