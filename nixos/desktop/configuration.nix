@@ -10,6 +10,7 @@
     dynamic-brightness.enable = false;
 
     nvidia.enable = true;
+    gaming.enable = true;
     desktop.enable = true;
     backup.enable = false;
     vpn.enable = true;

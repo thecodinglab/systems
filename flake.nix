@@ -119,6 +119,7 @@
                 "plexmediaserver"
 
                 # Nvidia
+                "nvidia-kernel-modules"
                 "nvidia-x11"
                 "nvidia-settings"
                 "cuda_cccl"

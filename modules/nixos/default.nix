@@ -5,6 +5,7 @@
   container = import ./container.nix;
   desktop = import ./desktop;
   dynamic-brightness = import ./dynamic-brightness.nix;
+  gaming = import ./gaming.nix;
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
   wooting = import ./wooting.nix;

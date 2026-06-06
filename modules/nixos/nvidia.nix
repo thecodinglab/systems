@@ -19,7 +19,6 @@
     hardware = {
       graphics = {
         enable = true;
-        enable32Bit = true;
         extraPackages = [
           pkgs.egl-wayland
           pkgs.nvidia-vaapi-driver
@@ -30,7 +29,6 @@
         modesetting.enable = true;
         powerManagement.enable = true;
 
-        open = true;
         nvidiaSettings = true;
 
         package = config.boot.kernelPackages.nvidiaPackages.stable;
