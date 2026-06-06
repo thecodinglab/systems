@@ -2,4 +2,5 @@
 /*.qcow2
 
 /.terraform/
+/terraform.tfstate*
 /config.tf.json
