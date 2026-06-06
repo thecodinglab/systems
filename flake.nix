@@ -53,6 +53,11 @@
       url = "github:thecodinglab/devtools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    hyprland = {
+      url = "github:hyprwm/hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -65,6 +70,7 @@
       terranix,
       sops-nix,
       stylix,
+      hyprland,
       ...
     }@inputs:
     let
@@ -81,7 +87,7 @@
 
       overlays = import ./overlays { inherit inputs; };
 
-      mkPkgs =
+      pkgsFor =
         system:
         import nixpkgs {
           inherit system;
@@ -89,6 +95,9 @@
           overlays = [
             overlays.additions
             overlays.modifications
+
+            hyprland.overlays.hyprland-packages
+            hyprland.overlays.hyprland-extras
           ];
 
           config = {
@@ -134,12 +143,12 @@
       packages = forAllSystems (
         system:
         import ./pkgs {
-          pkgs = mkPkgs system;
+          pkgs = pkgsFor system;
           inherit inputs;
         }
       );
 
-      formatter = forAllSystems (system: (mkPkgs system).nixfmt);
+      formatter = forAllSystems (system: (pkgsFor system).nixfmt);
       inherit overlays;
 
       nixosModules = import ./modules/nixos // {
@@ -159,7 +168,7 @@
 
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -169,7 +178,7 @@
         };
 
         server = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -179,7 +188,7 @@
         };
 
         apollo = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -189,7 +198,7 @@
         };
 
         hestia = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -199,7 +208,7 @@
         };
 
         hermes = nixpkgs.lib.nixosSystem {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -211,7 +220,7 @@
 
       darwinConfigurations = {
         macbookpro = darwin.lib.darwinSystem {
-          pkgs = mkPkgs "aarch64-darwin";
+          pkgs = pkgsFor "aarch64-darwin";
           specialArgs = {
             inherit inputs outputs;
           };
@@ -239,7 +248,7 @@
 
       homeConfigurations = {
         "florian@desktop" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = pkgsFor "x86_64-linux";
           extraSpecialArgs = {
             inherit inputs outputs;
             systemName = "x86_64-linux";
@@ -250,7 +259,7 @@
         };
 
         "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "aarch64-darwin";
+          pkgs = pkgsFor "aarch64-darwin";
           extraSpecialArgs = {
             inherit inputs outputs;
             systemName = "aarch64-darwin";
@@ -282,7 +291,7 @@
       apps = forAllSystems (
         system:
         let
-          pkgs = mkPkgs system;
+          pkgs = pkgsFor system;
           mkTerraformCmd =
             cmd:
             toString (
