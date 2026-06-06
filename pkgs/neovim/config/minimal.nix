@@ -76,7 +76,7 @@
         end
       ''
     ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
       ''
         if vim.trim(vim.fn.system("defaults read -g AppleInterfaceStyle")) == "Dark" then
           vim.opt.background = "dark"

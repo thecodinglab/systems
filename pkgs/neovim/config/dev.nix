@@ -312,8 +312,8 @@
 
         sourcekit = {
           enable = true;
-          package = if pkgs.stdenv.isDarwin then null else pkgs.sourcekit-lsp;
-          cmd = lib.mkIf pkgs.stdenv.isDarwin [
+          package = if pkgs.stdenv.hostPlatform.isDarwin then null else pkgs.sourcekit-lsp;
+          cmd = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
             "xcrun"
             "sourcekit-lsp"
           ];
