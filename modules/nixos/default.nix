@@ -8,6 +8,4 @@
   gaming = import ./gaming.nix;
   nvidia = import ./nvidia.nix;
   vpn = import ./vpn;
-  wooting = import ./wooting.nix;
-  zsa = import ./zsa.nix;
 }

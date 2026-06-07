@@ -2,7 +2,11 @@
 {
   system.stateVersion = "23.11";
 
-  imports = [ ./hardware.nix ];
+  imports = [
+    ./hardware.nix
+    ./input/wooting.nix
+    ./input/zsa.nix
+  ];
   sops.defaultSopsFile = ./secrets.yaml;
 
   custom = {
