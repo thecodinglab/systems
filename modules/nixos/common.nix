@@ -1,11 +1,16 @@
 {
   config,
+  inputs,
   pkgs,
   lib,
   ...
 }:
 {
+  imports = [ inputs.home-manager.nixosModules.home-manager ];
+
   config = {
+    home-manager.useGlobalPkgs = true;
+
     nix = {
       settings = {
         auto-optimise-store = true;
