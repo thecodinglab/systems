@@ -1,10 +1,13 @@
 { config, lib, ... }:
+let
+  cfg = config.custom.vpn;
+in
 {
   options.custom.vpn = {
     enable = lib.mkEnableOption "enable vpn";
   };
 
-  config = lib.mkIf config.custom.audio.enable {
+  config = lib.mkIf cfg.enable {
     sops = {
       secrets = {
         proton-username.sopsFile = ./secrets.yaml;

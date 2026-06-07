@@ -61,8 +61,6 @@ in
 
   stylix.enable = true;
 
-  gtk.gtk4.theme = config.gtk.theme;
-
   programs = {
     bat.enable = true;
     btop.enable = true;

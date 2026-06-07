@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  modulesPath,
-  ...
-}:
+{ config, modulesPath, ... }:
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
@@ -27,26 +21,6 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/709A-6F13";
     fsType = "vfat";
-  };
-
-  fileSystems."/media/unas/media" = {
-    device = "192.168.32.185:/var/nfs/shared/Media";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=600"
-      "noauto"
-    ];
-  };
-
-  fileSystems."/media/unas/documents" = {
-    device = "192.168.32.185:/var/nfs/shared/Documents";
-    fsType = "nfs";
-    options = [
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=600"
-      "noauto"
-    ];
   };
 
   swapDevices = [ ];

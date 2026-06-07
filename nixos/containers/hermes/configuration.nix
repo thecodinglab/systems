@@ -1,17 +1,24 @@
-{ config, modulesPath, ... }:
+{ config, ... }:
+let
+  withAutoUpdate =
+    container:
+    container
+    // {
+      labels = (container.labels or { }) // {
+        "io.containers.autoupdate" = "registry";
+      };
+    };
+in
 {
   system.stateVersion = "23.11";
 
   imports = [
-    (modulesPath + "/virtualisation/lxc-container.nix")
+    ../common.nix
     ./nginx.nix
     ./cloudflared.nix
   ];
 
-  nixpkgs.hostPlatform = "x86_64-linux";
-
   custom = {
-    isContainer = true;
     nginx = {
       enable = true;
       vhosts = {
@@ -43,23 +50,10 @@
 
   services.uptime-kuma.enable = true;
 
-  systemd.timers.podman-auto-update = {
-    timerConfig = {
-      Unit = "podman-auto-update.service";
-      OnCalendar = "Mon 02:00";
-      Persistent = true;
-    };
-    wantedBy = [ "timers.target" ];
-  };
-
   virtualisation.oci-containers.containers = {
-    homarr = {
+    homarr = withAutoUpdate {
       autoStart = true;
       image = "ghcr.io/ajnart/homarr:latest";
-
-      labels = {
-        "io.containers.autoupdate" = "registry";
-      };
 
       ports = [ "127.0.0.1:7575:7575" ];
       volumes = [

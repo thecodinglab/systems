@@ -1,4 +1,4 @@
-{ modulesPath, ... }:
+{ ... }:
 let
   uid = 1000;
   gid = 1000;
@@ -9,11 +9,7 @@ in
 {
   system.stateVersion = "23.11";
 
-  imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
-
-  nixpkgs.hostPlatform = "x86_64-linux";
-
-  custom.isContainer = true;
+  imports = [ ../common.nix ];
 
   networking = {
     hostName = "apollo";
@@ -121,15 +117,6 @@ in
       configureTika = true;
       database.createLocally = true;
     };
-  };
-
-  systemd.timers.podman-auto-update = {
-    timerConfig = {
-      Unit = "podman-auto-update.service";
-      OnCalendar = "Mon 02:00";
-      Persistent = true;
-    };
-    wantedBy = [ "timers.target" ];
   };
 
   virtualisation.oci-containers.containers =

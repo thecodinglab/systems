@@ -9,6 +9,7 @@
   imports = [
     # System
     ./hardware.nix
+    ./storage.nix
 
     ./ups.nix
     ./incus.nix

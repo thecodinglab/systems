@@ -4,6 +4,7 @@
 
   imports = [
     ./hardware.nix
+    ./storage.nix
     ./input/wooting.nix
     ./input/zsa.nix
   ];

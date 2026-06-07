@@ -1,12 +1,18 @@
-{ modulesPath, ... }:
+{ ... }:
+let
+  withAutoUpdate =
+    container:
+    container
+    // {
+      labels = (container.labels or { }) // {
+        "io.containers.autoupdate" = "registry";
+      };
+    };
+in
 {
   system.stateVersion = "23.11";
 
-  imports = [ (modulesPath + "/virtualisation/lxc-container.nix") ];
-
-  nixpkgs.hostPlatform = "x86_64-linux";
-
-  custom.isContainer = true;
+  imports = [ ../common.nix ];
 
   networking = {
     hostName = "hestia";
@@ -17,24 +23,11 @@
     ];
   };
 
-  systemd.timers.podman-auto-update = {
-    timerConfig = {
-      Unit = "podman-auto-update.service";
-      OnCalendar = "Mon 02:00";
-      Persistent = true;
-    };
-    wantedBy = [ "timers.target" ];
-  };
-
   virtualisation.oci-containers.containers = {
-    teslamate-core = {
+    teslamate-core = withAutoUpdate {
       hostname = "teslamate-core";
       image = "docker.io/teslamate/teslamate:latest";
       autoStart = true;
-
-      labels = {
-        "io.containers.autoupdate" = "registry";
-      };
 
       dependsOn = [
         "teslamate-postgres"
@@ -61,14 +54,10 @@
       ports = [ "4000:4000" ];
     };
 
-    teslamate-postgres = {
+    teslamate-postgres = withAutoUpdate {
       hostname = "teslamate-postgres";
       image = "docker.io/postgres:17";
       autoStart = true;
-
-      labels = {
-        "io.containers.autoupdate" = "registry";
-      };
 
       environment = {
         POSTGRES_USER = "teslamate";
@@ -80,16 +69,12 @@
       extraOptions = [ "--ip=10.88.0.4" ];
     };
 
-    teslamate-grafana = {
+    teslamate-grafana = withAutoUpdate {
       hostname = "teslamate-grafana";
       image = "docker.io/teslamate/grafana:latest";
       autoStart = true;
 
       dependsOn = [ "teslamate-postgres" ];
-
-      labels = {
-        "io.containers.autoupdate" = "registry";
-      };
 
       environment = {
         DATABASE_USER = "teslamate";
@@ -108,7 +93,7 @@
       volumes = [ "teslamate-grafana-data:/var/lib/grafana" ];
     };
 
-    teslamate-mqtt = {
+    teslamate-mqtt = withAutoUpdate {
       hostname = "teslamate-mqtt";
       image = "docker.io/eclipse-mosquitto:2";
       cmd = [
@@ -117,10 +102,6 @@
         "/mosquitto-no-auth.conf"
       ];
       autoStart = true;
-
-      labels = {
-        "io.containers.autoupdate" = "registry";
-      };
 
       volumes = [
         "teslamate-misquitto-config:/mosquitto/config"
