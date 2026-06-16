@@ -23,7 +23,7 @@
 
     home.packages = [
       pkgs.fd
-      pkgs.silver-searcher
+      pkgs.ripgrep
     ];
   };
 }
