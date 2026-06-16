@@ -117,6 +117,20 @@
     trackpad.Clicking = true;
   };
 
+  # disable the stupid "allow app to access the local network" dialog
+  system.defaults.CustomSystemPreferences."com.apple.network.local-network" =
+    let
+      addrs = [
+        "10.0.0.0/8"
+        "172.16.0.0/12"
+        "192.168.0.0/16"
+      ];
+    in
+    {
+      AllowedEthernetLocalNetworkAddresses = addrs;
+      AllowedWiFiLocalNetworkAddresses = addrs;
+    };
+
   system.keyboard = {
     enableKeyMapping = true;
     remapCapsLockToEscape = true;
