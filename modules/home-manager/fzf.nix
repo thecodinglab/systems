@@ -19,6 +19,8 @@
         "bg+" = lib.mkForce "-1";
         gutter = lib.mkForce "-1";
       };
+
+      historyWidget.command = "";
     };
 
     home.packages = [
