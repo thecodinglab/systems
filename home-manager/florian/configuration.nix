@@ -83,7 +83,7 @@ in
 
       flags = [ "--disable-ai" ];
 
-      daemon.enable = true;
+      daemon.enable = false;
 
       settings = {
         keymap_mode = "vim-insert";
