@@ -70,10 +70,12 @@
 
     finder = {
       AppleShowAllExtensions = true;
-      FXPreferredViewStyle = "Nlsv";
-      FXDefaultSearchScope = "SCcf";
       NewWindowTarget = "Home";
       ShowPathbar = true;
+
+      FXPreferredViewStyle = "Nlsv";
+      FXDefaultSearchScope = "SCcf";
+      _FXSortFoldersFirst = true;
     };
 
     WindowManager = {
