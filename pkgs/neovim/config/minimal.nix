@@ -206,27 +206,33 @@
     # highlight text on yank
     {
       event = [ "TextYankPost" ];
-      command = "lua vim.hl.on_yank()";
+      callback = lib.nixvim.mkRaw ''
+        function()
+          vim.hl.on_yank()
+        end
+      '';
+    }
+
+    # remove quickfix entries with `dd`
+    {
+      event = [ "FileType" ];
+      pattern = [ "qf" ];
+      callback = lib.nixvim.mkRaw ''
+        function(args)
+          vim.keymap.set("n", "dd", function()
+            local idx = vim.fn.line(".")
+            local items = vim.fn.getqflist()
+            table.remove(items, idx)
+            vim.fn.setqflist(items, "r")
+            if #items > 0 then
+              vim.cmd(math.min(idx, #items) .. "cfirst")
+              vim.cmd.copen()
+            end
+          end, { buffer = args.buf })
+        end
+      '';
     }
   ];
-
-  extraPlugins = [
-    pkgs.vimPlugins.plenary-nvim
-    pkgs.vimPlugins.nui-nvim
-  ];
-
-  extraConfigVim = ''
-    function! RemoveQFItem()
-      let curqfidx = line('.') - 1
-      let qfall = getqflist()
-      call remove(qfall, curqfidx)
-      call setqflist(qfall, 'r')
-      execute curqfidx + 1 . "cfirst"
-      :copen
-    endfunction
-
-    autocmd FileType qf map <buffer> dd <cmd>call RemoveQFItem()<cr>
-  '';
 
   plugins = {
     lualine = {
@@ -261,7 +267,7 @@
 
     fzf-lua = {
       enable = true;
-      settings.ui_select = true;
+      settings.ui_select = {};
     };
 
     oil = {
@@ -272,7 +278,7 @@
       };
     };
 
-    vim-surround.enable = true;
+    nvim-surround.enable = true;
     undotree.enable = true;
 
     tmux-navigator = {

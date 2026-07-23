@@ -2,9 +2,9 @@
 {
   imports = [ ./minimal.nix ];
 
+  # used by the custom ltex command handler (plenary.curl)
   extraPlugins = [
-    pkgs.vimPlugins.vim-prettier
-    pkgs.vimPlugins.vim-vsnip
+    pkgs.vimPlugins.plenary-nvim
   ];
 
   files = {
@@ -51,7 +51,7 @@
       callback = lib.nixvim.mkRaw ''
         function (args)
           local max_filesize = 100 * 1024 -- 100 KB
-          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+          local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
           if ok and stats and stats.size > max_filesize then
             vim.opt_local.swapfile = false
             vim.opt_local.foldmethod = "manual"
@@ -67,7 +67,7 @@
         function (args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client.server_capabilities.documentFormattingProvider and client.name ~= "tsserver" and client.name ~= "ts_ls" then
+          if client:supports_method("textDocument/formatting") and client.name ~= "tsserver" and client.name ~= "ts_ls" then
             vim.api.nvim_create_autocmd({ "BufWritePre" }, {
               buffer = args.buf,
               group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
@@ -81,7 +81,7 @@
             })
           end
 
-          if client.server_capabilities.documentHighlightProvider then
+          if client:supports_method("textDocument/documentHighlight") then
             vim.api.nvim_create_autocmd({ "CursorHold" }, {
               buffer = args.buf,
               group = vim.api.nvim_create_augroup("lsp_document_highlight_hold", { clear = false }),
@@ -105,18 +105,18 @@
               buffer = args.buf,
               group = vim.api.nvim_create_augroup("lsp_go_organize_imports", { clear = false }),
               callback = function()
-                local params = vim.lsp.util.make_formatting_params()
+                local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
                 params.context = {
                   only = { "source.organizeImports" }
                 }
 
-                local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout)
+                local result = vim.lsp.buf_request_sync(args.buf, "textDocument/codeAction", params, 1000)
                 for _, res in pairs(result or {}) do
                   for _, r in pairs(res.result or {}) do
                     if r.edit then
-                      vim.lsp.util.apply_workspace_edit(r.edit, "utf-8")
+                      vim.lsp.util.apply_workspace_edit(r.edit, client.offset_encoding)
                     else
-                      vim.lsp.buf.execute_command(r.command)
+                      client:exec_cmd(r.command, { bufnr = args.buf })
                     end
                   end
                 end
@@ -132,8 +132,8 @@
         function (args)
           local client = vim.lsp.get_client_by_id(args.data.client_id)
 
-          if client.server_capabilities.documentFormattingProvider then
-            vim.api.nvim_clear_autocmds({ 
+          if client:supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({
               buffer = args.buf,
               group = vim.api.nvim_create_augroup("lsp_autoformat", { clear = false }),
             })
@@ -146,7 +146,7 @@
             })
           end
 
-          if client.server_capabilities.documentHighlightProvider then
+          if client:supports_method("textDocument/documentHighlight") then
             vim.lsp.buf.clear_references()
 
             vim.api.nvim_clear_autocmds({ 
@@ -193,7 +193,7 @@
           end
         end
 
-        client.request("workspace/executeCommand", { command = "_ltex.checkDocument", arguments = { { uri = args.uri } } })
+        client:request("workspace/executeCommand", { command = "_ltex.checkDocument", arguments = { { uri = args.uri } } })
       end
 
       vim.keymap.set('n', 'K', function()
@@ -206,6 +206,107 @@
     end
     -- }}}
   '';
+
+  lsp = {
+    inlayHints.enable = true;
+
+    keymaps = [
+      {
+        key = "grf";
+        lspBufAction = "format";
+      }
+    ];
+
+    servers = {
+      ltex_plus = {
+        enable = true;
+        package = pkgs.ltex-ls-plus;
+        config.settings.ltex = {
+          additionalRules = {
+            motherTongue = "de-CH";
+            enablePickyRules = true;
+          };
+
+          languageToolHttpServerUri = "https://api.languagetoolplus.com/";
+        };
+      };
+
+      nixd = {
+        enable = true;
+        config.settings.nixd.formatting.command = [ (lib.getExe pkgs.nixfmt) ];
+      };
+
+      gopls = {
+        enable = true;
+        config = {
+          settings.gopls.gofumpt = true;
+          on_init = lib.nixvim.mkRaw ''
+            function(client)
+              local root_dir = client.root_dir or (client.config and client.config.root_dir)
+
+              if root_dir and vim.uv.fs_stat(root_dir .. "/go.mod") then
+                local res = vim.system({ "go", "list", "-m" }, {
+                  cwd = root_dir,
+                  text = true
+                }):wait()
+
+                if res.code == 0 then
+                  client.settings = vim.tbl_deep_extend("force", client.settings or {}, {
+                    gopls = { ["local"] = vim.trim(res.stdout) }
+                  })
+                  client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+                end
+              end
+            end
+          '';
+        };
+      };
+
+      ts_ls.enable = true;
+      biome.enable = true;
+      tailwindcss = {
+        enable = true;
+        config.settings.tailwindCSS.experimental.classRegex = [
+          [
+            "cva\\(([^)]*)\\)"
+            "[\"'`]([^\"'`]*).*?[\"'`]"
+          ]
+          [
+            "cn\\(([^)]*)\\)"
+            "(?:'|\"|`)([^']*)(?:'|\"|`)"
+          ]
+        ];
+      };
+
+      clangd = {
+        enable = true;
+        # everything except `proto`
+        config.filetypes = [
+          "c"
+          "cpp"
+          "objc"
+          "objcpp"
+          "cuda"
+        ];
+      };
+
+      rust_analyzer.enable = true;
+
+      sourcekit = {
+        enable = true;
+        package = if pkgs.stdenv.hostPlatform.isDarwin then null else pkgs.sourcekit-lsp;
+        config = {
+          capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true;
+        }
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+          cmd = [
+            "xcrun"
+            "sourcekit-lsp"
+          ];
+        };
+      };
+    };
+  };
 
   plugins = {
     treesitter = {
@@ -226,103 +327,8 @@
       settings.enable = false;
     };
 
-    lsp = {
-      enable = true;
-      inlayHints = true;
-
-      keymaps.lspBuf = {
-        "grf" = "format";
-      };
-
-      servers = {
-        ltex = {
-          enable = true;
-          settings = {
-            additionalRules = {
-              motherTongue = "de-CH";
-              enablePickyRules = true;
-            };
-
-            languageToolHttpServerUri = "https://api.languagetoolplus.com/";
-          };
-        };
-
-        nixd = {
-          enable = true;
-          settings.formatting.command = [ (lib.getExe pkgs.nixfmt) ];
-        };
-
-        gopls = {
-          enable = true;
-          settings.gopls.gofumpt = true;
-          extraOptions.on_init = lib.nixvim.mkRaw ''
-            function(client)
-              local root_dir = client.root_dir or (client.config and client.config.root_dir)
-
-              if root_dir and vim.uv.fs_stat(root_dir .. "/go.mod") then
-                local res = vim.system({ "go", "list", "-m" }, {
-                  cwd = root_dir,
-                  text = true
-                }):wait()
-
-                if res.code == 0 then
-                  client.settings = vim.tbl_deep_extend("force", client.settings or {}, {
-                    gopls = { ["local"] = vim.trim(res.stdout) }
-                  })
-                  client:notify("workspace/didChangeConfiguration", { settings = client.settings })
-                end
-              end
-            end
-          '';
-        };
-
-        ts_ls.enable = true;
-        biome.enable = true;
-        tailwindcss = {
-          enable = true;
-          settings.tailwindCSS.experimental.classRegex = [
-            [
-              "cva\\(([^)]*)\\)"
-              "[\"'`]([^\"'`]*).*?[\"'`]"
-            ]
-            [
-              "cn\\(([^)]*)\\)"
-              "(?:'|\"|`)([^']*)(?:'|\"|`)"
-            ]
-          ];
-        };
-
-        clangd = {
-          enable = true;
-          # everything except `proto`
-          filetypes = [
-            "c"
-            "cpp"
-            "objc"
-            "objcpp"
-            "cuda"
-          ];
-        };
-
-        rust_analyzer = {
-          enable = true;
-          installCargo = false;
-          installRustc = false;
-        };
-
-        sourcekit = {
-          enable = true;
-          package = if pkgs.stdenv.hostPlatform.isDarwin then null else pkgs.sourcekit-lsp;
-          cmd = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
-            "xcrun"
-            "sourcekit-lsp"
-          ];
-          extraOptions = {
-            capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true;
-          };
-        };
-      };
-    };
+    # provides default configs (cmd, filetypes, root markers) for `lsp.servers`
+    lspconfig.enable = true;
 
     gitsigns.enable = true;
     neogit.enable = true;
