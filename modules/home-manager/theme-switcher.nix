@@ -140,8 +140,8 @@ let
           set -g status-style "fg=#4c4f69,bg=#e6e9ef" \; \
           set -g status-left "#[fg=#1e66f5,bold] #S #[default]" \; \
           set -g status-right "#[fg=#6c6f85] %Y-%m-%d #[fg=#1e66f5,bold]%H:%M " \; \
-          set -g window-status-format "#[fg=#6c6f85] #I:#W " \; \
-          set -g window-status-current-format "#[fg=#eff1f5,bg=#1e66f5,bold] #I:#W " \; \
+          set -g window-status-format "#[fg=#6c6f85] #I:#W#{?window_zoomed_flag, 🔍,} " \; \
+          set -g window-status-current-format "#[fg=#eff1f5,bg=#1e66f5,bold] #I:#W#{?window_zoomed_flag, 🔍,} " \; \
           set -g window-status-style "fg=#6c6f85,bg=#e6e9ef" \; \
           set -g window-status-current-style "fg=#eff1f5,bg=#1e66f5,bold" \; \
           set -g pane-border-style "fg=#bcc0cc,bg=default" \; \
@@ -160,8 +160,8 @@ let
           set -g status-style "fg=#cdd6f4,bg=#181825" \; \
           set -g status-left "#[fg=#89b4fa,bold] #S #[default]" \; \
           set -g status-right "#[fg=#9399b2] %Y-%m-%d #[fg=#89b4fa,bold]%H:%M " \; \
-          set -g window-status-format "#[fg=#9399b2] #I:#W " \; \
-          set -g window-status-current-format "#[fg=#1e1e2e,bg=#89b4fa,bold] #I:#W " \; \
+          set -g window-status-format "#[fg=#9399b2] #I:#W#{?window_zoomed_flag, 🔍,} " \; \
+          set -g window-status-current-format "#[fg=#1e1e2e,bg=#89b4fa,bold] #I:#W#{?window_zoomed_flag, 🔍,} " \; \
           set -g window-status-style "fg=#9399b2,bg=#181825" \; \
           set -g window-status-current-style "fg=#1e1e2e,bg=#89b4fa,bold" \; \
           set -g pane-border-style "fg=#45475a,bg=default" \; \
