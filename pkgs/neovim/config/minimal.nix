@@ -179,28 +179,21 @@
     }
   ];
 
-  colorschemes.catppuccin = {
+  colorschemes.nightfox = {
     enable = true;
-    settings = {
-      flavour = "auto";
-      background = {
-        dark = "mocha";
-        light = "latte";
-      };
-
-      transparent_background = lib.nixvim.mkRaw ''vim.env.TERMINAL_BACKGROUND_TRANSPARENT == "1"'';
-
-      integrations = {
-        treesitter = true;
-
-        fidget = true;
-        gitsigns = true;
-      };
-
-      show_end_of_buffer = true;
-      dim_inactive.enabled = true;
+    settings.options = {
+      transparent = lib.nixvim.mkRaw ''vim.env.TERMINAL_BACKGROUND_TRANSPARENT == "1"'';
+      dim_inactive = false;
     };
   };
+
+  # nightfox has no automatic light/dark flavor switching and its compiled
+  # schemes force 'background' themselves, so pick the flavor at startup
+  # based on the background detected above
+  colorscheme = null;
+  extraConfigLua = ''
+    vim.cmd.colorscheme(vim.o.background == "light" and "dayfox" or "nordfox")
+  '';
 
   autoCmd = [
     # highlight text on yank
