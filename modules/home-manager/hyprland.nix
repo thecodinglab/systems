@@ -13,10 +13,33 @@
     let
       mod = "SUPER";
       monitors = {
-        left = "DP-4";
-        center = "DP-5";
-        right = "DP-7";
+        left = "DP-7";
+        center = "DP-4";
+        right = "DP-6";
       };
+
+      # helpers for the lua based hyprland configuration, see
+      # https://wiki.hypr.land/Configuring/Start/
+      lua = lib.generators.mkLuaInline;
+      luaValue = lib.generators.toLua { };
+
+      # dispatcher expression, e.g. `dsp "window.close()"` -> `hl.dsp.window.close()`
+      dsp = expr: lua "hl.dsp.${expr}";
+      # spawns `cmd` through a shell, with the command quoted as a lua string
+      exec = cmd: lua "hl.dsp.exec_cmd(${luaValue cmd})";
+
+      mkBindWith = opts: keys: dispatcher: {
+        _args = [
+          keys
+          dispatcher
+        ]
+        ++ lib.optional (opts != { }) opts;
+      };
+      mkBind = mkBindWith { };
+      # keeps working while the session is locked (former `bindl`)
+      mkBindLocked = mkBindWith { locked = true; };
+      # mouse bind (former `bindm`)
+      mkBindMouse = mkBindWith { mouse = true; };
     in
     lib.mkIf config.custom.hyprland.enable {
       xdg.portal = {
@@ -35,6 +58,7 @@
 
       wayland.windowManager.hyprland = {
         enable = true;
+        configType = "lua";
 
         settings = {
           #########################
@@ -42,235 +66,317 @@
           #########################
 
           monitor = [
-            # left
-            "${monitors.left}, preferred, 0x0, 1"
-            # center
-            "${monitors.center}, preferred, 2560x0, 1"
-            # right
-            "${monitors.right}, preferred, 6000x0, 1"
+            {
+              output = monitors.left;
+              mode = "preferred";
+              position = "0x0";
+              scale = "1";
+            }
+            {
+              output = monitors.center;
+              mode = "preferred";
+              position = "2560x0";
+              scale = "1";
+            }
+            {
+              output = monitors.right;
+              mode = "preferred";
+              position = "6000x0";
+              scale = "1";
+            }
           ];
 
-          workspace = [
+          workspace_rule = [
             # left
-            "1, monitor:${monitors.left}"
-            "2, monitor:${monitors.left}"
+            {
+              workspace = "1";
+              monitor = monitors.left;
+            }
+            {
+              workspace = "2";
+              monitor = monitors.left;
+            }
 
             # center
-            "3, monitor:${monitors.center}, default:true"
-            "6, monitor:${monitors.center}"
-            "7, monitor:${monitors.center}"
-            "8, monitor:${monitors.center}"
-            "9, monitor:${monitors.center}"
-            "10, monitor:${monitors.center}"
+            {
+              workspace = "3";
+              monitor = monitors.center;
+              default = true;
+            }
+            {
+              workspace = "6";
+              monitor = monitors.center;
+            }
+            {
+              workspace = "7";
+              monitor = monitors.center;
+            }
+            {
+              workspace = "8";
+              monitor = monitors.center;
+            }
+            {
+              workspace = "9";
+              monitor = monitors.center;
+            }
+            {
+              workspace = "10";
+              monitor = monitors.center;
+            }
 
             # right
-            "4, monitor:${monitors.right}"
-            "5, monitor:${monitors.right}"
+            {
+              workspace = "4";
+              monitor = monitors.right;
+            }
+            {
+              workspace = "5";
+              monitor = monitors.right;
+            }
           ];
 
-          input = {
-            kb_layout = "us";
-            kb_variant = "altgr-intl";
-            kb_options = "compose:rwin,caps:escape";
+          config = {
+            input = {
+              kb_layout = "us";
+              kb_variant = "altgr-intl";
+              kb_options = "compose:rwin,caps:escape";
 
-            numlock_by_default = true;
+              numlock_by_default = true;
 
-            follow_mouse = 1;
+              follow_mouse = 1;
 
-            touchpad = {
-              natural_scroll = true;
-              clickfinger_behavior = true;
-              scroll_factor = 0.2;
+              touchpad = {
+                natural_scroll = true;
+                clickfinger_behavior = true;
+                scroll_factor = 0.2;
+              };
+
+              sensitivity = 0.2;
             };
 
-            sensitivity = 0.2;
-          };
-
-          cursor = {
-            no_hardware_cursors = 0;
-            default_monitor = monitors.center;
-            hide_on_key_press = true;
-          };
-
-          #########################
-          # General               #
-          #########################
-
-          general = {
-            gaps_in = 8;
-            gaps_out = "4,8,8,8";
-
-            border_size = 2;
-
-            layout = "master";
-          };
-
-          decoration = {
-            rounding = 10;
-
-            blur = {
-              enabled = true;
-              size = 8;
-              passes = 3;
-              new_optimizations = true;
+            cursor = {
+              no_hardware_cursors = 0;
+              default_monitor = monitors.center;
+              hide_on_key_press = true;
             };
-          };
 
-          animations.enabled = true;
+            #########################
+            # General               #
+            #########################
 
-          master.mfact = 0.7;
+            general = {
+              gaps_in = 8;
+              gaps_out = {
+                top = 4;
+                right = 8;
+                bottom = 8;
+                left = 8;
+              };
 
-          misc = {
-            disable_hyprland_logo = true;
-            disable_splash_rendering = true;
-          };
+              border_size = 2;
 
-          ecosystem = {
-            no_update_news = true;
-            no_donation_nag = true;
+              layout = "master";
+            };
+
+            decoration = {
+              rounding = 10;
+
+              blur = {
+                enabled = true;
+                size = 8;
+                passes = 3;
+                new_optimizations = true;
+              };
+            };
+
+            animations.enabled = true;
+
+            master.mfact = 0.7;
+
+            misc = {
+              disable_hyprland_logo = true;
+              disable_splash_rendering = true;
+            };
+
+            ecosystem = {
+              no_update_news = true;
+              no_donation_nag = true;
+            };
           };
 
           #########################
           # Startup Programs      #
           #########################
 
-          exec-once = [ "${lib.getExe pkgs._1password-gui} --silent" ];
+          on = [
+            {
+              _args = [
+                "hyprland.start"
+                (lua "function() hl.exec_cmd(${luaValue "${lib.getExe pkgs._1password-gui} --silent"}) end")
+              ];
+            }
+          ];
 
           #########################
           # Keyboard Shortcuts    #
           #########################
 
           bind = [
-            "${mod} ALT, Q, exit,"
-            "${mod} SHIFT, Q, killactive,"
-            "${mod} CONTROL, Q , exec, ${pkgs.systemd}/bin/loginctl lock-session"
+            (mkBind "${mod} + ALT + Q" (dsp "exit()"))
+            (mkBind "${mod} + SHIFT + Q" (dsp "window.close()"))
+            (mkBind "${mod} + CONTROL + Q" (exec "${pkgs.systemd}/bin/loginctl lock-session"))
 
             # application launcher
-            "${mod}, D, exec, ${lib.getExe pkgs.vicinae} toggle"
+            (mkBind "${mod} + D" (exec "${lib.getExe pkgs.vicinae} toggle"))
 
             # terminal
-            "${mod}, RETURN, exec, ${lib.getExe pkgs.ghostty}"
-            "${mod} SHIFT, RETURN, exec, ${lib.getExe pkgs.ghostty} --class=com.mitchellh.ghostty-floating"
+            (mkBind "${mod} + RETURN" (exec (lib.getExe pkgs.ghostty)))
+            (mkBind "${mod} + SHIFT + RETURN" (
+              exec "${lib.getExe pkgs.ghostty} --class=com.mitchellh.ghostty-floating"
+            ))
 
             # workspace switching
-            "${mod}, 1, workspace, 1"
-            "${mod}, 2, workspace, 2"
-            "${mod}, 3, workspace, 3"
-            "${mod}, 4, workspace, 4"
-            "${mod}, 5, workspace, 5"
-            "${mod}, 6, workspace, 6"
-            "${mod}, 7, workspace, 7"
-            "${mod}, 8, workspace, 8"
-            "${mod}, 9, workspace, 9"
-            "${mod}, 0, workspace, 10"
+            (mkBind "${mod} + 1" (dsp "focus({ workspace = 1 })"))
+            (mkBind "${mod} + 2" (dsp "focus({ workspace = 2 })"))
+            (mkBind "${mod} + 3" (dsp "focus({ workspace = 3 })"))
+            (mkBind "${mod} + 4" (dsp "focus({ workspace = 4 })"))
+            (mkBind "${mod} + 5" (dsp "focus({ workspace = 5 })"))
+            (mkBind "${mod} + 6" (dsp "focus({ workspace = 6 })"))
+            (mkBind "${mod} + 7" (dsp "focus({ workspace = 7 })"))
+            (mkBind "${mod} + 8" (dsp "focus({ workspace = 8 })"))
+            (mkBind "${mod} + 9" (dsp "focus({ workspace = 9 })"))
+            (mkBind "${mod} + 0" (dsp "focus({ workspace = 10 })"))
 
             # move window to workspace
-            "${mod} SHIFT, 1, movetoworkspace, 1"
-            "${mod} SHIFT, 2, movetoworkspace, 2"
-            "${mod} SHIFT, 3, movetoworkspace, 3"
-            "${mod} SHIFT, 4, movetoworkspace, 4"
-            "${mod} SHIFT, 5, movetoworkspace, 5"
-            "${mod} SHIFT, 6, movetoworkspace, 6"
-            "${mod} SHIFT, 7, movetoworkspace, 7"
-            "${mod} SHIFT, 8, movetoworkspace, 8"
-            "${mod} SHIFT, 9, movetoworkspace, 9"
-            "${mod} SHIFT, 0, movetoworkspace, 10"
+            (mkBind "${mod} + SHIFT + 1" (dsp "window.move({ workspace = 1 })"))
+            (mkBind "${mod} + SHIFT + 2" (dsp "window.move({ workspace = 2 })"))
+            (mkBind "${mod} + SHIFT + 3" (dsp "window.move({ workspace = 3 })"))
+            (mkBind "${mod} + SHIFT + 4" (dsp "window.move({ workspace = 4 })"))
+            (mkBind "${mod} + SHIFT + 5" (dsp "window.move({ workspace = 5 })"))
+            (mkBind "${mod} + SHIFT + 6" (dsp "window.move({ workspace = 6 })"))
+            (mkBind "${mod} + SHIFT + 7" (dsp "window.move({ workspace = 7 })"))
+            (mkBind "${mod} + SHIFT + 8" (dsp "window.move({ workspace = 8 })"))
+            (mkBind "${mod} + SHIFT + 9" (dsp "window.move({ workspace = 9 })"))
+            (mkBind "${mod} + SHIFT + 0" (dsp "window.move({ workspace = 10 })"))
 
             # move window
-            "${mod} SHIFT, H, movewindow, l"
-            "${mod} SHIFT, L, movewindow, r"
-            "${mod} SHIFT, K, movewindow, u"
-            "${mod} SHIFT, J, movewindow, d"
+            (mkBind "${mod} + SHIFT + H" (dsp ''window.move({ direction = "left" })''))
+            (mkBind "${mod} + SHIFT + L" (dsp ''window.move({ direction = "right" })''))
+            (mkBind "${mod} + SHIFT + K" (dsp ''window.move({ direction = "up" })''))
+            (mkBind "${mod} + SHIFT + J" (dsp ''window.move({ direction = "down" })''))
 
             # focus window
-            "${mod}, H, movefocus, l"
-            "${mod}, L, movefocus, r"
-            "${mod}, K, movefocus, u"
-            "${mod}, J, movefocus, d"
+            (mkBind "${mod} + H" (dsp ''focus({ direction = "left" })''))
+            (mkBind "${mod} + L" (dsp ''focus({ direction = "right" })''))
+            (mkBind "${mod} + K" (dsp ''focus({ direction = "up" })''))
+            (mkBind "${mod} + J" (dsp ''focus({ direction = "down" })''))
 
             # toggle fullscreen, floating
-            "${mod}, M, fullscreen, 1"
+            (mkBind "${mod} + M" (dsp ''window.fullscreen({ mode = "maximized" })''))
 
-            "${mod}, SPACE, cyclenext, floating"
-            "${mod} SHIFT, SPACE, togglefloating,"
+            (mkBind "${mod} + SPACE" (dsp "window.cycle_next({ floating = true })"))
+            (mkBind "${mod} + SHIFT + SPACE" (dsp "window.float()"))
 
             # center window
-            "${mod} SHIFT, C, centerwindow,"
+            (mkBind "${mod} + SHIFT + C" (dsp "window.center()"))
 
             # scratchpad
-            "${mod} SHIFT, MINUS, movetoworkspace, special"
-            "${mod}, MINUS, togglespecialworkspace,"
+            (mkBind "${mod} + SHIFT + MINUS" (dsp ''window.move({ workspace = "special" })''))
+            (mkBind "${mod} + MINUS" (dsp "workspace.toggle_special()"))
 
             # screenshot
-            "${mod} SHIFT, F4, exec, ${lib.getExe pkgs.grim} -g \"\$(${lib.getExe pkgs.slurp})\" -t png - | ${lib.getExe' pkgs.wl-clipboard "wl-copy"} -t image/png"
-            "${mod} SHIFT, F3, exec, ${pkgs.writers.writeBash "screenshot-window" ''
-              set -e
+            (mkBind "${mod} + SHIFT + F4" (
+              exec ''${lib.getExe pkgs.grim} -g "$(${lib.getExe pkgs.slurp})" -t png - | ${lib.getExe' pkgs.wl-clipboard "wl-copy"} -t image/png''
+            ))
+            (mkBind "${mod} + SHIFT + F3" (
+              exec "${pkgs.writers.writeBash "screenshot-window" ''
+                set -e
 
-              hyprctl=${lib.getExe' pkgs.hyprland "hyprctl"}
-              jq=${lib.getExe pkgs.jq}
-              slurp=${lib.getExe pkgs.slurp}
-              grim=${lib.getExe pkgs.grim}
-              copy=${lib.getExe' pkgs.wl-clipboard "wl-copy"}
+                hyprctl=${lib.getExe' pkgs.hyprland "hyprctl"}
+                jq=${lib.getExe pkgs.jq}
+                slurp=${lib.getExe pkgs.slurp}
+                grim=${lib.getExe pkgs.grim}
+                copy=${lib.getExe' pkgs.wl-clipboard "wl-copy"}
 
-              # select area
-              area=$($hyprctl clients -j | $jq --argjson active $($hyprctl monitors -j | $jq -c '[.[].activeWorkspace.id]') '.[] | select((.hidden | not) and (.workspace.id as $id | $active | contains([$id]))) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' -r | $slurp)
-              # make screenshot
-              $grim -g "$area" -t png - | $copy -t image/png
-            ''}"
-          ];
+                # select area
+                area=$($hyprctl clients -j | $jq --argjson active $($hyprctl monitors -j | $jq -c '[.[].activeWorkspace.id]') '.[] | select((.hidden | not) and (.workspace.id as $id | $active | contains([$id]))) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' -r | $slurp)
+                # make screenshot
+                $grim -g "$area" -t png - | $copy -t image/png
+              ''}"
+            ))
+          ]
+          ++
+            # locked binds, these also fire while the session is locked
+            (
+              let
+                focusSpotify = pkgs.writers.writeBash "focus-spotify" ''
+                  ${lib.getExe pkgs.playerctl} -l | grep -v spotify | xargs -I {} ${lib.getExe pkgs.playerctl} -p {} pause
+                  ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
+                '';
+                unfocusSpotify = pkgs.writers.writeBash "unfocus-spotify" ''
+                  ${lib.getExe pkgs.playerctl} -p spotify volume 0.3
+                '';
+              in
+              [
+                # volume control
+                (mkBindLocked "XF86AudioRaiseVolume" (
+                  exec "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+                ))
+                (mkBindLocked "XF86AudioLowerVolume" (
+                  exec "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+                ))
+                (mkBindLocked "XF86AudioMute" (
+                  exec "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+                ))
 
-          bindl =
-            let
-              focusSpotify = pkgs.writers.writeBash "focus-spotify" ''
-                ${lib.getExe pkgs.playerctl} -l | grep -v spotify | xargs -I {} ${lib.getExe pkgs.playerctl} -p {} pause
-                ${lib.getExe pkgs.playerctl} -p spotify volume 0.6
-              '';
-              unfocusSpotify = pkgs.writers.writeBash "unfocus-spotify" ''
-                ${lib.getExe pkgs.playerctl} -p spotify volume 0.3
-              '';
-            in
-            [
-              # volume control
-              ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-              ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-              ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+                # spotify controls
+                (mkBindLocked "XF86AudioPlay" (exec "${lib.getExe pkgs.playerctl} -p spotify play-pause"))
+                (mkBindLocked "XF86AudioPause" (exec "${lib.getExe pkgs.playerctl} -a pause"))
+                (mkBindLocked "XF86AudioStop" (exec "${lib.getExe pkgs.playerctl} -a pause"))
+                (mkBindLocked "XF86AudioNext" (exec "${lib.getExe pkgs.playerctl} -p spotify next"))
+                (mkBindLocked "XF86AudioPrev" (exec "${lib.getExe pkgs.playerctl} -p spotify previous"))
 
-              # spotify controls
-              ", XF86AudioPlay,  exec, ${lib.getExe pkgs.playerctl} -p spotify play-pause"
-              ", XF86AudioPause, exec, ${lib.getExe pkgs.playerctl} -a pause"
-              ", XF86AudioStop,  exec, ${lib.getExe pkgs.playerctl} -a pause"
-              ", XF86AudioNext,  exec, ${lib.getExe pkgs.playerctl} -p spotify next"
-              ", XF86AudioPrev,  exec, ${lib.getExe pkgs.playerctl} -p spotify previous"
-
-              ", XF86Launch6,           exec, ${focusSpotify}"
-              ", XF86MonBrightnessUp,   exec, ${focusSpotify}"
-              ", XF86Launch5,           exec, ${unfocusSpotify}"
-              ", XF86MonBrightnessDown, exec, ${unfocusSpotify}"
-
-            ];
-
-          bindm = [
-            "${mod}, mouse:272, movewindow"
-            "${mod} SHIFT, mouse:272, resizewindow"
+                (mkBindLocked "XF86Launch6" (exec "${focusSpotify}"))
+                (mkBindLocked "XF86MonBrightnessUp" (exec "${focusSpotify}"))
+                (mkBindLocked "XF86Launch5" (exec "${unfocusSpotify}"))
+                (mkBindLocked "XF86MonBrightnessDown" (exec "${unfocusSpotify}"))
+              ]
+            )
+          ++ [
+            # mouse binds
+            (mkBindMouse "${mod} + mouse:272" (dsp "window.drag()"))
+            (mkBindMouse "${mod} + SHIFT + mouse:272" (dsp "window.resize()"))
           ];
 
           #########################
           # Window Rules          #
           #########################
 
-          windowrule = [
-            # 1Password
-            "match:class 1Password, float on"
-            "match:class 1Password, center on"
-            "match:class 1Password, size 1024 720"
+          window_rule = [
+            {
+              name = "1password";
+              match.class = "1Password";
 
-            # Spotify
-            "match:class Spotify, workspace special"
+              float = true;
+              center = true;
+              size = "1024 720";
+            }
 
-            # Ghostty
-            "match:class com.mitchellh.ghostty-floating, float on"
-            "match:class com.mitchellh.ghostty-floating, center on"
-            "match:class com.mitchellh.ghostty-floating, size 1024 720"
+            {
+              name = "spotify";
+              match.class = "Spotify";
+
+              workspace = "special";
+            }
+
+            {
+              name = "ghostty-floating";
+              match.class = "com.mitchellh.ghostty-floating";
+
+              float = true;
+              center = true;
+              size = "1024 720";
+            }
           ];
         };
       };
@@ -287,7 +393,7 @@
             general = {
               lock_cmd = "pidof hyprlock || ${lib.getExe pkgs.hyprlock}";
               before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
-              after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+              after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
             };
 
             listener = [
@@ -297,8 +403,8 @@
               }
               {
                 timeout = 330; # 5.5min
-                on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
-                on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+                on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"off\")'";
+                on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
               }
             ];
           };
