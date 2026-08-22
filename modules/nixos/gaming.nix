@@ -46,7 +46,10 @@ in
           options nvidia NVreg_EnableGpuFirmware=0
         '';
 
-        hardware.nvidia.open = false;
+        hardware.nvidia = {
+          open = false;
+          package = config.boot.kernelPackages.nvidiaPackages.latest;
+        };
       })
     ]
   );

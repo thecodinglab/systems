@@ -31,7 +31,7 @@
 
         nvidiaSettings = true;
 
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
+        package = lib.mkDefault config.boot.kernelPackages.nvidiaPackages.stable;
       };
     };
   };
