@@ -116,6 +116,7 @@
                 # AI
                 "gemini-cli"
                 "claude-code"
+                "claude-desktop"
 
                 # Gaming
                 "steam"

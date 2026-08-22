@@ -44,6 +44,8 @@ in
       "x-scheme-handler/https" = [ "helium.desktop" ];
       "x-scheme-handler/chrome" = [ "helium.desktop" ];
 
+      "x-scheme-handler/claude" = [ "com.anthropic.Claude.desktop" ];
+
       "text/html" = [ "helium.desktop" ];
       "application/x-extension-htm" = [ "helium.desktop" ];
       "application/x-extension-html" = [ "helium.desktop" ];
@@ -231,6 +233,7 @@ in
 
     # Other
     pkgs.obsidian # on mac it is installed through `environment.systemPackage`
+    pkgs.claude-desktop # on mac it is installed through `homebrew.casks`
     pkgs.helium # on mac it is installed through `homebrew.casks`
     pkgs.slack # on mac it is installed through `homebrew.casks`
     pkgs.fragments

@@ -5,3 +5,8 @@ fetch.url = "https://github.com/imputnet/helium-linux/releases/download/$ver/hel
 [zen-browser]
 src.github = "zen-browser/desktop"
 fetch.tarball = "https://github.com/zen-browser/desktop/releases/download/$ver/zen.linux-x86_64.tar.xz"
+
+[claude-desktop]
+src.webpage = "https://downloads.claude.ai/claude-desktop/apt/stable/dists/stable/main/binary-amd64/Packages"
+src.regex = "claude-desktop_([0-9.]+)_amd64\\.deb"
+fetch.url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_$ver_amd64.deb"
