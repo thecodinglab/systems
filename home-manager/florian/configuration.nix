@@ -121,7 +121,7 @@ in
       plugins.lsp.servers.texlab.enable = true;
       plugins.vimtex = {
         enable = true;
-        texlivePackage = pkgs.texlive.combined.scheme-full;
+        texlivePackage = pkgs.texliveFull;
         settings.view_method = if pkgs.stdenv.isDarwin then "sioyek" else "zathura";
       };
 
@@ -138,8 +138,6 @@ in
               path = "~/vaults/singularity";
             }
           ];
-
-          completion.blink = true;
 
           notes_subdir = "02 - Fleeting/";
 
@@ -172,7 +170,7 @@ in
     })
 
     # AI
-    pkgs.gemini-cli
+    pkgs.antigravity-cli
     pkgs.claude-code
     pkgs.codex
     pkgs.pi-coding-agent
@@ -216,7 +214,7 @@ in
     pkgs.bun
 
     # Writing
-    pkgs.texlive.combined.scheme-full
+    pkgs.texliveFull
     pkgs.typst
   ]
   ++ lib.optionals isLinux [

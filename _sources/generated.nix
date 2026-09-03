@@ -8,26 +8,26 @@
 {
   claude-desktop = {
     pname = "claude-desktop";
-    version = "1.34493.1";
+    version = "1.40609.1";
     src = fetchurl {
-      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.34493.1_amd64.deb";
-      sha256 = "sha256-GYKXeWM6J3/NcqZYNCbGik7P96pDomcY1mRcLpVHR8o=";
+      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.40609.1_amd64.deb";
+      sha256 = "sha256-gBguhRHGu+5t4mx+4iX70qmroidO8UBaHYnNj+ejgNw=";
     };
   };
   helium = {
     pname = "helium";
-    version = "0.12.5.1";
+    version = "0.16.3.1";
     src = fetchurl {
-      url = "https://github.com/imputnet/helium-linux/releases/download/0.12.5.1/helium-0.12.5.1-x86_64.AppImage";
-      sha256 = "sha256-uUZauNralX6katmnO9VDLEs+d+HIhkjkeV36Dw2eUmM=";
+      url = "https://github.com/imputnet/helium-linux/releases/download/0.16.3.1/helium-0.16.3.1-x86_64.AppImage";
+      sha256 = "sha256-k3CjrF45s7SizRof/X9eOnPKwkOB9c1AvBSmjj7ROIM=";
     };
   };
   zen-browser = {
     pname = "zen-browser";
-    version = "1.20.2b";
+    version = "1.21.16b";
     src = fetchTarball {
-      url = "https://github.com/zen-browser/desktop/releases/download/1.20.2b/zen.linux-x86_64.tar.xz";
-      sha256 = "sha256-oAlfYyICIeFKMsuTwQEWW2xmC63B1E43Ub/I8GSv5AQ=";
+      url = "https://github.com/zen-browser/desktop/releases/download/1.21.16b/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-wb3/Dow/IO9679NyG8dN+Qj+oExlY1Lu9iUzWocRkjk=";
     };
   };
 }

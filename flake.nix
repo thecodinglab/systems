@@ -114,7 +114,7 @@
                 "postman"
 
                 # AI
-                "gemini-cli"
+                "antigravity-cli"
                 "claude-code"
                 "claude-desktop"
 

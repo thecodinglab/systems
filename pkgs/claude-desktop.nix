@@ -31,7 +31,12 @@
   pipewire,
   systemd,
   xdg-utils,
-  xorg,
+  libx11,
+  libxcomposite,
+  libxdamage,
+  libxext,
+  libxfixes,
+  libxrandr,
   deps,
 }:
 stdenv.mkDerivation {
@@ -64,12 +69,12 @@ stdenv.mkDerivation {
     nss
     pango
     systemd
-    xorg.libX11
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXext
-    xorg.libXfixes
-    xorg.libXrandr
+    libx11
+    libxcomposite
+    libxdamage
+    libxext
+    libxfixes
+    libxrandr
   ];
 
   # opened through dlopen at runtime, so autoPatchelf cannot discover them
