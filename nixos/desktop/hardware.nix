@@ -23,13 +23,12 @@
     fsType = "vfat";
   };
 
-  fileSystems."/media/data" = {
-    device = "/dev/disk/by-uuid/d7f2ec8c-6cce-43be-ae74-aff6dc861387";
-    fsType = "btrfs";
-  };
-
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
+
+  hardware = {
+    cpu.amd.updateMicrocode = config.hardware.enableRedistributableFirmware;
+    i2c.enable = true;
+  };
 }

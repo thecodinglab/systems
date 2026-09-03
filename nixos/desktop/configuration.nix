@@ -76,7 +76,6 @@
     avahi.enable = true;
     gnome.gnome-keyring.enable = true;
 
-
     printing = {
       # disabled due to security issue: https://dev.to/snyk/zero-day-rce-vulnerability-found-in-cups-common-unix-printing-system-flj
       enable = false;
@@ -89,18 +88,13 @@
     _1password-gui.enable = true;
 
     virt-manager.enable = true;
-
-    steam = {
-      enable = true;
-      gamescopeSession.enable = true;
-    };
   };
 
   # custom 1password browser integration
   environment.etc."1password/custom_allowed_browsers" = {
     mode = "0755";
     text = ''
-      .zen-wrapped
+      helium
     '';
   };
 
@@ -113,27 +107,13 @@
 
   virtualisation = {
     docker.enable = true;
-
-    libvirtd = {
-      enable = true;
-      qemu = {
-        package = pkgs.qemu_kvm;
-        runAsRoot = true;
-
-        swtpm.enable = true;
-
-        ovmf = {
-          enable = true;
-          packages = [
-            (pkgs.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-          ];
-        };
-      };
-    };
+    vswitch.enable = true;
   };
+
+  # allow running non nix-packaged applications
+  programs.nix-ld.enable = true;
+
+  security.sudo.wheelNeedsPassword = false;
 
   #######################
   # Users               #
