@@ -1,4 +1,6 @@
 {
+  config,
+  lib,
   modulesPath,
   outputs,
   pkgs,
@@ -38,6 +40,23 @@
 
       programs.btop.enable = true;
     };
+
+  # podman decides where to bind-mount the container network namespaces with
+  # unshare.IsRootless(), which also returns true when the process has no full
+  # uid mapping, i.e. always inside an unprivileged incus container. it then
+  # uses $XDG_RUNTIME_DIR (or /run/user/0) instead of /run/netns. /run/user/0
+  # is mounted and unmounted by systemd-logind with every root login (such as
+  # nixos-rebuild --target-host), so the netns paths vanish, netavark cannot
+  # tear down the port forwarding rules of stopped containers, and the stale
+  # DNAT rules shadow the newly created containers. pin the directory to a
+  # location that survives logins.
+  systemd.tmpfiles.rules = [ "d /run/containers 0700 root root -" ];
+  systemd.services = lib.mapAttrs' (
+    name: _:
+    lib.nameValuePair "podman-${name}" {
+      environment.XDG_RUNTIME_DIR = "/run/containers";
+    }
+  ) config.virtualisation.oci-containers.containers;
 
   systemd.timers.podman-auto-update = {
     timerConfig = {
