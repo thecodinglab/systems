@@ -34,11 +34,6 @@ in
           capSysAdmin = true;
           openFirewall = true;
         };
-
-        zramSwap = {
-          enable = true;
-          memoryPercent = 50;
-        };
       }
 
       (lib.mkIf config.custom.nvidia.enable {

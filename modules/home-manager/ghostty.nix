@@ -30,6 +30,18 @@
         keybind = [
           "shift+enter=text:\\x1b\\r"
         ];
+
+        # Skip the "close this surface?" prompt and the resize size overlay.
+        confirm-close-surface = false;
+        resize-overlay = "never";
+
+        # Propagate terminfo and TERM_PROGRAM into SSH sessions.
+        shell-integration-features = "ssh-env";
+      }
+      // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        # Fix general slowness on hyprland
+        # (https://github.com/ghostty-org/ghostty/discussions/3224).
+        async-backend = "epoll";
       };
     };
   };

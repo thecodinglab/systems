@@ -63,6 +63,23 @@
             set-option -g renumber-windows on
             set -g main-pane-height 80%
             set -g main-pane-width 60%
+
+            # let programs inside tmux reach the system clipboard (OSC 52) and
+            # send raw escapes (images, OSC 133) through to the terminal
+            set -g set-clipboard on
+            set -g allow-passthrough on
+            set -as terminal-features ",*:clipboard"
+
+            # forward modified keys (ctrl/shift/alt combos) to TUIs
+            set -g extended-keys on
+            set -g extended-keys-format csi-u
+
+            # keep the terminal title in sync with the current window
+            set -g set-titles on
+            set -g set-titles-string '#h:#W'
+
+            # jump to another session instead of detaching when one is killed
+            set -g detach-on-destroy off
           ''
           # improve vi selection mode
           ''

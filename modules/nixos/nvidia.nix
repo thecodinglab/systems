@@ -12,6 +12,10 @@
   config = lib.mkIf config.custom.nvidia.enable {
     environment.variables = {
       LIBVA_DRIVER_NAME = "nvidia";
+      # nvidia-vaapi-driver: talk to the kernel driver directly instead of
+      # going through EGL, which is faster and works with the proprietary driver.
+      NVD_BACKEND = "direct";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     };
 
     services.xserver.videoDrivers = [ "nvidia" ];

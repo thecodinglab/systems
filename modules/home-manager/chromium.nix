@@ -7,6 +7,12 @@
   config = lib.mkIf config.custom.chromium.enable {
     programs.chromium = {
       enable = true;
+
+      commandLineArgs = [
+        "--ozone-platform=wayland"
+        "--enable-features=TouchpadOverscrollHistoryNavigation"
+      ];
+
       extensions = [
         { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
         { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1password

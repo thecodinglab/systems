@@ -60,7 +60,51 @@
         enable = true;
         configType = "lua";
 
+        # Import the whole environment into systemd/dbus instead of the
+        # default handful of variables, otherwise apps started through the
+        # user manager (portals, launchers) miss PATH/NIX/... and launch slowly
+        # or with the wrong backend.
+        systemd.variables = [ "--all" ];
+
         settings = {
+          #########################
+          # Environment           #
+          #########################
+
+          # Force all apps to use Wayland.
+          env = [
+            {
+              _args = [
+                "GDK_BACKEND"
+                "wayland,x11,*"
+              ];
+            }
+            {
+              _args = [
+                "QT_QPA_PLATFORM"
+                "wayland;xcb"
+              ];
+            }
+            {
+              _args = [
+                "MOZ_ENABLE_WAYLAND"
+                "1"
+              ];
+            }
+            {
+              _args = [
+                "ELECTRON_OZONE_PLATFORM_HINT"
+                "wayland"
+              ];
+            }
+            {
+              _args = [
+                "OZONE_PLATFORM"
+                "wayland"
+              ];
+            }
+          ];
+
           #########################
           # Hardware              #
           #########################
@@ -143,6 +187,9 @@
 
               numlock_by_default = true;
 
+              repeat_rate = 40;
+              repeat_delay = 250;
+
               follow_mouse = 1;
 
               touchpad = {
@@ -189,14 +236,32 @@
               };
             };
 
-            animations.enabled = true;
+            animations.enabled = false;
 
             master.mfact = 0.7;
 
             misc = {
               disable_hyprland_logo = true;
               disable_splash_rendering = true;
+              disable_scale_notification = true;
+
+              # let apps that request focus (e.g. a browser opening a link)
+              # actually get it
+              focus_on_activate = true;
+
+              # give slow apps more time before the "not responding" dialog
+              anr_missed_pings = 3;
+
+              # wake the screens on any input, not just on mouse movement
+              key_press_enables_dpms = true;
+              mouse_move_enables_dpms = true;
+
+              # let a fresh hyprlock re-acquire the session lock after the
+              # previous lock client died instead of leaving a red screen
+              allow_session_lock_restore = true;
             };
+
+            xwayland.force_zero_scaling = true;
 
             ecosystem = {
               no_update_news = true;
@@ -353,6 +418,27 @@
           #########################
 
           window_rule = [
+            # ignore apps asking to maximize themselves; the layout decides
+            {
+              name = "suppress-maximize";
+              match.class = ".*";
+              suppress_event = "maximize";
+            }
+
+            # fix some dragging issues with XWayland
+            {
+              name = "xwayland-drag-fix";
+              match = {
+                class = "^$";
+                title = "^$";
+                xwayland = true;
+                float = true;
+                fullscreen = false;
+                pin = false;
+              };
+              no_focus = true;
+            }
+
             {
               name = "1password";
               match.class = "1Password";
@@ -678,7 +764,7 @@
       };
 
       # hyprlock wallpaper is burred and managed above
-      stylix.targets.hyprlock.useWallpaper = false;
+      stylix.targets.hyprlock.image.enable = false;
 
       home.packages = [
         pkgs.wl-clipboard

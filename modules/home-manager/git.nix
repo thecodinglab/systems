@@ -39,6 +39,20 @@
         worktree.guessRemote = "true";
         pull.rebase = "true";
 
+        diff = {
+          algorithm = "histogram"; # clearer diffs on moved/edited lines
+          colorMoved = "plain"; # highlight moved blocks in diffs
+          mnemonicPrefix = "true"; # i/ w/ c/ prefixes instead of a/ b/
+        };
+        commit.verbose = "true"; # include the diff in the commit message template
+        column.ui = "auto"; # output in columns when possible
+        branch.sort = "-committerdate"; # most recent branches first
+        tag.sort = "-version:refname"; # sort version numbers as you would expect
+        rerere = {
+          enabled = "true"; # record and reuse conflict resolutions
+          autoupdate = "true"; # apply stored conflict resolutions automatically
+        };
+
         gpg = {
           format = "ssh";
           ssh = {
@@ -72,6 +86,18 @@
     programs.gpg = {
       enable = true;
       package = pkgs.gnupg;
+
+      # Several keyservers so key lookups don't hang on a single dead one.
+      dirmngrSettings = {
+        keyserver = [
+          "hkps://keyserver.ubuntu.com"
+          "hkps://pgp.surfnet.nl"
+          "hkps://keys.mailvelope.com"
+          "hkps://keyring.debian.org"
+          "hkps://pgp.mit.edu"
+        ];
+        connect-quick-timeout = "4";
+      };
     };
   };
 }
