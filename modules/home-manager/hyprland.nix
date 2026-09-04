@@ -212,13 +212,8 @@
             #########################
 
             general = {
-              gaps_in = 8;
-              gaps_out = {
-                top = 4;
-                right = 8;
-                bottom = 8;
-                left = 8;
-              };
+              gaps_in = 4;
+              gaps_out = 16;
 
               border_size = 2;
 
@@ -292,7 +287,11 @@
             (mkBind "${mod} + CONTROL + Q" (exec "${pkgs.systemd}/bin/loginctl lock-session"))
 
             # application launcher
-            (mkBind "${mod} + D" (exec "${lib.getExe pkgs.vicinae} toggle"))
+            (mkBind "${mod} + SPACE" (exec "${lib.getExe pkgs.vicinae} toggle"))
+
+            # the notch, see `custom.shell` below; run from the profile so the
+            # ipc call reaches the very instance the user service runs
+            (mkBind "${mod} + D" (exec "${config.home.profileDirectory}/bin/shell ipc call notch toggle"))
 
             # terminal
             (mkBind "${mod} + RETURN" (exec (lib.getExe pkgs.ghostty)))
@@ -339,7 +338,7 @@
             # toggle fullscreen, floating
             (mkBind "${mod} + M" (dsp ''window.fullscreen({ mode = "maximized" })''))
 
-            (mkBind "${mod} + SPACE" (dsp "window.cycle_next({ floating = true })"))
+            # TODO (mkBind "${mod} + SPACE" (dsp "window.cycle_next({ floating = true })"))
             (mkBind "${mod} + SHIFT + SPACE" (dsp "window.float()"))
 
             # center window
@@ -500,209 +499,9 @@
           enable = true;
           settings.splash = false;
         };
-
-        dunst = {
-          enable = true;
-
-          settings = {
-            global = {
-              ### Display ###
-
-              monitor = "0";
-              follow = "mouse";
-
-              ### Geometry ###
-
-              origin = "top-right";
-              offset = "8x0";
-              width = 320;
-
-              padding = "8";
-              horizontal_padding = "10";
-              text_icon_padding = "0";
-              corner_radius = "16";
-              gap_size = "5";
-
-              ### Color ###
-
-              frame_width = "2";
-              separator_height = "1";
-
-              sort = "yes";
-              idle_threshold = "120";
-
-              ### Text ###
-
-              line_height = "0";
-
-              format = "<b>%a</b> %s %p\n%b";
-              markup = "full";
-
-              alignment = "left";
-              vertical_alignment = "center";
-
-              show_age_threshold = "60";
-              ellipsize = "middle";
-
-              ignore_newline = "no";
-
-              stack_duplicates = "true";
-              hide_duplicate_count = "false";
-              show_indicators = "yes";
-
-              ### Icons ###
-
-              icon_position = "left";
-              min_icon_size = "0";
-              max_icon_size = "64";
-              icon_corner_radius = "16";
-
-              ### History ###
-
-              sticky_history = "yes";
-              history_length = "20";
-
-              ### Misc/Advanced ###
-
-              always_run_script = "true";
-              ignore_dbusclose = "false";
-
-              ### Mouse ###
-
-              mouse_left_click = "close_current";
-              mouse_middle_click = "do_action, close_current";
-              mouse_right_click = "close_all";
-            };
-
-            experimental.per_monitor_dpi = "false";
-
-            urgency_low.timeout = "10";
-            urgency_normal.timeout = "10";
-            urgency_critical.timeout = "0";
-          };
-        };
       };
 
       programs = {
-        waybar = {
-          enable = true;
-          systemd.enable = true;
-
-          style = ''
-            * {
-              border: none;
-              border-radius: 8px;
-            }
-
-            window#waybar {
-              background: transparent;
-            }
-
-            .modules-left, .modules-center, .modules-right {
-              margin: 8px;
-
-              background: @base00;
-              color: @base05;
-            }
-
-            .modules-center, .modules-right {
-              padding: 0 8px;
-            }
-
-            .modules-left #workspaces button {
-              padding: 1px 8px;
-              background: transparent;
-              border-bottom: none;
-            }
-
-            .modules-left #workspaces button.focused,
-            .modules-left #workspaces button.active {
-              background: shade(@base0D, 0.5);
-              border-bottom: none;
-            }
-
-            #workspaces button.urgent {
-              background: shade(@base08, 0.5);
-              border-bottom: none;
-            }
-
-            #clock, #disk, #pulseaudio, #cpu, #memory, #network {
-              padding: 0 2px;
-            }
-          '';
-
-          settings = {
-            mainBar = {
-              layer = "top";
-              position = "top";
-              spacing = 20;
-
-              modules-left = [ "hyprland/workspaces" ];
-              modules-center = [ "clock" ];
-              modules-right = [
-                "disk#root"
-                "pulseaudio"
-                "cpu"
-                "memory"
-                "network#ethernet"
-              ];
-
-              "hyprland/workspaces" = {
-                sort-by-number = true;
-              };
-
-              "disk#root" = {
-                format = "/  {free}";
-                path = "/";
-              };
-
-              "disk#data" = {
-                format = "/media/data  {free}";
-                path = "/media/data";
-              };
-
-              pulseaudio = {
-                format = "󰕾   {volume}%";
-                format-muted = "󰝟 ";
-              };
-
-              cpu = {
-                format = "   {usage}%";
-              };
-
-              memory = {
-                format = "   {avail} GiB";
-              };
-
-              "network#ethernet" = {
-                interface = "enp13s0";
-                format-ethernet = "󰛳   {ipaddr}";
-                format-linked = "󰅛   (no ip)";
-                format-disconnected = "󰅛 ";
-              };
-
-              "network#wifi" = {
-                interface = "wlp15s0";
-                format-wifi = "{icon}   {ipaddr}";
-                format-linked = "󰤭   (no ip)";
-                format-disconnected = "󰤭 ";
-                format-icons = [
-                  "󰤯"
-                  "󰤟"
-                  "󰤢"
-                  "󰤥"
-                  "󰤨"
-                ];
-              };
-
-              clock = {
-                format = "{:%H:%M  –  %d. %B %Y}";
-                interval = 15;
-              };
-            };
-          };
-        };
-
         hyprlock = {
           enable = true;
           settings = {
@@ -760,6 +559,16 @@
 
             favorites = [ ];
           };
+        };
+      };
+
+      # the bar, a custom quickshell implementation living in https://github.com/thecodinglab/shell
+      custom.shell = {
+        enable = true;
+
+        settings = {
+          diskPath = "/";
+          networkInterface = "enp13s0";
         };
       };
 

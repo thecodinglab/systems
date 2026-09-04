@@ -841,9 +841,30 @@
         "nixpkgs-bleeding": "nixpkgs-bleeding",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixvim": "nixvim",
+        "shell": "shell",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "terranix": "terranix"
+      }
+    },
+    "shell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788509079,
+        "narHash": "sha256-bmKB7y/rbob78r23hQW0jPioRQsCnEoPOKZkEpWtQFE=",
+        "owner": "thecodinglab",
+        "repo": "shell",
+        "rev": "6623782b31834a1740375cea5fea2e8ee3b4889c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thecodinglab",
+        "repo": "shell",
+        "type": "github"
       }
     },
     "sops-nix": {

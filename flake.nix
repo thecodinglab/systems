@@ -53,6 +53,10 @@
       url = "github:thecodinglab/devtools";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    shell = {
+      url = "github:thecodinglab/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     hyprland = {
       url = "github:hyprwm/hyprland";
@@ -165,6 +169,7 @@
       homeManagerModules = (import ./modules/home-manager) // {
         sops = sops-nix.homeManagerModules.sops;
         stylix = stylix.homeModules.stylix;
+        shell = inputs.shell.homeModules.default;
       };
 
       nixosConfigurations = {
