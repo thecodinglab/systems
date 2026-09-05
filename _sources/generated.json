@@ -1,4 +1,34 @@
 {
+    "claude-code-aarch64-darwin": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "claude-code-aarch64-darwin",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-x5YKCNS2poNhij5zm4M4v/qYQp+ngGyzrjFlIAPkh9A=",
+            "type": "url",
+            "url": "https://downloads.claude.ai/claude-code-releases/2.1.261/darwin-arm64/claude.zst"
+        },
+        "version": "2.1.261"
+    },
+    "claude-code-x86_64-linux": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "claude-code-x86_64-linux",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-6LGHUkOieraf/0wRztNxSxTsESSwBRKDOr0lAwLDoQo=",
+            "type": "url",
+            "url": "https://downloads.claude.ai/claude-code-releases/2.1.261/linux-x64/claude.zst"
+        },
+        "version": "2.1.261"
+    },
     "claude-desktop": {
         "cargoLock": null,
         "date": null,
@@ -8,11 +38,41 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-gBguhRHGu+5t4mx+4iX70qmroidO8UBaHYnNj+ejgNw=",
+            "sha256": "sha256-mL9U6F5JFgaMQoFFmw8EMdj/aANHc/PumDEdcgZWarE=",
             "type": "url",
-            "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.40609.1_amd64.deb"
+            "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.46388.2_amd64.deb"
         },
-        "version": "1.40609.1"
+        "version": "1.46388.2"
+    },
+    "codex-aarch64-darwin": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "codex-aarch64-darwin",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-NUONofv3ptt92zvOyERI+mAVuhiEYUcql9nR2n2cQ1M=",
+            "type": "url",
+            "url": "https://github.com/openai/codex/releases/download/rust-v0.153.4/codex-package-aarch64-apple-darwin.tar.gz"
+        },
+        "version": "0.153.4"
+    },
+    "codex-x86_64-linux": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "codex-x86_64-linux",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-qCIYfhokIMYcWSZyG/vYeHAe2VVHybsNTeRJiha6GCE=",
+            "type": "url",
+            "url": "https://github.com/openai/codex/releases/download/rust-v0.153.4/codex-package-x86_64-unknown-linux-musl.tar.gz"
+        },
+        "version": "0.153.4"
     },
     "helium": {
         "cargoLock": null,
@@ -23,11 +83,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-k3CjrF45s7SizRof/X9eOnPKwkOB9c1AvBSmjj7ROIM=",
+            "sha256": "sha256-N6+wwg46ufsbCqEJv/WpTWDCnI3tnFt58cG6TsGxXew=",
             "type": "url",
-            "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.3.1/helium-0.16.3.1-x86_64.AppImage"
+            "url": "https://github.com/imputnet/helium-linux/releases/download/0.16.5.1/helium-0.16.5.1-x86_64.AppImage"
         },
-        "version": "0.16.3.1"
+        "version": "0.16.5.1"
     },
     "zen-browser": {
         "cargoLock": null,

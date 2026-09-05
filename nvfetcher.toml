@@ -10,3 +10,26 @@ fetch.tarball = "https://github.com/zen-browser/desktop/releases/download/$ver/z
 src.webpage = "https://downloads.claude.ai/claude-desktop/apt/stable/dists/stable/main/binary-amd64/Packages"
 src.regex = "claude-desktop_([0-9.]+)_amd64\\.deb"
 fetch.url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_$ver_amd64.deb"
+
+# claude-code and codex ship one binary per platform, so each supported system
+# gets its own entry; the package picks `deps."<name>-${system}"`.
+
+[claude-code-x86_64-linux]
+src.webpage = "https://downloads.claude.ai/claude-code-releases/latest"
+src.regex = "([0-9]+\\.[0-9]+\\.[0-9]+)"
+fetch.url = "https://downloads.claude.ai/claude-code-releases/$ver/linux-x64/claude.zst"
+
+[claude-code-aarch64-darwin]
+src.webpage = "https://downloads.claude.ai/claude-code-releases/latest"
+src.regex = "([0-9]+\\.[0-9]+\\.[0-9]+)"
+fetch.url = "https://downloads.claude.ai/claude-code-releases/$ver/darwin-arm64/claude.zst"
+
+[codex-x86_64-linux]
+src.github = "openai/codex"
+src.prefix = "rust-v"
+fetch.url = "https://github.com/openai/codex/releases/download/rust-v$ver/codex-package-x86_64-unknown-linux-musl.tar.gz"
+
+[codex-aarch64-darwin]
+src.github = "openai/codex"
+src.prefix = "rust-v"
+fetch.url = "https://github.com/openai/codex/releases/download/rust-v$ver/codex-package-aarch64-apple-darwin.tar.gz"

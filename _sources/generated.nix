@@ -6,20 +6,52 @@
   dockerTools,
 }:
 {
+  claude-code-aarch64-darwin = {
+    pname = "claude-code-aarch64-darwin";
+    version = "2.1.261";
+    src = fetchurl {
+      url = "https://downloads.claude.ai/claude-code-releases/2.1.261/darwin-arm64/claude.zst";
+      sha256 = "sha256-x5YKCNS2poNhij5zm4M4v/qYQp+ngGyzrjFlIAPkh9A=";
+    };
+  };
+  claude-code-x86_64-linux = {
+    pname = "claude-code-x86_64-linux";
+    version = "2.1.261";
+    src = fetchurl {
+      url = "https://downloads.claude.ai/claude-code-releases/2.1.261/linux-x64/claude.zst";
+      sha256 = "sha256-6LGHUkOieraf/0wRztNxSxTsESSwBRKDOr0lAwLDoQo=";
+    };
+  };
   claude-desktop = {
     pname = "claude-desktop";
-    version = "1.40609.1";
+    version = "1.46388.2";
     src = fetchurl {
-      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.40609.1_amd64.deb";
-      sha256 = "sha256-gBguhRHGu+5t4mx+4iX70qmroidO8UBaHYnNj+ejgNw=";
+      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_1.46388.2_amd64.deb";
+      sha256 = "sha256-mL9U6F5JFgaMQoFFmw8EMdj/aANHc/PumDEdcgZWarE=";
+    };
+  };
+  codex-aarch64-darwin = {
+    pname = "codex-aarch64-darwin";
+    version = "0.153.4";
+    src = fetchurl {
+      url = "https://github.com/openai/codex/releases/download/rust-v0.153.4/codex-package-aarch64-apple-darwin.tar.gz";
+      sha256 = "sha256-NUONofv3ptt92zvOyERI+mAVuhiEYUcql9nR2n2cQ1M=";
+    };
+  };
+  codex-x86_64-linux = {
+    pname = "codex-x86_64-linux";
+    version = "0.153.4";
+    src = fetchurl {
+      url = "https://github.com/openai/codex/releases/download/rust-v0.153.4/codex-package-x86_64-unknown-linux-musl.tar.gz";
+      sha256 = "sha256-qCIYfhokIMYcWSZyG/vYeHAe2VVHybsNTeRJiha6GCE=";
     };
   };
   helium = {
     pname = "helium";
-    version = "0.16.3.1";
+    version = "0.16.5.1";
     src = fetchurl {
-      url = "https://github.com/imputnet/helium-linux/releases/download/0.16.3.1/helium-0.16.3.1-x86_64.AppImage";
-      sha256 = "sha256-k3CjrF45s7SizRof/X9eOnPKwkOB9c1AvBSmjj7ROIM=";
+      url = "https://github.com/imputnet/helium-linux/releases/download/0.16.5.1/helium-0.16.5.1-x86_64.AppImage";
+      sha256 = "sha256-N6+wwg46ufsbCqEJv/WpTWDCnI3tnFt58cG6TsGxXew=";
     };
   };
   zen-browser = {

@@ -25,8 +25,6 @@
 
       # bleeding packages
       antigravity-cli = bleeding.antigravity-cli;
-      claude-code = bleeding.claude-code;
-      codex = bleeding.codex;
 
       _1password-gui = bleeding._1password-gui;
       _1password-cli = bleeding._1password-cli;
