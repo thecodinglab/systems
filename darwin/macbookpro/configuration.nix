@@ -27,6 +27,9 @@
     %admin ALL=(ALL) NOPASSWD: ALL
   '';
 
+  system.defaults.dock.autohide = true;
+  system.defaults.dock.autohide-delay = 0.2;
+
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"
     "/Applications/Helium.app" # managed through homebrew

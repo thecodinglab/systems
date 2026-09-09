@@ -93,9 +93,6 @@
       orientation = "bottom";
       show-recents = false;
 
-      autohide = true;
-      autohide-delay = 0.2;
-
       tilesize = 48;
       magnification = true;
       largesize = 64;
