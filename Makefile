@@ -7,6 +7,9 @@ ifeq ($(HOSTNAME),florian-nixos)
 else ifeq ($(HOSTNAME),Florians-MacBook-Pro)
 	HOST ?= macbookpro
 	REBUILD_CMD ?= darwin-rebuild
+else ifeq ($(HOSTNAME),Florians-Mac-Mini)
+	HOST ?= macmini
+	REBUILD_CMD ?= darwin-rebuild
 endif
 
 REBUILD_SWITCH_CMD ?= $(REBUILD_CMD)
