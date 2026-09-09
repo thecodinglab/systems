@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   stylix = {
     polarity = "dark";
@@ -7,7 +12,7 @@
 
     opacity.terminal = 0.88;
 
-    cursor = {
+    cursor = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 20;
