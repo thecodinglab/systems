@@ -250,6 +250,31 @@
             }
           ];
         };
+        macmini = darwin.lib.darwinSystem {
+          pkgs = pkgsFor "aarch64-darwin";
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
+            ./darwin/macmini/configuration.nix
+            {
+              nix-homebrew = {
+                enable = true;
+                enableRosetta = false;
+
+                user = "florian";
+
+                taps = {
+                  "homebrew/homebrew-core" = inputs.homebrew-core;
+                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+                };
+
+                mutableTaps = false;
+              };
+            }
+          ];
+        };
       };
 
       homeConfigurations = {
