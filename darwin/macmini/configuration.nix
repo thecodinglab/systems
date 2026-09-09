@@ -19,6 +19,10 @@
   users.users.florian = {
     name = "florian";
     home = "/Users/florian/";
+
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKrk+aYPC9+XPBzYI6uuxRbczvimV1Brclkic873p0Uv"
+    ];
   };
 
   security.sudo.extraConfig = ''
