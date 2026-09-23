@@ -8,8 +8,6 @@
     localHostName = "Florians-MacBook-Pro";
   };
 
-  custom.aerospace.enable = true;
-
   environment.systemPackages = [
     pkgs.home-manager
 

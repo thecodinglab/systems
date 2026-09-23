@@ -32,6 +32,7 @@ in
     theme-switcher.enable = true;
 
     hyprland.enable = isLinux;
+    omniwm.enable = !isLinux;
     zsh.enable = true;
     zathura.enable = isLinux;
     ghostty.enable = true;

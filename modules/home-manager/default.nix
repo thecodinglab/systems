@@ -7,6 +7,7 @@
   hyprland = import ./hyprland.nix;
   i3 = import ./i3.nix;
   kitty = import ./kitty.nix;
+  omniwm = import ./omniwm;
   theme = import ./theme;
   theme-switcher = import ./theme-switcher.nix;
   tmux = import ./tmux.nix;
