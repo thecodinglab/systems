@@ -61,7 +61,8 @@
 
   system.defaults = {
     NSGlobalDomain = {
-      AppleInterfaceStyleSwitchesAutomatically = true;
+      AppleInterfaceStyle = "Dark";
+      AppleInterfaceStyleSwitchesAutomatically = false;
       NSAutomaticCapitalizationEnabled = false;
       KeyRepeat = 2;
     };
