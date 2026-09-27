@@ -238,5 +238,25 @@ in
     pkgs.fragments
   ];
 
+  # 1password only installs its native messaging host for browsers it knows about
+  xdg.configFile."net.imput.helium/NativeMessagingHosts/com.1password.1password.json" =
+    lib.mkIf isLinux
+      {
+        text = builtins.toJSON {
+          name = "com.1password.1password";
+          description = "1Password BrowserSupport";
+          path = "/run/wrappers/bin/1Password-BrowserSupport";
+          type = "stdio";
+          allowed_origins = [
+            "chrome-extension://hjlinigoblmkhjejkmbegnoaljkphmgo/"
+            "chrome-extension://bkpbhnjcbehoklfkljkkbbmipaphipgl/"
+            "chrome-extension://gejiddohjgogedgjnonbofjigllpkmbf/"
+            "chrome-extension://khgocmkkpikpnmmkgmdnfckapcdkgfaf/"
+            "chrome-extension://aeblfdkhhhdcdjpifhhbdiojplfjncoa/"
+            "chrome-extension://dppgmdbiimibapkepcbdbmkaabgiofem/"
+          ];
+        };
+      };
+
   fonts.fontconfig.enable = true;
 }
