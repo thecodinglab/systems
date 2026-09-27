@@ -39,6 +39,8 @@ in
 
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
         "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
+
+        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.142:8080/";
       };
     };
   };
@@ -78,6 +80,7 @@ in
     defaults = {
       email = "fw@florian-walter.ch";
       dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1:53";
       credentialFiles = {
         CF_DNS_API_TOKEN_FILE = config.sops.secrets.cloudflareToken.path;
       };
