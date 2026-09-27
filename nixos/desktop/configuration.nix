@@ -87,6 +87,18 @@
     _1password.enable = true;
     _1password-gui.enable = true;
 
+    tether = {
+      enable = true;
+      wifi = {
+        enable = true;
+        openFirewall = true;
+      };
+      bluetooth = {
+        enable = true;
+        adapters = [ "hci0" ];
+      };
+    };
+
     virt-manager.enable = true;
   };
 

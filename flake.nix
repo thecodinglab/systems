@@ -62,6 +62,10 @@
       url = "github:hyprwm/hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tether = {
+      url = "github:zackb/tether";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -74,7 +78,6 @@
       terranix,
       sops-nix,
       stylix,
-      hyprland,
       ...
     }@inputs:
     let
@@ -100,8 +103,9 @@
             overlays.additions
             overlays.modifications
 
-            hyprland.overlays.hyprland-packages
-            hyprland.overlays.hyprland-extras
+            inputs.hyprland.overlays.hyprland-packages
+            inputs.hyprland.overlays.hyprland-extras
+            inputs.tether.overlays.default
           ];
 
           config = {
@@ -159,6 +163,7 @@
       nixosModules = import ./modules/nixos // {
         sops = sops-nix.nixosModules.sops;
         stylix = stylix.nixosModules.stylix;
+        tether = inputs.tether.nixosModules.default;
       };
 
       darwinModules = import ./modules/darwin // {

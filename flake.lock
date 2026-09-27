@@ -1006,6 +1006,26 @@
         "type": "github"
       }
     },
+    "tether": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790299633,
+        "narHash": "sha256-tz+7EIhhwc9BCU+EnXuxmTZbOcL2kI4x86R7ED7U3cA=",
+        "owner": "zackb",
+        "repo": "tether",
+        "rev": "0adda5f40351f6f474592a044b5c6d12faaa91f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zackb",
+        "repo": "tether",
+        "type": "github"
+      }
+    },
     "tinted-kitty": {
       "flake": false,
       "locked": {
