@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   system.stateVersion = "23.11";
 
@@ -8,7 +13,17 @@
     ./input/wooting.nix
     ./input/zsa.nix
   ];
-  sops.defaultSopsFile = ./secrets.yaml;
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    secrets.wifi_home_psk = { };
+    templates.wifi-secrets = {
+      # wpa_supplicant runs as its own unprivileged user
+      owner = "wpa_supplicant";
+      content = ''
+        home_psk=${config.sops.placeholder.wifi_home_psk}
+      '';
+    };
+  };
 
   custom = {
     audio.enable = true;
@@ -50,6 +65,15 @@
       useDHCP = true;
       mtu = 9000;
       wakeOnLan.enable = true;
+    };
+
+    interfaces.wlp11s0.useDHCP = true;
+
+    wireless = {
+      enable = true;
+      interfaces = [ "wlp11s0" ];
+      secretsFile = config.sops.templates.wifi-secrets.path;
+      networks."☕".pskRaw = "ext:home_psk";
     };
 
     firewall = {
