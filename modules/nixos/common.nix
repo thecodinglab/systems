@@ -6,11 +6,12 @@
   ...
 }:
 {
-  imports = [ inputs.home-manager.nixosModules.home-manager ];
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    ../shared/home-manager.nix
+  ];
 
   config = {
-    home-manager.useGlobalPkgs = true;
-
     nix = {
       settings = {
         auto-optimise-store = true;

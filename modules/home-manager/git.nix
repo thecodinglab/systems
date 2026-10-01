@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  keys,
   ...
 }:
 {
@@ -16,7 +17,7 @@
 
       signing = {
         format = "ssh";
-        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG";
+        key = keys.signing;
         signByDefault = true;
       };
 
@@ -57,13 +58,13 @@
           format = "ssh";
           ssh = {
             program =
-              if pkgs.stdenv.isDarwin then
+              if pkgs.stdenv.hostPlatform.isDarwin then
                 "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
               else
                 lib.getExe' pkgs._1password-gui "op-ssh-sign";
             allowedSignersFile = toString (
               pkgs.writeText "git-ssh-allowed-signers" ''
-                fw@florian-walter.ch ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILrUBNULG42gQY1Y0Na+DFocGXrr1dZYfIXIXrwpjcxG
+                fw@florian-walter.ch ${keys.signing}
               ''
             );
           };

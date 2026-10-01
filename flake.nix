@@ -66,15 +66,28 @@
       url = "github:zackb/tether";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # private repository, fetched with the git credential helper (gh); see
+    # DEV_KAKEIBO in the Makefile for building against a local checkout.
+    # TODO: the locked revision predates darwinModules, so macmini needs
+    # DEV_KAKEIBO=1 until the kakeibo change is pushed and this input bumped
+    # (`make update INPUTS=kakeibo`)
+    kakeibo = {
+      url = "git+https://github.com/thecodinglab/kakeibo";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # per-machine experiments that are never committed, see local/README.md
+    local = {
+      url = "path:./local";
+      flake = false;
+    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      darwin,
-      homebrew,
-      home-manager,
       terranix,
       sops-nix,
       stylix,
@@ -82,6 +95,10 @@
     }@inputs:
     let
       inherit (self) outputs;
+      inherit (nixpkgs.lib) genAttrs;
+
+      helpers = import ./lib { inherit inputs outputs; };
+      inherit (helpers) pkgsFor;
 
       systems = [
         "aarch64-linux"
@@ -90,63 +107,7 @@
         "x86_64-darwin"
       ];
 
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-
-      overlays = import ./overlays { inherit inputs; };
-
-      pkgsFor =
-        system:
-        import nixpkgs {
-          inherit system;
-
-          overlays = [
-            overlays.additions
-            overlays.modifications
-
-            inputs.hyprland.overlays.hyprland-packages
-            inputs.hyprland.overlays.hyprland-extras
-            inputs.tether.overlays.default
-          ];
-
-          config = {
-            allowUnfreePredicate =
-              pkg:
-              builtins.elem (nixpkgs.lib.getName pkg) [
-                "1password"
-                "1password-cli"
-                "spotify"
-                "obsidian"
-
-                # Work
-                "slack"
-                "postman"
-
-                # AI
-                "antigravity-cli"
-                "claude-code"
-                "claude-desktop"
-
-                # Gaming
-                "steam"
-                "steam-unwrapped"
-                "steam-original"
-                "steam-run"
-                "discord"
-
-                # Server
-                "plexmediaserver"
-
-                # Nvidia
-                "nvidia-kernel-modules"
-                "nvidia-x11"
-                "nvidia-settings"
-                "cuda_cccl"
-                "cuda_cudart"
-                "cuda_nvcc"
-                "libcublas"
-              ];
-          };
-        };
+      forAllSystems = genAttrs systems;
     in
     {
       packages = forAllSystems (
@@ -158,7 +119,7 @@
       );
 
       formatter = forAllSystems (system: (pkgsFor system).nixfmt);
-      inherit overlays;
+      overlays = import ./overlays { inherit inputs; };
 
       nixosModules = import ./modules/nixos // {
         sops = sops-nix.nixosModules.sops;
@@ -168,7 +129,7 @@
 
       darwinModules = import ./modules/darwin // {
         stylix = stylix.darwinModules.stylix;
-        homebrew = homebrew.darwinModules.nix-homebrew;
+        homebrew = inputs.homebrew.darwinModules.nix-homebrew;
       };
 
       homeManagerModules = (import ./modules/home-manager) // {
@@ -177,134 +138,12 @@
         shell = inputs.shell.homeModules.default;
       };
 
-      nixosConfigurations = {
-        desktop = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/desktop/configuration.nix
-          ];
-        };
+      # adding a host: create hosts/<name>/default.nix and list its name here
+      nixosConfigurations =
+        genAttrs [ "desktop" "server" ] helpers.mkNixos
+        // genAttrs [ "apollo" "hermes" "hestia" ] helpers.mkContainer;
 
-        server = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/server/configuration.nix
-          ];
-        };
-
-        apollo = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/apollo/configuration.nix
-          ];
-        };
-
-        hestia = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/hestia/configuration.nix
-          ];
-        };
-
-        hermes = nixpkgs.lib.nixosSystem {
-          pkgs = pkgsFor "x86_64-linux";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.nixosModules ++ [
-            ./nixos/containers/hermes/configuration.nix
-          ];
-        };
-      };
-
-      darwinConfigurations = {
-        macbookpro = darwin.lib.darwinSystem {
-          pkgs = pkgsFor "aarch64-darwin";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
-            ./darwin/macbookpro/configuration.nix
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = false;
-
-                user = "florian";
-
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-                };
-
-                mutableTaps = false;
-              };
-            }
-          ];
-        };
-        macmini = darwin.lib.darwinSystem {
-          pkgs = pkgsFor "aarch64-darwin";
-          specialArgs = {
-            inherit inputs outputs;
-          };
-          modules = nixpkgs.lib.attrValues outputs.darwinModules ++ [
-            ./darwin/macmini/configuration.nix
-            {
-              nix-homebrew = {
-                enable = true;
-                enableRosetta = false;
-
-                user = "florian";
-
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-                };
-
-                mutableTaps = false;
-              };
-            }
-          ];
-        };
-      };
-
-      homeConfigurations = {
-        "florian@desktop" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor "x86_64-linux";
-          extraSpecialArgs = {
-            inherit inputs outputs;
-            systemName = "x86_64-linux";
-          };
-          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
-            ./home-manager/florian/configuration.nix
-          ];
-        };
-
-        "florian@macbookpro" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor "aarch64-darwin";
-          extraSpecialArgs = {
-            inherit inputs outputs;
-            systemName = "aarch64-darwin";
-          };
-          modules = nixpkgs.lib.attrValues outputs.homeManagerModules ++ [
-            ./home-manager/florian/configuration.nix
-          ];
-        };
-      };
+      darwinConfigurations = genAttrs [ "macbookpro" "macmini" ] helpers.mkDarwin;
 
       terraformConfiguration = forAllSystems (
         system:

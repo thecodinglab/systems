@@ -1,5 +1,15 @@
-{ pkgs, lib, ... }:
 {
+  inputs,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+    ../shared/home-manager.nix
+  ];
+
   nix = {
     enable = true;
 
@@ -31,6 +41,7 @@
     variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
+      LANG = "en_US.UTF-8";
     };
 
     shellAliases = {

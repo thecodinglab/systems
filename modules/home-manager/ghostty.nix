@@ -12,7 +12,7 @@
   config = lib.mkIf config.custom.ghostty.enable {
     programs.ghostty = {
       enable = true;
-      package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+      package = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
       settings = {
         shell-integration = "zsh";
         theme = "light:Catppuccin Latte,dark:Catppuccin Mocha";

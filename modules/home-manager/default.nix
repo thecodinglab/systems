@@ -1,12 +1,10 @@
 {
-  bspwm = import ./bspwm;
   chromium = import ./chromium.nix;
   fzf = import ./fzf.nix;
   ghostty = import ./ghostty.nix;
   git = import ./git.nix;
   hyprland = import ./hyprland.nix;
-  i3 = import ./i3.nix;
-  kitty = import ./kitty.nix;
+  neovim = import ./neovim.nix;
   omniwm = import ./omniwm;
   theme = import ./theme;
   theme-switcher = import ./theme-switcher.nix;

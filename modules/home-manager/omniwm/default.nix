@@ -3,12 +3,44 @@
   lib,
   ...
 }:
+let
+  cfg = config.custom.omniwm;
+
+  # display identity as reported by CoreGraphics; a workspace can only be
+  # pinned to a specific display through its uuid.
+  display = lib.types.submodule {
+    options = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        example = "DELL U2719D";
+        description = "Display name.";
+      };
+      displayUUID = lib.mkOption {
+        type = lib.types.str;
+        description = "CoreGraphics uuid of the display.";
+      };
+    };
+  };
+
+  mkDisplayOption =
+    side:
+    lib.mkOption {
+      type = lib.types.nullOr display;
+      default = null;
+      description = "Display the ${side} workspaces are pinned to; null keeps them on the main display.";
+    };
+in
 {
   options.custom.omniwm = {
     enable = lib.mkEnableOption "enable omniwm";
+
+    displays = {
+      left = mkDisplayOption "left";
+      right = mkDisplayOption "right";
+    };
   };
 
-  config = lib.mkIf config.custom.omniwm.enable {
+  config = lib.mkIf cfg.enable {
     programs.omniwm = {
       enable = true;
 
@@ -17,26 +49,18 @@
       # See https://omniwm.app/config/settings-reference/
       settings =
         let
-          # display identities as reported by CoreGraphics; a workspace can
-          # only be pinned to a specific display through its uuid.
-          displays = {
-            left = {
-              name = "DELL U2719D";
-              displayUUID = "09060482-7767-4F77-9A5C-527FB667BEC7";
-            };
-            right = {
-              name = "Built-in Retina Display";
-              displayUUID = "37D8832A-2D66-02CA-B9F7-8F30A301B230";
-            };
-          };
-
           onMain = {
             type = "main";
           };
-          onDisplay = output: {
-            type = "specificDisplay";
-            inherit output;
-          };
+          onDisplay =
+            output:
+            if output == null then
+              onMain
+            else
+              {
+                type = "specificDisplay";
+                inherit output;
+              };
 
           workspace = id: name: monitorAssignment: {
             inherit id name monitorAssignment;
@@ -266,8 +290,8 @@
 
           workspaces = [
             # left
-            (workspace "AD36F001-C57E-41A5-AC1D-DF5249D007F0" "1" (onDisplay displays.left))
-            (workspace "454CECD4-5E9D-4ED1-95D7-979D48817F5F" "2" (onDisplay displays.left))
+            (workspace "AD36F001-C57E-41A5-AC1D-DF5249D007F0" "1" (onDisplay cfg.displays.left))
+            (workspace "454CECD4-5E9D-4ED1-95D7-979D48817F5F" "2" (onDisplay cfg.displays.left))
 
             # center
             (workspace "BEB842B5-E894-4791-9FD1-397C3CDD3538" "3" onMain)
@@ -277,8 +301,8 @@
             (workspace "8D4D711C-2B2F-4FEC-86BF-FA952037738A" "9" onMain)
 
             # right
-            (workspace "248AA883-2261-4D45-943C-79C0E46A232B" "4" (onDisplay displays.right))
-            (workspace "8B8C45D6-CE9E-41D9-BD50-BE4989D5E3DE" "5" (onDisplay displays.right))
+            (workspace "248AA883-2261-4D45-943C-79C0E46A232B" "4" (onDisplay cfg.displays.right))
+            (workspace "8B8C45D6-CE9E-41D9-BD50-BE4989D5E3DE" "5" (onDisplay cfg.displays.right))
           ];
 
           appRules =
