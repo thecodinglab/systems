@@ -67,14 +67,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # private repository, fetched with the git credential helper (gh); see
-    # DEV_KAKEIBO in the Makefile for building against a local checkout.
-    # TODO: the locked revision predates darwinModules, so macmini needs
-    # DEV_KAKEIBO=1 until the kakeibo change is pushed and this input bumped
-    # (`make update INPUTS=kakeibo`)
+    # private repositories, fetched with the git credential helper (gh)
     kakeibo = {
       url = "git+https://github.com/thecodinglab/kakeibo";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    xcloud = {
+      url = "git+https://github.com/studio-ch/xcloud";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nix-darwin.follows = "darwin";
+        sops-nix.follows = "sops-nix";
+      };
     };
 
     # per-machine experiments that are never committed, see local/README.md

@@ -5,8 +5,8 @@
 # Usage: scripts/update.sh [input...]   (no arguments updates all flake inputs
 #                                        and the nvfetcher sources)
 #
-# kakeibo is a private repository: updating it (also implicitly, without
-# arguments) needs GitHub credentials for git, e.g. `gh auth setup-git`.
+# kakeibo and xcloud are private repositories: updating them (also implicitly,
+# without arguments) needs GitHub credentials for git, e.g. `gh auth setup-git`.
 set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"

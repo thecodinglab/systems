@@ -1,9 +1,27 @@
 {
   config,
+  lib,
   pkgs,
   keys,
+  inputs,
   ...
 }:
+let
+  xcloudCluster = inputs.xcloud.xcloudClusterConfigs.local;
+  xcloudHost = xcloudCluster.hosts.desktop;
+
+  xcloudProfile =
+    name:
+    { pkgs, ... }@args:
+    import "${inputs.xcloud.outPath}/nix/profiles/${name}.nix" (
+      args
+      // {
+        self = inputs.xcloud;
+        cluster = xcloudCluster;
+        host = xcloudHost;
+      }
+    );
+in
 {
   system.stateVersion = "23.11";
 
@@ -12,7 +30,9 @@
     ./storage.nix
     ./input/wooting.nix
     ./input/zsa.nix
-  ];
+  ]
+  ++ map xcloudProfile ([ "base" ] ++ xcloudHost.roles);
+
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets.wifi_home_psk = { };
@@ -160,6 +180,8 @@
       "docker"
       "libvirtd"
       "plugdev"
+
+      "xcloud"
     ];
     initialPassword = "changeme";
 

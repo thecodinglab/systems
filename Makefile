@@ -26,14 +26,21 @@ ifneq ($(wildcard $(LOCAL_DIR)),)
 	override FLAKE_FLAGS += --override-input local path:$(call expand-path,$(LOCAL_DIR))
 endif
 
-# DEV_KAKEIBO=1 builds against the local kakeibo checkout instead of the
-# locked GitHub revision; git+file only sees tracked (and staged) files.
-# macmini needs it until the kakeibo darwin module is pushed and the lock is
-# bumped with `make update INPUTS=kakeibo`: the locked revision has no
-# darwinModules yet.
 KAKEIBO_SRC ?= $(HOME)/dev/kakeibo/main
 ifeq ($(DEV_KAKEIBO),1)
 	override FLAKE_FLAGS += --override-input kakeibo git+file://$(call expand-path,$(KAKEIBO_SRC))
+endif
+
+SHELL_SRC ?= $(HOME)/dev/shell
+DEV_SHELL ?= $(if $(wildcard $(SHELL_SRC)),1,0)
+ifeq ($(DEV_SHELL),1)
+	override FLAKE_FLAGS += --override-input shell git+file://$(call expand-path,$(SHELL_SRC))
+endif
+
+XCLOUD_SRC ?= $(HOME)/dev/xcloud/main
+DEV_XCLOUD ?= $(if $(wildcard $(XCLOUD_SRC)),1,0)
+ifeq ($(DEV_XCLOUD),1)
+	override FLAKE_FLAGS += --override-input xcloud git+file://$(call expand-path,$(XCLOUD_SRC))
 endif
 
 # Everything is evaluated and built as the calling user, only the activation
@@ -80,5 +87,6 @@ server:
 
 container-%:
 	nixos-rebuild --target-host $(patsubst container-%,%,$@) switch --flake .#$(patsubst container-%,%,$@) $(FLAKE_FLAGS)
+	sleep 5 # for some reason without a timeout rebuilding all containers will get stuck
 
 .PHONY: build switch check-host update server containers
