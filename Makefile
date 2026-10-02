@@ -32,13 +32,11 @@ ifeq ($(DEV_KAKEIBO),1)
 endif
 
 SHELL_SRC ?= $(HOME)/dev/shell
-DEV_SHELL ?= $(if $(wildcard $(SHELL_SRC)),1,0)
 ifeq ($(DEV_SHELL),1)
 	override FLAKE_FLAGS += --override-input shell git+file://$(call expand-path,$(SHELL_SRC))
 endif
 
 XCLOUD_SRC ?= $(HOME)/dev/xcloud/main
-DEV_XCLOUD ?= $(if $(wildcard $(XCLOUD_SRC)),1,0)
 ifeq ($(DEV_XCLOUD),1)
 	override FLAKE_FLAGS += --override-input xcloud git+file://$(call expand-path,$(XCLOUD_SRC))
 endif
