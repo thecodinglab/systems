@@ -40,7 +40,7 @@ in
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
         "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
 
-        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.142:8080/";
+        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.124:8080/";
       };
     };
   };
