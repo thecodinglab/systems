@@ -286,11 +286,10 @@
             (mkBind "${mod} + SHIFT + Q" (dsp "window.close()"))
             (mkBind "${mod} + CONTROL + Q" (exec "${pkgs.systemd}/bin/loginctl lock-session"))
 
-            # application launcher
-            (mkBind "${mod} + SPACE" (exec "${lib.getExe pkgs.vicinae} toggle"))
-
-            # the notch, see `custom.shell` below; run from the profile so the
-            # ipc call reaches the very instance the user service runs
+            # the notch and its launcher, see `custom.shell` below; run from
+            # the profile so the ipc call reaches the very instance the user
+            # service runs
+            (mkBind "${mod} + SPACE" (exec "${config.home.profileDirectory}/bin/shell ipc call launcher toggle"))
             (mkBind "${mod} + D" (exec "${config.home.profileDirectory}/bin/shell ipc call notch toggle"))
 
             # terminal
@@ -546,29 +545,18 @@
             };
           };
         };
-
-        vicinae = {
-          enable = true;
-          systemd.enable = true;
-          settings = {
-            font.normal.size = 12;
-            theme.name = "vicinae-dark";
-
-            close_on_focus_loss = true;
-            launcher_window.compact_mode.enabled = true;
-
-            favorites = [ ];
-          };
-        };
       };
 
-      # the bar, a custom quickshell implementation living in https://github.com/thecodinglab/shell
+      # the bar and the application launcher, a custom quickshell
+      # implementation living in https://github.com/thecodinglab/shell
       custom.shell = {
         enable = true;
 
         settings = {
           diskPath = "/";
           networkInterface = "enp13s0";
+          # what the launcher runs console applications in
+          terminal = lib.getExe pkgs.ghostty;
         };
       };
 
