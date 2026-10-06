@@ -1,5 +1,6 @@
 # everything both Macs share; hosts only add what differs
 {
+  config,
   inputs,
   pkgs,
   keys,
@@ -72,6 +73,7 @@
 
   homebrew = {
     enable = true;
+    taps = builtins.attrNames config.nix-homebrew.taps;
     casks = [
       "1password"
       "1password-cli"
