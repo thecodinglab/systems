@@ -5,6 +5,14 @@
   pkgs,
   ...
 }:
+let
+  sopsKey = pkgs.writeShellScript "sops-key" ''
+    case "$1:''${SOPS_AGE_RECIPIENT-}" in
+      ssh:ssh-* | ssh:) exec op read "op://Private/Personal/private key?ssh-format=openssh" ;;
+      age:age1* | age:) exec op read "op://Private/SOPS Age Key/password" ;;
+    esac
+  '';
+in
 {
   home.stateVersion = "23.11";
 
@@ -13,9 +21,8 @@
       LEDGER_FILE = "${config.home.homeDirectory}/finance/All.journal";
       TERMINAL_BACKGROUND_TRANSPARENT = "1";
 
-      # the user_florian age key lives in 1password instead of on disk; sops
-      # still also reads a local keys.txt if one exists
-      SOPS_AGE_KEY_CMD = "op read 'op://Private/SOPS Age Key/password'";
+      SOPS_AGE_SSH_PRIVATE_KEY_CMD = "${sopsKey} ssh";
+      SOPS_AGE_KEY_CMD = "${sopsKey} age";
     };
 
     shell.enableZshIntegration = true;
