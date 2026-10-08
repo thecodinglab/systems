@@ -14,7 +14,7 @@
   config = {
     nix = {
       settings = {
-        auto-optimise-store = true;
+        auto-optimise-store = lib.mkDefault true;
         experimental-features = [
           "nix-command"
           "flakes"

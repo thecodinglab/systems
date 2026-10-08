@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   keys,
   inputs,
@@ -62,6 +61,9 @@ in
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # the menu wait was almost all of the 5s loader phase; 1s still leaves time to
+  # pick an older generation
+  boot.loader.timeout = 1;
 
   console = {
     font = "Lat2-Terminus16";
@@ -105,6 +107,20 @@ in
       ];
 
       trustedInterfaces = [ "virbr0" ];
+    };
+  };
+
+  # Both NICs are on the same LAN and DHCP gives both default routes the same
+  # metric, so flows randomly go over the slower Wi-Fi. Prefer the wire and
+  # keep Wi-Fi as fallback. Merges into the units from networking.interfaces.
+  systemd.network.networks = {
+    "40-enp13s0" = {
+      dhcpV4Config.RouteMetric = 100;
+      ipv6AcceptRAConfig.RouteMetric = 100;
+    };
+    "40-wlp11s0" = {
+      dhcpV4Config.RouteMetric = 600;
+      ipv6AcceptRAConfig.RouteMetric = 600;
     };
   };
 
@@ -160,7 +176,11 @@ in
   ];
 
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+      # docker.socket stays, dockerd starts on first use instead of at boot
+      enableOnBoot = false;
+    };
     vswitch.enable = true;
   };
 

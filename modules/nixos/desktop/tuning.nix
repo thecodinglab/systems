@@ -1,8 +1,37 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 # System tuning adapted from omarchy (https://github.com/basecamp/omarchy). See
 # its etc/ and default/systemd directories for the original rationale.
 {
   config = lib.mkIf config.custom.desktop.enable {
+    #######################
+    # CPU & Scheduling    #
+    #######################
+
+    # Newest mainline instead of the LTS default: a year of amd-pstate,
+    # sched_ext and btrfs work. Vanilla rather than zen, scx below makes the
+    # scheduling decisions anyway. The nvidia driver follows
+    # config.boot.kernelPackages, so it is rebuilt for this kernel.
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+
+    # BPF scheduler that prioritises latency-critical task chains (compositor,
+    # render and audio threads) and knows about the two CCDs of the 7950X. If
+    # it exits or crashes, the kernel falls back to EEVDF on its own. Don't
+    # combine with ananicy-cpp or system76-scheduler.
+    services.scx = {
+      enable = true;
+      scheduler = "scx_lavd";
+    };
+
+    # amd-pstate-epp in active mode: the performance policy sets
+    # EPP=performance so clocks ramp immediately for bursty UI, JS and compile
+    # work. Idle C-states still apply.
+    powerManagement.cpuFreqGovernor = "performance";
+
     #######################
     # Memory              #
     #######################
@@ -52,6 +81,70 @@
 
       # With bursts bounded above, the flusher can wake every 15s instead of 5s.
       "vm.dirty_writeback_centisecs" = 1500;
+
+      # BBR + fair queueing: higher throughput and far less bufferbloat than
+      # cubic on lossy or long paths. 16M socket buffer caps let single
+      # streams fill the 10G/jumbo-frame link.
+      "net.core.default_qdisc" = "fq";
+      "net.ipv4.tcp_congestion_control" = "bbr";
+      "net.core.rmem_max" = 16777216;
+      "net.core.wmem_max" = 16777216;
+      "net.ipv4.tcp_rmem" = "4096 131072 16777216";
+      "net.ipv4.tcp_wmem" = "4096 65536 16777216";
+      # Don't fall back to slow start on connections that were briefly idle.
+      "net.ipv4.tcp_slow_start_after_idle" = 0;
+      "net.ipv4.tcp_fastopen" = 3;
+    };
+    boot.kernelModules = [ "tcp_bbr" ];
+
+    # Kill runaway apps and builds on sustained memory pressure instead of
+    # letting the whole session thrash on zram until the kernel OOM killer
+    # finally acts. Apps live in their own app-*.scope, so only the culprit
+    # goes.
+    systemd.oomd = {
+      enable = true;
+      enableRootSlice = true;
+      enableSystemSlice = true;
+      enableUserSlices = true;
+      settings.OOM.DefaultMemoryPressureDurationSec = "20s";
+    };
+
+    #######################
+    # Nix                 #
+    #######################
+
+    nix = {
+      # Builds yield to the interactive session. Nice is what scx_lavd uses
+      # for its task weights; the I/O class is a no-op on the NVMe's `none`
+      # scheduler but costs nothing.
+      daemonCPUSchedPolicy = "batch";
+      daemonIOSchedClass = "idle";
+
+      settings = {
+        # 32 jobs x 32 cores could spawn ~1000 compilers at once
+        max-jobs = 8;
+        cores = 16;
+
+        # The 1 MiB default buffer stalls downloads from the binary cache.
+        download-buffer-size = 268435456;
+        http-connections = 64;
+        max-substitution-jobs = 32;
+        connect-timeout = 5;
+        fallback = true;
+
+        # Hard-linking on every store write slows down each build and
+        # substitution; deduplicate once a week instead.
+        auto-optimise-store = false;
+      };
+
+      optimise = {
+        automatic = true;
+        dates = [ "weekly" ];
+      };
+    };
+    systemd.services.nix-daemon.serviceConfig = {
+      Nice = 10;
+      CPUWeight = 20;
     };
 
     #######################
@@ -61,7 +154,14 @@
     # Never autosuspend USB devices; it makes keyboards, mice and audio
     # interfaces drop out or lag on wake. usbcore is built in, so this has to
     # go on the kernel command line rather than into modprobe.d.
-    boot.kernelParams = [ "usbcore.autosuspend=-1" ];
+    boot.kernelParams = [
+      "usbcore.autosuspend=-1"
+      # The lockup watchdogs permanently hold a hardware PMU counter and fire a
+      # periodic NMI/hrtimer on all 32 threads; the only loss is automatic
+      # lockup backtraces.
+      "nowatchdog"
+      "nmi_watchdog=0"
+    ];
 
     # Don't let network-online.target hold up the graphical session waiting
     # for DHCP. Nothing in the session needs to block on the network.
