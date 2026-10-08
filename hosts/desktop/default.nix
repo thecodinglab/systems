@@ -102,12 +102,15 @@ in
     firewall = {
       allowedTCPPorts = [
         22 # ssh
-        3000 # dev
-        5201 # iperf
-        8080 # dev
       ];
 
-      trustedInterfaces = [ "virbr0" ];
+      # everything on the home LAN may reach any port (dev environments,
+      # iperf, ...); the VPN tunnel and docker bridges stay filtered
+      trustedInterfaces = [
+        "virbr0"
+        "enp13s0"
+        "wlp11s0"
+      ];
     };
   };
 
