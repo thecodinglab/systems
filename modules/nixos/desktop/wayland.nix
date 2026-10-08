@@ -26,5 +26,9 @@
     };
 
     security.pam.services.hyprlock = { };
+    # Makes the nixpkgs wrappers of Electron/Chromium apps (spotify, slack,
+    # obsidian, ...) pass the Wayland flags, so nothing renders through the
+    # extra copy and implicit sync of XWayland.
+    environment.sessionVariables.NIXOS_OZONE_WL = "1";
   };
 }

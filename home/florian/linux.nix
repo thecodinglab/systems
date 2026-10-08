@@ -1,5 +1,10 @@
 # Linux desktop only parts of the user environment
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
+}:
 {
   custom = {
     chromium.enable = true;
@@ -33,6 +38,21 @@
 
   services.easyeffects.enable = true;
 
+  # mpv decodes in software unless told otherwise
+  programs.mpv = {
+    enable = true;
+    config = {
+      vo = "gpu-next";
+      gpu-api = "vulkan";
+      # NVDEC/Vulkan video with copy-free interop, software fallback for
+      # codecs the GPU can't do
+      hwdec = "auto-safe";
+      profile = "high-quality";
+      video-sync = "display-resample";
+      interpolation = true;
+    };
+  };
+
   # stylix only auto-enables its qt target when home-manager runs as a NixOS
   # module; keep qt unthemed as it was with the standalone home-manager
   stylix.targets.qt.enable = false;
@@ -42,7 +62,6 @@
     pkgs.exiftool
     pkgs.ffmpeg
     pkgs.imv
-    pkgs.mpv
     pkgs.spotify
 
     pkgs.easyeffects
@@ -52,7 +71,15 @@
     # Other
     pkgs.obsidian # on mac it is installed through `environment.systemPackage`
     pkgs.claude-desktop # on mac it is installed through `homebrew.casks`
-    pkgs.helium # on mac it is installed through `homebrew.casks`
+    # on mac it is installed through `homebrew.casks`
+    (pkgs.helium.override {
+      # chromium does not use VA-API on nvidia unless explicitly asked to, so
+      # all video falls back to software decoding and HEVC (hardware only on
+      # linux) does not play at all
+      commandLineArgs = lib.optionals osConfig.custom.nvidia.enable [
+        "--enable-features=VaapiVideoDecoder,VaapiOnNvidiaGPUs,AcceleratedVideoDecodeLinuxGL"
+      ];
+    })
     pkgs.slack # on mac it is installed through `homebrew.casks`
     pkgs.fragments
   ];

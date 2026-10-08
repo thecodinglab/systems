@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  osConfig ? { },
+  ...
+}:
 {
   options.custom.chromium = {
     enable = lib.mkEnableOption "enable chromium";
@@ -10,7 +15,18 @@
 
       commandLineArgs = [
         "--ozone-platform=wayland"
-        "--enable-features=TouchpadOverscrollHistoryNavigation"
+        (
+          "--enable-features="
+          + lib.concatStringsSep "," (
+            [ "TouchpadOverscrollHistoryNavigation" ]
+            # chromium does not use VA-API on nvidia unless explicitly asked to
+            ++ lib.optionals (osConfig.custom.nvidia.enable or false) [
+              "VaapiVideoDecoder"
+              "VaapiOnNvidiaGPUs"
+              "AcceleratedVideoDecodeLinuxGL"
+            ]
+          )
+        )
       ];
 
       extensions = [

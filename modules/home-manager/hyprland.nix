@@ -97,12 +97,6 @@
                 "wayland"
               ];
             }
-            {
-              _args = [
-                "OZONE_PLATFORM"
-                "wayland"
-              ];
-            }
           ];
 
           #########################
@@ -448,7 +442,8 @@
 
             {
               name = "spotify";
-              match.class = "Spotify";
+              # native Wayland (NIXOS_OZONE_WL) reports a lowercase app id
+              match.class = "^([Ss]potify)$";
 
               workspace = "special";
             }

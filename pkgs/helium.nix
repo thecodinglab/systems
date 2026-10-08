@@ -59,6 +59,9 @@
   xdg-utils,
 
   deps,
+
+  # extra flags passed to every invocation, like `commandLineArgs` of nixpkgs' chromium
+  commandLineArgs ? [ ],
 }:
 let
   runtimeDeps = [
@@ -148,7 +151,8 @@ stdenvNoCC.mkDerivation rec {
       --prefix LD_LIBRARY_PATH : "$rpath:$out/share/helium" \
       --suffix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
       --prefix XDG_DATA_DIRS : "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH:${addDriverRunpath.driverLink}/share" \
-      --set CHROME_WRAPPER helium
+      --set CHROME_WRAPPER helium \
+      --add-flags ${lib.escapeShellArg (lib.concatStringsSep " " commandLineArgs)}
 
     install -m644 helium.desktop $out/share/applications/helium.desktop
     substituteInPlace $out/share/applications/helium.desktop --replace-fail 'Exec=helium' 'Exec=helium --ozone-platform=wayland'

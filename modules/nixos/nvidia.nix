@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 {
@@ -21,17 +20,14 @@
     services.xserver.videoDrivers = [ "nvidia" ];
 
     hardware = {
-      graphics = {
-        enable = true;
-        extraPackages = [
-          pkgs.egl-wayland
-          pkgs.nvidia-vaapi-driver
-        ];
-      };
+      # nvidia-vaapi-driver comes from hardware.nvidia.videoAcceleration and the
+      # egl-wayland/egl-gbm platform libraries from the driver package itself
+      graphics.enable = true;
 
       nvidia = {
         modesetting.enable = true;
         powerManagement.enable = true;
+        videoAcceleration = true;
 
         nvidiaSettings = true;
 
