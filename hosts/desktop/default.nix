@@ -214,5 +214,7 @@ in
     openssh.authorizedKeys.keys = [ keys.personal ];
   };
 
+  nix.settings.trusted-users = [ "florian" ];
+
   home-manager.users.florian = ./home.nix;
 }
