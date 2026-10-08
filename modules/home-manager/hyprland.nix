@@ -290,7 +290,9 @@
             # the notch and its launcher, see `custom.shell` below; run from
             # the profile so the ipc call reaches the very instance the user
             # service runs
-            (mkBind "${mod} + SPACE" (exec "${config.home.profileDirectory}/bin/shell ipc call launcher toggle"))
+            (mkBind "${mod} + SPACE" (
+              exec "${config.home.profileDirectory}/bin/shell ipc call launcher toggle"
+            ))
             (mkBind "${mod} + D" (exec "${config.home.profileDirectory}/bin/shell ipc call notch toggle"))
 
             # terminal
