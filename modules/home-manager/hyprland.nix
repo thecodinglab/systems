@@ -212,7 +212,14 @@
               border_size = 2;
 
               layout = "master";
+
+              # only windows matched by an `immediate` rule (games) tear
+              allow_tearing = true;
             };
+
+            # scan fullscreen game content out directly, skipping composition;
+            # set to 0 if it ever flickers on nvidia
+            render.direct_scanout = 2;
 
             decoration = {
               rounding = 10;
@@ -446,6 +453,13 @@
               match.class = "^([Ss]potify)$";
 
               workspace = "special";
+            }
+
+            # skip vsync for games (needs general.allow_tearing)
+            {
+              name = "games-immediate";
+              match.class = "^(steam_app_.*|gamescope)$";
+              immediate = true;
             }
 
             {
