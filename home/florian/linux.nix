@@ -82,6 +82,13 @@
     })
     pkgs.slack # on mac it is installed through `homebrew.casks`
     pkgs.fragments
+    # `gcc-unwrapped` in the nixpkgs build inputs only ships `libstdc++.a`, so a
+    # second, static copy of libstdc++ gets linked into the binary and the
+    # proprietary Bambu network plugin aborts with `free(): invalid size` on
+    # startup; drop it until https://github.com/NixOS/nixpkgs/pull/557126 lands
+    (pkgs.orca-slicer.overrideAttrs (old: {
+      buildInputs = lib.remove pkgs.gcc-unwrapped old.buildInputs;
+    }))
   ];
 
   # 1password only installs its native messaging host for browsers it knows about
