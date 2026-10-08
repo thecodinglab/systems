@@ -52,11 +52,15 @@ endif
 # new generation and run its activation.
 SYSTEM_PROFILE ?= /nix/var/nix/profiles/system
 
+# skip building the new nixos-rebuild and re-executing it before every build;
+# pass `NIXOS_REBUILD_FLAGS=` if a nixpkgs bump ever changes it incompatibly
+NIXOS_REBUILD_FLAGS ?= --no-reexec
+
 build: check-host
 ifeq ($(PLATFORM),darwin)
 	darwin-rebuild build --flake ".#$(HOST)" $(FLAKE_FLAGS)
 else
-	nixos-rebuild build --flake ".#$(HOST)" $(FLAKE_FLAGS)
+	nixos-rebuild build $(NIXOS_REBUILD_FLAGS) --flake ".#$(HOST)" $(FLAKE_FLAGS)
 endif
 
 switch: check-host
@@ -65,7 +69,7 @@ ifeq ($(PLATFORM),darwin)
 	sudo -H nix-env --profile $(SYSTEM_PROFILE) --set "$$(readlink -f result)"
 	sudo -H ./result/sw/bin/darwin-rebuild activate
 else
-	nixos-rebuild switch --sudo --flake ".#$(HOST)" $(FLAKE_FLAGS)
+	nixos-rebuild switch $(NIXOS_REBUILD_FLAGS) --sudo --flake ".#$(HOST)" $(FLAKE_FLAGS)
 endif
 
 check-host:
