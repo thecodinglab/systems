@@ -30,7 +30,8 @@ in
     ./input/wooting.nix
     ./input/zsa.nix
   ]
-  ++ map xcloudProfile ([ "base" ] ++ xcloudHost.roles);
+  ++ map xcloudProfile ([ "base" ] ++ xcloudHost.roles)
+  ++ [ inputs.xcloud.nixosModules.otel-collector ];
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
