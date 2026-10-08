@@ -68,6 +68,7 @@ stdenv.mkDerivation {
     nspr
     nss
     pango
+    pipewire # linked directly by the claude-native binding
     systemd
     libx11
     libxcomposite
