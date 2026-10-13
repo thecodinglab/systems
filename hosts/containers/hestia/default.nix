@@ -14,13 +14,19 @@ in
 
   imports = [ ../common.nix ];
 
-  networking = {
-    hostName = "hestia";
-    firewall.allowedTCPPorts = [
-      3000
-      4000
-      8123
-    ];
+  networking.hostName = "hestia";
+
+  custom.proxy.enable = true;
+
+  services.nginx.virtualHosts."teslamate.thecodinglab.ch".locations = {
+    "/grafana" = {
+      proxyPass = "http://127.0.0.1:3000";
+      proxyWebsockets = true;
+    };
+    "/" = {
+      proxyPass = "http://127.0.0.1:4000";
+      proxyWebsockets = true;
+    };
   };
 
   virtualisation.oci-containers.containers = {
@@ -51,7 +57,7 @@ in
         MQTT_HOST = "10.88.0.3";
       };
 
-      ports = [ "4000:4000" ];
+      ports = [ "127.0.0.1:4000:4000" ];
     };
 
     teslamate-postgres = withAutoUpdate {
@@ -89,7 +95,7 @@ in
         GF_SERVER_ROOT_URL = "%(protocol)s://%(domain)s/grafana";
         GF_SERVER_SERVE_FROM_SUB_PATH = "true";
       };
-      ports = [ "3000:3000" ];
+      ports = [ "127.0.0.1:3000:3000" ];
       volumes = [ "teslamate-grafana-data:/var/lib/grafana" ];
     };
 

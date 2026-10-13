@@ -11,10 +11,9 @@ in
 
   imports = [ ../common.nix ];
 
-  networking = {
-    hostName = "apollo";
-    firewall.allowedTCPPorts = [ 80 ];
-  };
+  networking.hostName = "apollo";
+
+  custom.proxy.enable = true;
 
   users = {
     users.media = {
@@ -34,59 +33,45 @@ in
       enable = true;
 
       virtualHosts = {
-        default = {
-          default = true;
-          locations."/".return = "404";
-        };
-
         "media.thecodinglab.ch".locations."/" = {
           proxyPass = "http://localhost:32400/";
-          recommendedProxySettings = true;
           proxyWebsockets = true;
         };
 
         "requests.thecodinglab.ch".locations."/" = {
           proxyPass = "http://localhost:40002";
-          recommendedProxySettings = true;
           proxyWebsockets = true;
         };
 
         "media-tools.thecodinglab.ch" = {
           locations."/sabnzbd" = {
             proxyPass = "http://localhost:40001/sabnzbd";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
           locations."/tautulli" = {
             proxyPass = "http://localhost:8181";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
 
           locations."/english/radarr" = {
             proxyPass = "http://localhost:41001";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
           locations."/english/sonarr" = {
             proxyPass = "http://localhost:41002";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
 
           locations."/german/radarr" = {
             proxyPass = "http://localhost:42001";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
           locations."/german/sonarr" = {
             proxyPass = "http://localhost:42002";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
           locations."/german/readarr" = {
             proxyPass = "http://localhost:42003";
-            recommendedProxySettings = true;
             proxyWebsockets = true;
           };
         };
@@ -97,7 +82,6 @@ in
 
     plex = {
       enable = true;
-      openFirewall = true;
       user = "media";
       group = "media";
     };
@@ -142,7 +126,7 @@ in
             PGID = toString gid;
           };
 
-          ports = [ "${toString port.src}:${toString port.dst}" ];
+          ports = [ "127.0.0.1:${toString port.src}:${toString port.dst}" ];
 
           volumes = [ "${name}-config:/config" ] ++ volumes;
         }

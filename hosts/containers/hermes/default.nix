@@ -25,10 +25,7 @@ in
         "hermes.thecodinglab.ch".locations."/".proxyPass = "http://localhost:7575/";
         "uptime.thecodinglab.ch".locations."/".proxyPass = "http://localhost:3001/";
 
-        "teslamate.thecodinglab.ch" = {
-          locations."/grafana".proxyPass = "http://172.16.0.92:3000";
-          locations."/".proxyPass = "http://172.16.0.92:4000";
-        };
+        "teslamate.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92/";
 
         "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://192.168.128.100:8123/";
 
@@ -40,7 +37,7 @@ in
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
         "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
 
-        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.124:8080/";
+        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.124/";
       };
     };
   };

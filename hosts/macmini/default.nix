@@ -32,9 +32,15 @@
     environment.OLLAMA_KEEP_ALIVE = "30m";
   };
 
+  # kakeibo has no authentication, so it only listens on localhost (the module
+  # default) and is reached through hermes
+  custom.proxy = {
+    enable = true;
+    vhosts."kakeibo.ch".locations."/".proxyPass = "http://127.0.0.1:8080";
+  };
+
   services.kakeibo = {
     enable = true;
-    listen = "0.0.0.0:8080"; # reachable from the local network; kakeibo has no authentication
     environment = {
       KAKEIBO_LLM_BASE_URL = "http://127.0.0.1:11434/v1";
       KAKEIBO_LLM_MODEL = "qwen2.5:14b";
