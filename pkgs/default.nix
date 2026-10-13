@@ -29,6 +29,7 @@ in
   claude-desktop = callPackage ./claude-desktop.nix { };
   claude-code = callPackage ./claude-code.nix { };
   codex = callPackage ./codex.nix { };
+  cliproxyapi-management-center = pkgs.callPackage ./cliproxyapi-management-center.nix { };
   devtools = inputs.devtools.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }
 // mkPrefix "neovim" (

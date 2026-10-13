@@ -32,6 +32,23 @@
     environment.OLLAMA_KEEP_ALIVE = "30m";
   };
 
+  # claude code on every host goes through this (custom.claude-code.proxy in
+  # home/florian/default.nix); it listens on all interfaces for the lan,
+  # clients need the key. The web panel (http://127.0.0.1:8317/management.html)
+  # is only reachable from the mini itself. Setup:
+  #   op item create --category password --vault Private --title CLIProxyAPI --generate-password=48,letters,digits
+  #   op item create --category password --vault Private --title "CLIProxyAPI Management" --generate-password=48,letters,digits
+  #   install -d -m 700 ~/.config/cliproxyapi
+  #   op read "op://Private/CLIProxyAPI/password" > ~/.config/cliproxyapi/api-key
+  #   op read "op://Private/CLIProxyAPI Management/password" > ~/.config/cliproxyapi/management-key
+  #   cliproxyapi --claude-login && cliproxyapi --codex-login
+  services.cliproxyapi = {
+    enable = true;
+    apiKeyFile = "/Users/florian/.config/cliproxyapi/api-key";
+    managementKeyFile = "/Users/florian/.config/cliproxyapi/management-key";
+    settings.server.host = "";
+  };
+
   # kakeibo has no authentication, so it only listens on localhost (the module
   # default) and is reached through hermes
   custom.proxy = {
