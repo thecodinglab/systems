@@ -1,5 +1,6 @@
 {
   chromium = import ./chromium.nix;
+  claude-code = import ./claude-code.nix;
   fzf = import ./fzf.nix;
   ghostty = import ./ghostty.nix;
   git = import ./git.nix;

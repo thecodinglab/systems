@@ -2,6 +2,7 @@
 # parts live next to it and are picked per host in hosts/<name>/home.nix
 {
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -38,6 +39,41 @@ in
 
     zsh.enable = true;
     ghostty.enable = true;
+
+    claude-code = {
+      enable = true;
+
+      settings = {
+        permissions.defaultMode = "bypassPermissions";
+        skipDangerousModePermissionPrompt = true;
+        skipAutoPermissionPrompt = true;
+        skipWorkflowUsageWarning = true;
+
+        tui = "fullscreen";
+        editorMode = "vim";
+        theme = "dark";
+        agentPushNotifEnabled = false;
+
+        autoMemoryEnabled = false;
+        env = {
+          CLAUDE_CODE_DISABLE_AUTO_MEMORY = "1";
+          CLAUDE_CODE_DISABLE_ORG_MEMORY = "1";
+
+          DISABLE_TELEMETRY = "1";
+          DISABLE_ERROR_REPORTING = "1";
+        };
+
+        effortLevel = "high";
+
+        enabledPlugins."frontend-design@claude-plugins-official" = true;
+      };
+
+      proxy = {
+        enable = true;
+        url = lib.mkDefault "http://192.168.48.124:8317"; # macmini
+        apiKeyCommand = lib.mkDefault ''op read "op://Private/CLIProxyAPI/password"'';
+      };
+    };
   };
 
   stylix.enable = true;
@@ -85,7 +121,6 @@ in
     pkgs.unzip
 
     # AI
-    pkgs.claude-code
     pkgs.codex
 
     # Build Tools
