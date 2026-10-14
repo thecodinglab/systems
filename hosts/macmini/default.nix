@@ -17,6 +17,7 @@
 
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"
+    "/Applications/Helium.app" # managed through homebrew
     "/System/Applications/Mail.app"
     "/System/Applications/Calendar.app"
 
@@ -60,4 +61,6 @@
       remote = "unas:Personal-Drive/Backups/kakeibo";
     };
   };
+
+  homebrew.casks = [ "helium-browser" ];
 }
