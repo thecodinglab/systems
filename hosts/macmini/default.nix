@@ -26,12 +26,6 @@
     "/System/Applications/System Settings.app"
   ];
 
-  services.ollama = {
-    enable = true;
-    models = [ "qwen2.5:14b" ];
-    environment.OLLAMA_KEEP_ALIVE = "30m";
-  };
-
   # claude code on every host goes through this (custom.claude-code.proxy in
   # home/florian/default.nix); it listens on all interfaces for the lan,
   # clients need the key. The web panel (http://127.0.0.1:8317/management.html)
@@ -58,10 +52,6 @@
 
   services.kakeibo = {
     enable = true;
-    environment = {
-      KAKEIBO_LLM_BASE_URL = "http://127.0.0.1:11434/v1";
-      KAKEIBO_LLM_MODEL = "qwen2.5:14b";
-    };
     # the "unas" remote holds the SMB password, so it is created by hand:
     #   install -d -m 700 ~/.config/kakeibo && read -rs PASS && nix run nixpkgs#rclone -- config create \
     #     unas smb host=192.168.32.185 user=florian pass="$PASS" --config ~/.config/kakeibo/rclone.conf
