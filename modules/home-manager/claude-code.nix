@@ -36,6 +36,15 @@ in
 
     package = lib.mkPackageOption pkgs "claude-code" { };
 
+    context = mkOption {
+      type = types.nullOr (types.either types.lines types.path);
+      default = null;
+      description = ''
+        Global instructions, as text or a path, installed at ~/.claude/CLAUDE.md.
+        The file is read-only; change its source in the Nix configuration instead.
+      '';
+    };
+
     settings = mkOption {
       type = format.type;
       default = { };
@@ -68,6 +77,9 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ package ];
+    home.file.".claude/CLAUDE.md" = lib.mkIf (cfg.context != null) (
+      if lib.isPath cfg.context then { source = cfg.context; } else { text = cfg.context; }
+    );
 
     # https://help.router-for.me/agent-client/claude-code.html
     custom.claude-code.settings = lib.mkIf cfg.proxy.enable {

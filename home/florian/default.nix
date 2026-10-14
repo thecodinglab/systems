@@ -28,6 +28,12 @@ in
 
     shell.enableZshIntegration = true;
     preferXdgDirectories = true;
+
+    file = {
+      ".claude/model-selection-report.md".source = ../../docs/ai-model-selection.md;
+      ".claude/agents/openai-astra.md".source = ./claude/agents/openai-astra.md;
+      ".claude/agents/openai-sol.md".source = ./claude/agents/openai-sol.md;
+    };
   };
 
   custom = {
@@ -42,6 +48,7 @@ in
 
     claude-code = {
       enable = true;
+      context = ./claude/CLAUDE.md;
 
       settings = {
         permissions.defaultMode = "bypassPermissions";
