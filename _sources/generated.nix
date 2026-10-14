@@ -8,58 +8,58 @@
 {
   claude-code-aarch64-darwin = {
     pname = "claude-code-aarch64-darwin";
-    version = "2.1.287";
+    version = "2.1.299";
     src = fetchurl {
-      url = "https://downloads.claude.ai/claude-code-releases/2.1.287/darwin-arm64/claude.zst";
-      sha256 = "sha256-JwHawE4CrL6n11hPw14Erd328kAh0yHjun65WZTtz5Y=";
+      url = "https://downloads.claude.ai/claude-code-releases/2.1.299/darwin-arm64/claude.zst";
+      sha256 = "sha256-tRADYmjmI5HFD3LIRjGTJZWCiSg+4tzCuTxI9vPB0Ks=";
     };
   };
   claude-code-x86_64-linux = {
     pname = "claude-code-x86_64-linux";
-    version = "2.1.287";
+    version = "2.1.299";
     src = fetchurl {
-      url = "https://downloads.claude.ai/claude-code-releases/2.1.287/linux-x64/claude.zst";
-      sha256 = "sha256-rdNkAHRi/mlKlapox4vfenGx3faH+A3aYD9YzIDN5XQ=";
+      url = "https://downloads.claude.ai/claude-code-releases/2.1.299/linux-x64/claude.zst";
+      sha256 = "sha256-IMolITEwJVus3K4+1d8/yZ4djobN9G6RiLf/nBtHj6Q=";
     };
   };
   claude-desktop = {
     pname = "claude-desktop";
-    version = "2.9939.4";
+    version = "2.37337.1";
     src = fetchurl {
-      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.9939.4_amd64.deb";
-      sha256 = "sha256-PP3bI78pEeBeJ7TtOFa455XflGQ7LDW1nesxfPmVvKA=";
+      url = "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_2.37337.1_amd64.deb";
+      sha256 = "sha256-QXRbCRTw/1FjGh/xu0A7g2v1yZWEXMpnQt05vKOi2hQ=";
     };
   };
   codex-aarch64-darwin = {
     pname = "codex-aarch64-darwin";
-    version = "0.160.0";
+    version = "0.162.1";
     src = fetchurl {
-      url = "https://github.com/openai/codex/releases/download/rust-v0.160.0/codex-package-aarch64-apple-darwin.tar.gz";
-      sha256 = "sha256-AH30G2B9u8jSBLl0bOf+0tTObIE/RMMs7uVBdcp5ZSU=";
+      url = "https://github.com/openai/codex/releases/download/rust-v0.162.1/codex-package-aarch64-apple-darwin.tar.gz";
+      sha256 = "sha256-iON8zd9aD06p3BvhPGaiqU+cLRoE86zpBT1xs5OeiF0=";
     };
   };
   codex-x86_64-linux = {
     pname = "codex-x86_64-linux";
-    version = "0.160.0";
+    version = "0.162.1";
     src = fetchurl {
-      url = "https://github.com/openai/codex/releases/download/rust-v0.160.0/codex-package-x86_64-unknown-linux-musl.tar.gz";
-      sha256 = "sha256-T8xHq1f1L/dTY5Uah2EUbNEMgoi9hv7UVIfbsgSha3E=";
+      url = "https://github.com/openai/codex/releases/download/rust-v0.162.1/codex-package-x86_64-unknown-linux-musl.tar.gz";
+      sha256 = "sha256-pnb1ciquDYbL43ZDMvCOqx/didwKMAs61P+/SGEfo+M=";
     };
   };
   helium = {
     pname = "helium";
-    version = "0.18.2.1";
+    version = "0.19.2.1";
     src = fetchurl {
-      url = "https://github.com/imputnet/helium-linux/releases/download/0.18.2.1/helium-0.18.2.1-x86_64_linux.tar.xz";
-      sha256 = "sha256-RJPXVrmK++P9fUXA7CFcI/WgVR+ucVWG/mzjsimLFVw=";
+      url = "https://github.com/imputnet/helium-linux/releases/download/0.19.2.1/helium-0.19.2.1-x86_64_linux.tar.xz";
+      sha256 = "sha256-cHzzGeOj0qoGHKFddUh3vRi4sokghzjIKfywhzvH7Ns=";
     };
   };
   zen-browser = {
     pname = "zen-browser";
-    version = "1.22.3b";
+    version = "1.23.2b";
     src = fetchTarball {
-      url = "https://github.com/zen-browser/desktop/releases/download/1.22.3b/zen.linux-x86_64.tar.xz";
-      sha256 = "sha256-MMHX+G0CP1qHczkctLvhqv98KPtEOfty2TYNgsPZbZ8=";
+      url = "https://github.com/zen-browser/desktop/releases/download/1.23.2b/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-wWc1yrzsQi3S0993o7OV0+9KoY2oImp0ISXkH01FDt4=";
     };
   };
 }
