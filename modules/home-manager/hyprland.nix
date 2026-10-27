@@ -489,6 +489,10 @@
               lock_cmd = "pidof hyprlock || ${lib.getExe pkgs.hyprlock}";
               before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
               after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
+
+              # browsers can leave wayland idle inhibitors dangling after
+              # playback stops; rely on their dbus wake locks instead
+              ignore_wayland_inhibit = true;
             };
 
             listener = [
