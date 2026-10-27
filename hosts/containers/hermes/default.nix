@@ -27,6 +27,8 @@ in
 
         "teslamate.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92/";
 
+        # superseded by home.florian-walter.ch on the macmini, which skips the
+        # site-to-site vpn; remove once nothing uses this hostname anymore
         "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://192.168.128.100:8123/";
 
         "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";

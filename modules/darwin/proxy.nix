@@ -136,16 +136,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # runs as root to bind the port, the workers drop to nobody
+    launchd.daemons.nginx.command = lib.escapeShellArgs [
+      (lib.getExe cfg.package)
+      "-c"
+      "${configFile}"
+      "-e"
+      "stderr"
+    ];
     launchd.daemons.nginx.serviceConfig = {
-      ProgramArguments = [
-        (lib.getExe cfg.package)
-        "-c"
-        "${configFile}"
-        # the built-in path /var/log/nginx doesn't exist here
-        "-e"
-        "stderr"
-      ];
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "/var/log/nginx.log";

@@ -44,11 +44,13 @@
     settings.server.host = "";
   };
 
-  # kakeibo has no authentication, so it only listens on localhost (the module
-  # default) and is reached through hermes
-  custom.proxy = {
+  services.cloudflared = {
     enable = true;
-    vhosts."kakeibo.ch".locations."/".proxyPass = "http://127.0.0.1:8080";
+    credentialsFile = "/Users/florian/.config/cloudflared/macmini.json";
+    ingress = {
+      "kakeibo.ch".service = "http://127.0.0.1:8080";
+      "home.florian-walter.ch".service = "http://192.168.128.100:8123";
+    };
   };
 
   services.kakeibo = {
