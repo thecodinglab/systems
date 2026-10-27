@@ -24,6 +24,9 @@ in
 
       SOPS_AGE_SSH_PRIVATE_KEY_CMD = "${sopsKey} ssh";
       SOPS_AGE_KEY_CMD = "${sopsKey} age";
+
+      # rust-analyzer needs the std sources to resolve `std`/`core`
+      RUST_SRC_PATH = "${pkgs.rustPlatform.rustLibSrc}";
     };
 
     shell.enableZshIntegration = true;
@@ -150,6 +153,8 @@ in
 
     # Rust
     pkgs.cargo
+    pkgs.rustc
+    pkgs.clippy
     pkgs.rustfmt
     pkgs.rust-analyzer
 
