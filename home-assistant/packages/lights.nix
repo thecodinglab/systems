@@ -1,0 +1,283 @@
+{ ordered }:
+{
+  automation = [
+    {
+      id = "1792500000008";
+      alias = "Lights: Shift to Relax in the Evening";
+      description = "When evening starts (sunset or \"Lights Relax From\", whichever comes first), rooms that are still on the Bright preset fade to Relax over a minute (the bedroom to its own calmer Relax). Runs once per evening, so picking Bright again afterwards sticks.";
+      triggers = [
+        {
+          trigger = "numeric_state";
+          entity_id = "sun.sun";
+          attribute = "elevation";
+          below = 0;
+        }
+        {
+          trigger = "time";
+          at = "input_datetime.lights_relax_from";
+        }
+      ];
+      conditions = [
+        {
+          condition = "time";
+          after = "12:00:00";
+        }
+        {
+          condition = "template";
+          value_template = ''
+            {{ this.attributes.last_triggered is none
+               or this.attributes.last_triggered < today_at('12:00') }}'';
+        }
+        {
+          condition = "state";
+          entity_id = "script.bedroom_sunrise";
+          state = "off";
+        }
+        {
+          condition = "template";
+          value_template = "{{ bright | count > 0 }}";
+        }
+      ];
+      actions = [
+        {
+          action = "script.light_preset";
+          data = {
+            lights = "{{ bright }}";
+            preset = "relax";
+            transition = 60;
+          };
+        }
+      ];
+      variables = ordered [
+        {
+          rooms = [
+            [
+              "light.kitchen_datura_top"
+              "light.kitchen_datura_bottom"
+            ]
+            [
+              "light.living_room_datura_top"
+              "light.living_room_datura_bottom"
+            ]
+            [
+              "light.bedroom_twilight_left_main"
+              "light.bedroom_twilight_left_ambiance"
+              "light.bedroom_twilight_right_main"
+              "light.bedroom_twilight_right_ambiance"
+            ]
+          ];
+        }
+        {
+          bright = ''
+            {%- set ns = namespace(l=[]) -%} {%- for room in rooms -%}
+              {%- set on = room | select('is_state', 'on') | list -%}
+              {%- set is_bright = on | select('is_state_attr', 'color_mode', 'color_temp')
+                    | map('state_attr', 'brightness') | map('int', 0) | select('ge', 250) | list | count > 0
+                  and on | map('state_attr', 'color_temp_kelvin') | map('int', 0) | select('ge', 2950) | list | count > 0 -%}
+              {%- if is_bright -%}{%- set ns.l = ns.l + on -%}{%- endif -%}
+            {%- endfor -%} {{ ns.l }}'';
+        }
+      ];
+      mode = "single";
+    }
+  ];
+  input_datetime = {
+    lights_bright_from = {
+      has_date = false;
+      has_time = true;
+      icon = "mdi:white-balance-sunny";
+      initial = "06:00:00";
+      name = "Lights Bright From";
+    };
+    lights_night_from = {
+      has_date = false;
+      has_time = true;
+      icon = "mdi:weather-night";
+      initial = "22:30:00";
+      name = "Lights Night From";
+    };
+    lights_relax_from = {
+      has_date = false;
+      has_time = true;
+      icon = "mdi:weather-sunset-down";
+      initial = "20:00:00";
+      name = "Lights Relax From";
+    };
+  };
+  script = {
+    light_preset = {
+      alias = "Light Preset";
+      description = "Apply a light preset (Bright / Relax / Cozy / Night) to lights. 'auto' picks by time of day: Night between \"Lights Night From\" and \"Lights Bright From\", Relax from sunset or \"Lights Relax From\" (whichever is first), Bright otherwise. The bedroom Twilight lamps have their own calmer presets that lean on the indirect back light, and 'auto' there never picks Bright.";
+      icon = "mdi:palette";
+      mode = "parallel";
+      fields = ordered [
+        {
+          lights = {
+            name = "Lights";
+            required = true;
+            selector = {
+              entity = {
+                domain = "light";
+                multiple = true;
+              };
+            };
+          };
+        }
+        {
+          preset = {
+            name = "Preset";
+            required = true;
+            default = "auto";
+            selector = {
+              select = {
+                options = [
+                  "auto"
+                  "bright"
+                  "relax"
+                  "cozy"
+                  "night"
+                ];
+              };
+            };
+          };
+        }
+        {
+          transition = {
+            name = "Transition";
+            default = 0.4;
+            selector = {
+              number = {
+                min = 0;
+                max = 3600;
+                step = 0.1;
+                unit_of_measurement = "s";
+              };
+            };
+          };
+        }
+      ];
+      sequence = [
+        {
+          variables = ordered [
+            {
+              generic = {
+                bright = {
+                  brightness_pct = 100;
+                  color_temp_kelvin = 4000;
+                };
+                relax = {
+                  brightness_pct = 60;
+                  color_temp_kelvin = 2700;
+                };
+                cozy = {
+                  brightness_pct = 30;
+                  color_temp_kelvin = 2200;
+                };
+                night = {
+                  brightness_pct = 10;
+                  color_temp_kelvin = 2200;
+                };
+              };
+            }
+            {
+              bedroom = {
+                main = {
+                  bright = {
+                    brightness_pct = 100;
+                    color_temp_kelvin = 3000;
+                    effect = "off";
+                  };
+                  relax = {
+                    brightness_pct = 40;
+                    color_temp_kelvin = 2700;
+                    effect = "off";
+                  };
+                  cozy = {
+                    brightness_pct = 15;
+                    color_temp_kelvin = 2200;
+                    effect = "off";
+                  };
+                  night = {
+                    brightness_pct = 3;
+                    color_temp_kelvin = 2000;
+                    effect = "off";
+                  };
+                };
+                ambiance = {
+                  bright = {
+                    brightness_pct = 70;
+                    color_temp_kelvin = 2700;
+                    effect = "off";
+                  };
+                  relax = {
+                    brightness_pct = 70;
+                    color_temp_kelvin = 2400;
+                    effect = "off";
+                  };
+                  cozy = {
+                    brightness_pct = 55;
+                    xy_color = [
+                      0.555
+                      0.408
+                    ];
+                    effect = "candle";
+                  };
+                  night = {
+                    brightness_pct = 8;
+                    xy_color = [
+                      0.575
+                      0.395
+                    ];
+                    effect = "off";
+                  };
+                };
+              };
+            }
+            {
+              bedroom_members = [
+                "light.bedroom_twilight_left_main"
+                "light.bedroom_twilight_left_ambiance"
+                "light.bedroom_twilight_right_main"
+                "light.bedroom_twilight_right_ambiance"
+              ];
+            }
+            { requested = "{{ preset | default('auto') }}"; }
+            {
+              by_time = "{%- set t = now().strftime('%H:%M:%S') -%} {%- set bright_from = states('input_datetime.lights_bright_from') if has_value('input_datetime.lights_bright_from') else '06:00:00' -%} {%- set relax_from = states('input_datetime.lights_relax_from') if has_value('input_datetime.lights_relax_from') else '20:00:00' -%} {%- set night_from = states('input_datetime.lights_night_from') if has_value('input_datetime.lights_night_from') else '22:30:00' -%} {%- if t >= night_from or t < bright_from -%}night {%- elif t >= relax_from or (t >= '12:00:00' and state_attr('sun.sun', 'elevation') | float(90) < 0) -%}relax {%- else -%}bright {%- endif -%}";
+            }
+            {
+              calls = ''
+                {%- set ns = namespace(calls=[]) -%} {%- set ids = [lights] if lights is string else lights -%} {%- for e in ids -%}
+                  {%- for light in (bedroom_members if e == 'light.bedroom_lights' else [e]) -%}
+                    {%- set p = by_time if requested == 'auto' else requested -%}
+                    {%- if light in bedroom_members -%}
+                      {%- set p = 'relax' if requested == 'auto' and p == 'bright' else p -%}
+                      {%- set d = dict(bedroom['main' if light.endswith('_main') else 'ambiance'][p],
+                                       transition=[transition | default(0.4) | float(0.4), 1.5] | max) -%}
+                    {%- else -%}
+                      {%- set d = dict(generic[p], transition=transition | default(0.4) | float(0.4)) -%}
+                    {%- endif -%}
+                    {%- set ns.calls = ns.calls + [{'entity_id': light, 'data': d}] -%}
+                  {%- endfor -%}
+                {%- endfor -%} {{ ns.calls }}'';
+            }
+          ];
+        }
+        {
+          repeat = {
+            for_each = "{{ calls }}";
+            sequence = [
+              {
+                action = "light.turn_on";
+                target = {
+                  entity_id = "{{ repeat.item.entity_id }}";
+                };
+                data = "{{ repeat.item.data }}";
+              }
+            ];
+          };
+        }
+      ];
+    };
+  };
+}

@@ -91,4 +91,9 @@ container-%:
 	nixos-rebuild --target-host $(patsubst container-%,%,$@) switch --flake .#$(patsubst container-%,%,$@) $(FLAKE_FLAGS)
 	sleep 5 # for some reason without a timeout rebuilding all containers will get stuck
 
-.PHONY: build switch check-host update server containers
+# render home-assistant/ and push it to the home assistant os host, see
+# home-assistant/README.md
+home-assistant:
+	nix run .#home-assistant $(FLAKE_FLAGS)
+
+.PHONY: build switch check-host update server containers home-assistant

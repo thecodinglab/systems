@@ -42,3 +42,8 @@ creation_rules:
       - age:
         - *personal
         - *user_florian
+  - path_regex: ^home-assistant/secrets.yaml$
+    key_groups:
+      - age:
+        - *personal
+        - *user_florian

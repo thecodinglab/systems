@@ -167,6 +167,10 @@
         }
       );
 
+      homeAssistantConfiguration = forAllSystems (
+        system: import ./home-assistant { pkgs = pkgsFor system; }
+      );
+
       apps = forAllSystems (
         system:
         let
@@ -191,6 +195,15 @@
           apply = {
             type = "app";
             program = mkTerraformCmd "apply";
+          };
+          home-assistant = {
+            type = "app";
+            program = pkgs.lib.getExe (
+              import ./home-assistant/deploy.nix {
+                inherit pkgs;
+                config = self.homeAssistantConfiguration.${system};
+              }
+            );
           };
         }
       );
