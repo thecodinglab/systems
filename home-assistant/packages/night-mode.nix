@@ -1,4 +1,17 @@
-{ ordered }:
+{
+  entities,
+  ordered,
+  state,
+  notState,
+  template,
+  call,
+  notify,
+  lightPreset,
+  ...
+}:
+let
+  inherit (entities) lights nightMode window;
+in
 {
   automation = [
     {
@@ -11,21 +24,8 @@
           at = "05:00:00";
         }
       ];
-      conditions = [
-        {
-          condition = "state";
-          entity_id = "input_boolean.night_mode";
-          state = "on";
-        }
-      ];
-      actions = [
-        {
-          action = "input_boolean.turn_off";
-          target = {
-            entity_id = "input_boolean.night_mode";
-          };
-        }
-      ];
+      conditions = [ (state nightMode "on") ];
+      actions = [ (call "input_boolean.turn_off" nightMode) ];
       mode = "single";
     }
   ];
@@ -47,76 +47,38 @@
             name = "Called from the bedroom";
             description = "Leave the bedroom lights as they are instead of turning them on.";
             default = false;
-            selector = {
-              boolean = null;
-            };
+            selector.boolean = null;
           };
         }
       ];
       sequence = [
-        {
-          action = "input_boolean.turn_on";
-          target = {
-            entity_id = "input_boolean.night_mode";
-          };
-        }
-        {
-          action = "light.turn_off";
-          target = {
-            entity_id = [
-              "light.kitchen_lights"
-              "light.living_room_lights"
-              "light.office_lights"
-            ];
-          };
-          data = {
-            transition = 3;
-          };
-        }
+        (call "input_boolean.turn_on" nightMode)
+        (
+          call "light.turn_off" [
+            lights.kitchen
+            lights.livingRoom
+            lights.office
+          ]
+          // {
+            data.transition = 3;
+          }
+        )
         {
           "if" = [
-            {
-              condition = "template";
-              value_template = "{{ not (from_bedroom | default(false)) }}";
-            }
-            {
-              condition = "state";
-              entity_id = "light.bedroom_lights";
-              state = "off";
-            }
+            (template "{{ not (from_bedroom | default(false)) }}")
+            (state lights.bedroom "off")
           ];
           "then" = [
-            {
-              action = "script.light_preset";
-              data = {
-                lights = "light.bedroom_lights";
-                preset = "auto";
-                transition = 2;
-              };
-            }
+            (lightPreset {
+              lights = lights.bedroom;
+              preset = "auto";
+              transition = 2;
+            })
           ];
         }
         {
-          "if" = [
-            {
-              condition = "not";
-              conditions = [
-                {
-                  condition = "state";
-                  entity_id = "cover.living_room_window";
-                  state = "closed";
-                }
-              ];
-            }
-          ];
-          "then" = [
-            {
-              action = "cover.close_cover";
-              target = {
-                entity_id = "cover.living_room_window";
-              };
-            }
-          ];
+          "if" = [ (notState window "closed") ];
+          "then" = [ (call "cover.close_cover" window) ];
         }
         {
           variables = ordered [
@@ -131,31 +93,21 @@
           ];
         }
         {
-          "if" = [
-            {
-              condition = "template";
-              value_template = "{{ scheduled }}";
-            }
-          ];
+          "if" = [ (template "{{ scheduled }}") ];
           "then" = [
-            {
-              action = "notify.mobile_app_florians_iphone_18";
-              data = {
-                title = "Goodnight";
-                message = ''
-                  {{ 'Wake-up light is skipped tomorrow.' if skipped
-                     else 'Wake-up light tomorrow at ' ~ wake_time ~ '.' }}'';
-                data = {
-                  tag = "wake-up-tomorrow";
-                  actions = [
-                    {
-                      action = "{{ 'WAKEUP_UNSKIP' if skipped else 'WAKEUP_SKIP_NEXT' }}";
-                      title = "{{ 'Wake me after all' if skipped else 'Skip tomorrow' }}";
-                    }
-                  ];
-                };
-              };
-            }
+            (notify {
+              title = "Goodnight";
+              message = ''
+                {{ 'Wake-up light is skipped tomorrow.' if skipped
+                   else 'Wake-up light tomorrow at ' ~ wake_time ~ '.' }}'';
+              tag = "wake-up-tomorrow";
+              actions = [
+                {
+                  action = "{{ 'WAKEUP_UNSKIP' if skipped else 'WAKEUP_SKIP_NEXT' }}";
+                  title = "{{ 'Wake me after all' if skipped else 'Skip tomorrow' }}";
+                }
+              ];
+            })
           ];
         }
       ];

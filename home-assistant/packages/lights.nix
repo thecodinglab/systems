@@ -1,4 +1,26 @@
-{ ordered }:
+{
+  entities,
+  ordered,
+  state,
+  template,
+  lightPreset,
+  timeOfDay,
+  ...
+}:
+let
+  inherit (entities)
+    lights
+    datura
+    twilight
+    lightTimes
+    ;
+
+  # sets <preset>_from to the time the preset starts, from its input_datetime
+  # or the default
+  starts =
+    preset:
+    "{%- set ${preset}_from = states('input_datetime.lights_${preset}_from') if has_value('input_datetime.lights_${preset}_from') else '${lightTimes.${preset}}' -%}";
+in
 {
   automation = [
     {
@@ -22,49 +44,25 @@
           condition = "time";
           after = "12:00:00";
         }
-        {
-          condition = "template";
-          value_template = ''
-            {{ this.attributes.last_triggered is none
-               or this.attributes.last_triggered < today_at('12:00') }}'';
-        }
-        {
-          condition = "state";
-          entity_id = "script.bedroom_sunrise";
-          state = "off";
-        }
-        {
-          condition = "template";
-          value_template = "{{ bright | count > 0 }}";
-        }
+        (template ''
+          {{ this.attributes.last_triggered is none
+             or this.attributes.last_triggered < today_at('12:00') }}'')
+        (state entities.scripts.sunrise "off")
+        (template "{{ bright | count > 0 }}")
       ];
       actions = [
-        {
-          action = "script.light_preset";
-          data = {
-            lights = "{{ bright }}";
-            preset = "relax";
-            transition = 60;
-          };
-        }
+        (lightPreset {
+          lights = "{{ bright }}";
+          preset = "relax";
+          transition = 60;
+        })
       ];
       variables = ordered [
         {
           rooms = [
-            [
-              "light.kitchen_datura_top"
-              "light.kitchen_datura_bottom"
-            ]
-            [
-              "light.living_room_datura_top"
-              "light.living_room_datura_bottom"
-            ]
-            [
-              "light.bedroom_twilight_left_main"
-              "light.bedroom_twilight_left_ambiance"
-              "light.bedroom_twilight_right_main"
-              "light.bedroom_twilight_right_ambiance"
-            ]
+            datura.kitchen
+            datura.livingRoom
+            twilight.all
           ];
         }
         {
@@ -82,25 +80,19 @@
     }
   ];
   input_datetime = {
-    lights_bright_from = {
-      has_date = false;
-      has_time = true;
+    lights_bright_from = timeOfDay {
       icon = "mdi:white-balance-sunny";
-      initial = "06:00:00";
+      initial = lightTimes.bright;
       name = "Lights Bright From";
     };
-    lights_night_from = {
-      has_date = false;
-      has_time = true;
+    lights_night_from = timeOfDay {
       icon = "mdi:weather-night";
-      initial = "22:30:00";
+      initial = lightTimes.night;
       name = "Lights Night From";
     };
-    lights_relax_from = {
-      has_date = false;
-      has_time = true;
+    lights_relax_from = timeOfDay {
       icon = "mdi:weather-sunset-down";
-      initial = "20:00:00";
+      initial = lightTimes.relax;
       name = "Lights Relax From";
     };
   };
@@ -115,11 +107,9 @@
           lights = {
             name = "Lights";
             required = true;
-            selector = {
-              entity = {
-                domain = "light";
-                multiple = true;
-              };
+            selector.entity = {
+              domain = "light";
+              multiple = true;
             };
           };
         }
@@ -128,30 +118,24 @@
             name = "Preset";
             required = true;
             default = "auto";
-            selector = {
-              select = {
-                options = [
-                  "auto"
-                  "bright"
-                  "relax"
-                  "cozy"
-                  "night"
-                ];
-              };
-            };
+            selector.select.options = [
+              "auto"
+              "bright"
+              "relax"
+              "cozy"
+              "night"
+            ];
           };
         }
         {
           transition = {
             name = "Transition";
             default = 0.4;
-            selector = {
-              number = {
-                min = 0;
-                max = 3600;
-                step = 0.1;
-                unit_of_measurement = "s";
-              };
+            selector.number = {
+              min = 0;
+              max = 3600;
+              step = 0.1;
+              unit_of_measurement = "s";
             };
           };
         }
@@ -233,22 +217,15 @@
                 };
               };
             }
-            {
-              bedroom_members = [
-                "light.bedroom_twilight_left_main"
-                "light.bedroom_twilight_left_ambiance"
-                "light.bedroom_twilight_right_main"
-                "light.bedroom_twilight_right_ambiance"
-              ];
-            }
+            { bedroom_members = twilight.all; }
             { requested = "{{ preset | default('auto') }}"; }
             {
-              by_time = "{%- set t = now().strftime('%H:%M:%S') -%} {%- set bright_from = states('input_datetime.lights_bright_from') if has_value('input_datetime.lights_bright_from') else '06:00:00' -%} {%- set relax_from = states('input_datetime.lights_relax_from') if has_value('input_datetime.lights_relax_from') else '20:00:00' -%} {%- set night_from = states('input_datetime.lights_night_from') if has_value('input_datetime.lights_night_from') else '22:30:00' -%} {%- if t >= night_from or t < bright_from -%}night {%- elif t >= relax_from or (t >= '12:00:00' and state_attr('sun.sun', 'elevation') | float(90) < 0) -%}relax {%- else -%}bright {%- endif -%}";
+              by_time = "{%- set t = now().strftime('%H:%M:%S') -%} ${starts "bright"} ${starts "relax"} ${starts "night"} {%- if t >= night_from or t < bright_from -%}night {%- elif t >= relax_from or (t >= '12:00:00' and state_attr('sun.sun', 'elevation') | float(90) < 0) -%}relax {%- else -%}bright {%- endif -%}";
             }
             {
               calls = ''
                 {%- set ns = namespace(calls=[]) -%} {%- set ids = [lights] if lights is string else lights -%} {%- for e in ids -%}
-                  {%- for light in (bedroom_members if e == 'light.bedroom_lights' else [e]) -%}
+                  {%- for light in (bedroom_members if e == '${lights.bedroom}' else [e]) -%}
                     {%- set p = by_time if requested == 'auto' else requested -%}
                     {%- if light in bedroom_members -%}
                       {%- set p = 'relax' if requested == 'auto' and p == 'bright' else p -%}
@@ -269,9 +246,7 @@
             sequence = [
               {
                 action = "light.turn_on";
-                target = {
-                  entity_id = "{{ repeat.item.entity_id }}";
-                };
+                target.entity_id = "{{ repeat.item.entity_id }}";
                 data = "{{ repeat.item.data }}";
               }
             ];

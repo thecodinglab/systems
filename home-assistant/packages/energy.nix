@@ -1,4 +1,19 @@
-{ ordered }:
+{
+  entities,
+  ordered,
+  jinjaList,
+  template,
+  call,
+  notify,
+  ...
+}:
+let
+  # plugs that are only there to measure, they should never be off
+  plugs = [
+    entities.desktop
+    entities.serverRack
+  ];
+in
 {
   automation = [
     {
@@ -8,10 +23,7 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = [
-            "switch.office_desktop"
-            "switch.living_room_server_rack"
-          ];
+          entity_id = plugs;
           to = "off";
         }
         {
@@ -22,34 +34,17 @@
       actions = [
         {
           variables = ordered [
-            {
-              off_plugs = "{{ [\"switch.office_desktop\", \"switch.living_room_server_rack\"] | select(\"is_state\", \"off\") | list }}";
-            }
+            { off_plugs = "{{ ${jinjaList plugs} | select(\"is_state\", \"off\") | list }}"; }
           ];
         }
-        {
-          condition = "template";
-          value_template = "{{ off_plugs | count > 0 }}";
-        }
-        {
-          action = "switch.turn_on";
-          target = {
-            entity_id = "{{ off_plugs }}";
-          };
-        }
-        {
-          action = "notify.mobile_app_florians_iphone_18";
-          data = {
-            title = "Power restored";
-            message = "{{ off_plugs | map(\"state_attr\", \"friendly_name\") | join(\" and \") }} was switched off and has been turned back on.";
-            data = {
-              tag = "power-restored";
-              push = {
-                interruption-level = "time-sensitive";
-              };
-            };
-          };
-        }
+        (template "{{ off_plugs | count > 0 }}")
+        (call "switch.turn_on" "{{ off_plugs }}")
+        (notify {
+          title = "Power restored";
+          message = "{{ off_plugs | map(\"state_attr\", \"friendly_name\") | join(\" and \") }} was switched off and has been turned back on.";
+          tag = "power-restored";
+          interruptionLevel = "time-sensitive";
+        })
       ];
       mode = "queued";
     }

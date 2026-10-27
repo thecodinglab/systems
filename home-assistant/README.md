@@ -21,14 +21,26 @@ and devices, area/label/icon assignments (entity registry), dashboards, HACS.
 
 ## Writing packages
 
+Package files are functions of `{ lib, entities, ... }` plus everything in
+`lib.nix`, and take what they use:
+
+- `entities.nix` has the entity ids used in more than one place (the phone,
+  room lights, shutters, scripts, ...). Renaming a device in home assistant
+  only needs a change there.
+- `lib.nix` has the building blocks: conditions (`state`, `template`,
+  `isHome`, ...), actions (`call`, `notify`, `lightPreset`, `startScript`,
+  ...), `jinjaList` to put a nix list of entity ids into a template and
+  `dialSwitch` for a hue tap dial controlling a room.
+- Things only repeated within one package stay in that package's `let`.
+
 - Keep `id` on automations: it is the entity's unique id, the entity registry
   (entity id, area, icon) is attached to it.
 - Script and helper keys are their entity ids (`script.<key>`,
   `input_boolean.<key>`, ...).
 - Nix sorts attribute names, but home assistant evaluates `variables` in order
-  (later ones can use earlier ones). Package files are functions of
-  `{ ordered }` for that: `variables = ordered [ { a = ...; } { b = "{{ a }}"; } ]`.
-  `fields` use it too, it sets the order in the UI.
+  (later ones can use earlier ones), so they are written with `ordered`:
+  `variables = ordered [ { a = ...; } { b = "{{ a }}"; } ]`. `fields` use it
+  too, it sets the order in the UI.
 - Home assistant merges packages recursively and silently drops empty maps on
   the way, so options-less selectors are written `boolean = null`; the build
   fails on an empty map where it would be dropped.

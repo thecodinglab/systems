@@ -1,4 +1,62 @@
-{ ordered }:
+{
+  lib,
+  entities,
+  ordered,
+  jinjaList,
+  template,
+  call,
+  notify,
+  clearNotification,
+  startScript,
+  ...
+}:
+let
+  inherit (entities) scripts;
+
+  skipNextWakeUp = "input_boolean.bedroom_wake_up_skip_next";
+
+  # what the buttons on actionable notifications do, by their action; the
+  # Roborock maintenance reminders send ROBOROCK_RESET:<button> on top
+  notificationActions = {
+    CLOSE_WINDOW = [ (call "cover.close_cover" entities.window) ];
+    WAKEUP_SKIP_NEXT = [ (call "input_boolean.turn_on" skipNextWakeUp) ];
+    WAKEUP_UNSKIP = [ (call "input_boolean.turn_off" skipNextWakeUp) ];
+    SHUTTERS_RAISE = [ (startScript scripts.shutterPreset { preset = "open"; }) ];
+    SHUTTERS_PRIVACY = [ (startScript scripts.shutterPreset { preset = "privacy"; }) ];
+    SHUTTERS_NIGHT = [ (startScript scripts.shutterPreset { preset = "night"; }) ];
+    ROBOROCK_DOCK = [ (call "vacuum.return_to_base" entities.vacuum) ];
+  };
+
+  # devices worth a notification when they have been offline for a while
+  watched =
+    entities.datura.kitchen
+    ++ entities.datura.livingRoom
+    ++ entities.twilight.main
+    ++ [
+      "light.office_lamp"
+      "sensor.kitchen_climate_temperature"
+      "sensor.bedroom_climate_temperature"
+      "sensor.bathroom_climate_temperature"
+      entities.officePresence
+    ]
+    ++ map (device: "${device}_button_1") (
+      with entities.dialSwitches;
+      [
+        kitchen
+        livingRoom
+        bedroom
+      ]
+    )
+    ++ [
+      "light.living_room_window_open_relay"
+      "light.living_room_shutter_top_left_up_relay"
+      "light.living_room_shutter_top_right_up_relay"
+      "light.living_room_shutter_bottom_left_up_relay"
+      "light.living_room_shutter_bottom_right_up_relay"
+      entities.desktop
+      entities.serverRack
+    ];
+in
 {
   automation = [
     {
@@ -11,23 +69,13 @@
           at = "18:07:00";
         }
       ];
-      conditions = [
-        {
-          condition = "template";
-          value_template = "{{ low | count > 0 }}";
-        }
-      ];
+      conditions = [ (template "{{ low | count > 0 }}") ];
       actions = [
-        {
-          action = "notify.mobile_app_florians_iphone_18";
-          data = {
-            title = "Low battery";
-            message = "{{ low | join(\"\\n\") }}";
-            data = {
-              tag = "low-battery";
-            };
-          };
-        }
+        (notify {
+          title = "Low battery";
+          message = "{{ low | join(\"\\n\") }}";
+          tag = "low-battery";
+        })
       ];
       mode = "single";
       variables = ordered [
@@ -48,114 +96,23 @@
         }
       ];
       conditions = [
-        {
-          condition = "template";
-          value_template = ''
-            {{ action in ['CLOSE_WINDOW', 'WAKEUP_SKIP_NEXT', 'WAKEUP_UNSKIP', 'SHUTTERS_RAISE', 'SHUTTERS_PRIVACY', 'SHUTTERS_NIGHT', 'ROBOROCK_DOCK']
-               or action.startswith('ROBOROCK_RESET:') }}'';
-        }
+        (template ''
+          {{ action in ${jinjaList (lib.attrNames notificationActions)}
+             or action.startswith('ROBOROCK_RESET:') }}'')
       ];
       actions = [
         {
-          choose = [
-            {
-              conditions = "{{ action == 'CLOSE_WINDOW' }}";
-              sequence = [
-                {
-                  action = "cover.close_cover";
-                  target = {
-                    entity_id = "cover.living_room_window";
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'WAKEUP_SKIP_NEXT' }}";
-              sequence = [
-                {
-                  action = "input_boolean.turn_on";
-                  target = {
-                    entity_id = "input_boolean.bedroom_wake_up_skip_next";
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'WAKEUP_UNSKIP' }}";
-              sequence = [
-                {
-                  action = "input_boolean.turn_off";
-                  target = {
-                    entity_id = "input_boolean.bedroom_wake_up_skip_next";
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'SHUTTERS_RAISE' }}";
-              sequence = [
-                {
-                  action = "script.turn_on";
-                  target = {
-                    entity_id = "script.shutter_preset";
-                  };
-                  data = {
-                    variables = ordered [ { preset = "open"; } ];
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'SHUTTERS_PRIVACY' }}";
-              sequence = [
-                {
-                  action = "script.turn_on";
-                  target = {
-                    entity_id = "script.shutter_preset";
-                  };
-                  data = {
-                    variables = ordered [ { preset = "privacy"; } ];
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'SHUTTERS_NIGHT' }}";
-              sequence = [
-                {
-                  action = "script.turn_on";
-                  target = {
-                    entity_id = "script.shutter_preset";
-                  };
-                  data = {
-                    variables = ordered [ { preset = "night"; } ];
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action == 'ROBOROCK_DOCK' }}";
-              sequence = [
-                {
-                  action = "vacuum.return_to_base";
-                  target = {
-                    entity_id = "vacuum.living_room_roborock";
-                  };
-                }
-              ];
-            }
-            {
-              conditions = "{{ action.startswith('ROBOROCK_RESET:') }}";
-              sequence = [
-                {
-                  action = "button.press";
-                  target = {
-                    entity_id = "{{ action.split(':')[1] }}";
-                  };
-                }
-              ];
-            }
-          ];
+          choose =
+            lib.mapAttrsToList (action: sequence: {
+              conditions = "{{ action == '${action}' }}";
+              inherit sequence;
+            }) notificationActions
+            ++ [
+              {
+                conditions = "{{ action.startswith('ROBOROCK_RESET:') }}";
+                sequence = [ (call "button.press" "{{ action.split(':')[1] }}") ];
+              }
+            ];
         }
       ];
       variables = ordered [ { action = "{{ trigger.event.data.action | default('') }}"; } ];
@@ -169,60 +126,14 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = [
-            "light.kitchen_datura_top"
-            "light.kitchen_datura_bottom"
-            "light.living_room_datura_top"
-            "light.living_room_datura_bottom"
-            "light.bedroom_twilight_left_main"
-            "light.bedroom_twilight_right_main"
-            "light.office_lamp"
-            "sensor.kitchen_climate_temperature"
-            "sensor.bedroom_climate_temperature"
-            "sensor.bathroom_climate_temperature"
-            "binary_sensor.office_presence_sensor_occupancy"
-            "event.kitchen_dial_switch_button_1"
-            "event.living_room_dial_switch_button_1"
-            "event.bedroom_dial_switch_button_1"
-            "light.living_room_window_open_relay"
-            "light.living_room_shutter_top_left_up_relay"
-            "light.living_room_shutter_top_right_up_relay"
-            "light.living_room_shutter_bottom_left_up_relay"
-            "light.living_room_shutter_bottom_right_up_relay"
-            "switch.office_desktop"
-            "switch.living_room_server_rack"
-          ];
+          entity_id = watched;
           to = "unavailable";
-          for = {
-            minutes = 30;
-          };
+          for.minutes = 30;
           id = "offline";
         }
         {
           trigger = "state";
-          entity_id = [
-            "light.kitchen_datura_top"
-            "light.kitchen_datura_bottom"
-            "light.living_room_datura_top"
-            "light.living_room_datura_bottom"
-            "light.bedroom_twilight_left_main"
-            "light.bedroom_twilight_right_main"
-            "light.office_lamp"
-            "sensor.kitchen_climate_temperature"
-            "sensor.bedroom_climate_temperature"
-            "sensor.bathroom_climate_temperature"
-            "binary_sensor.office_presence_sensor_occupancy"
-            "event.kitchen_dial_switch_button_1"
-            "event.living_room_dial_switch_button_1"
-            "event.bedroom_dial_switch_button_1"
-            "light.living_room_window_open_relay"
-            "light.living_room_shutter_top_left_up_relay"
-            "light.living_room_shutter_top_right_up_relay"
-            "light.living_room_shutter_bottom_left_up_relay"
-            "light.living_room_shutter_bottom_right_up_relay"
-            "switch.office_desktop"
-            "switch.living_room_server_rack"
-          ];
+          entity_id = watched;
           from = "unavailable";
           id = "back";
         }
@@ -247,111 +158,64 @@
       ];
       actions = [
         {
-          choose = [
-            {
-              conditions = [
-                {
-                  condition = "trigger";
-                  id = "offline";
-                }
-              ];
-              sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
+          choose =
+            let
+              on = id: conditions: sequence: {
+                conditions = [
+                  {
+                    condition = "trigger";
+                    inherit id;
+                  }
+                ]
+                ++ conditions;
+                inherit sequence;
+              };
+            in
+            [
+              (on "offline"
+                [ ]
+                [
+                  (notify {
                     title = "Device offline";
                     message = "{{ name }} ({{ area_name(trigger.entity_id) or 'no area' }}) has been offline for 30 minutes.";
-                    data = {
-                      tag = "{{ tag }}";
-                    };
-                  };
-                }
-              ];
-            }
-            {
-              conditions = [
-                {
-                  condition = "trigger";
-                  id = "back";
-                }
-              ];
-              sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
-                    message = "clear_notification";
-                    data = {
-                      tag = "{{ tag }}";
-                    };
-                  };
-                }
-              ];
-            }
-            {
-              conditions = [
-                {
-                  condition = "trigger";
-                  id = "backup_failed";
-                }
-              ];
-              sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
+                    tag = "{{ tag }}";
+                  })
+                ]
+              )
+              (on "back" [ ] [ (clearNotification "{{ tag }}") ])
+              (on "backup_failed"
+                [ ]
+                [
+                  (notify {
                     title = "Backup failed";
                     message = "The automatic backup failed: {{ state_attr('event.backup_automatic_backup', 'failed_reason') or 'unknown reason' }}.";
-                    data = {
-                      tag = "backup";
-                    };
-                  };
-                }
-              ];
-            }
-            {
-              conditions = [
-                {
-                  condition = "trigger";
-                  id = "backup_check";
-                }
-                {
-                  condition = "template";
-                  value_template = "{% set last = states('sensor.backup_last_successful_automatic_backup') | as_datetime(none) %} {{ last is none or now() - last > timedelta(days=2) }}";
-                }
-              ];
-              sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
+                    tag = "backup";
+                  })
+                ]
+              )
+              (on "backup_check"
+                [
+                  (template "{% set last = states('sensor.backup_last_successful_automatic_backup') | as_datetime(none) %} {{ last is none or now() - last > timedelta(days=2) }}")
+                ]
+                [
+                  (notify {
                     title = "Backup overdue";
                     message = "No automatic backup has succeeded in the last 2 days.";
-                    data = {
-                      tag = "backup";
-                    };
-                  };
-                }
-              ];
-            }
-            {
-              conditions = [
-                {
-                  condition = "trigger";
-                  id = "power";
-                }
-              ];
-              sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
+                    tag = "backup";
+                  })
+                ]
+              )
+              (on "power"
+                [ ]
+                [
+                  (notify {
                     title = "Raspberry Pi power";
                     message = "The Raspberry Pi reports under-voltage. Check its power supply.";
-                    data = {
-                      tag = "rpi-power";
-                    };
-                  };
-                }
-              ];
-            }
-          ];
+                    tag = "rpi-power";
+                  })
+                ]
+              )
+            ];
         }
       ];
       variables = ordered [

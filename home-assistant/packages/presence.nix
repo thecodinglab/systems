@@ -1,4 +1,24 @@
-{ ordered }:
+{
+  entities,
+  ordered,
+  jinjaList,
+  state,
+  notState,
+  template,
+  call,
+  notify,
+  lightPreset,
+  ...
+}:
+let
+  inherit (entities) person lights window;
+
+  # turned on when arriving after dark
+  welcome = [
+    lights.livingRoom
+    lights.kitchen
+  ];
+in
 {
   automation = [
     {
@@ -8,62 +28,24 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = "person.florian";
+          entity_id = person;
           from = "home";
           to = "not_home";
-          for = {
-            minutes = 2;
-          };
+          for.minutes = 2;
         }
       ];
       actions = [
+        (call "light.turn_off" entities.allLights)
+        (call "input_boolean.turn_off" entities.nightMode)
         {
-          action = "light.turn_off";
-          target = {
-            entity_id = [
-              "light.kitchen_lights"
-              "light.living_room_lights"
-              "light.bedroom_lights"
-              "light.office_lights"
-            ];
-          };
-        }
-        {
-          action = "input_boolean.turn_off";
-          target = {
-            entity_id = "input_boolean.night_mode";
-          };
-        }
-        {
-          "if" = [
-            {
-              condition = "not";
-              conditions = [
-                {
-                  condition = "state";
-                  entity_id = "cover.living_room_window";
-                  state = "closed";
-                }
-              ];
-            }
-          ];
+          "if" = [ (notState window "closed") ];
           "then" = [
-            {
-              action = "cover.close_cover";
-              target = {
-                entity_id = "cover.living_room_window";
-              };
-            }
-            {
-              action = "notify.mobile_app_florians_iphone_18";
-              data = {
-                title = "Window";
-                message = "You left with the living room window open, so it has been closed.";
-                data = {
-                  tag = "window-closed-leaving";
-                };
-              };
-            }
+            (call "cover.close_cover" window)
+            (notify {
+              title = "Window";
+              message = "You left with the living room window open, so it has been closed.";
+              tag = "window-closed-leaving";
+            })
           ];
         }
       ];
@@ -76,42 +58,29 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = "person.florian";
+          entity_id = person;
           from = "not_home";
           to = "home";
         }
       ];
       conditions = [
-        {
-          condition = "template";
-          value_template = "{{ (trigger.to_state.last_changed - trigger.from_state.last_changed).total_seconds() > 600 }}";
-        }
-        {
-          condition = "state";
-          entity_id = "sun.sun";
-          state = "below_horizon";
-        }
+        (template "{{ (trigger.to_state.last_changed - trigger.from_state.last_changed).total_seconds() > 600 }}")
+        (state "sun.sun" "below_horizon")
       ];
       actions = [
         {
           variables = ordered [
             {
-              targets = "{{ ['light.living_room_lights', 'light.kitchen_lights'] | select('is_state', 'off') | list }}";
+              targets = "{{ ${jinjaList welcome} | select('is_state', 'off') | list }}";
             }
           ];
         }
-        {
-          condition = "template";
-          value_template = "{{ targets | count > 0 }}";
-        }
-        {
-          action = "script.light_preset";
-          data = {
-            lights = "{{ targets }}";
-            preset = "{{ 'bright' if 5 <= now().hour < 12 else 'relax' }}";
-            transition = 1;
-          };
-        }
+        (template "{{ targets | count > 0 }}")
+        (lightPreset {
+          lights = "{{ targets }}";
+          preset = "{{ 'bright' if 5 <= now().hour < 12 else 'relax' }}";
+          transition = 1;
+        })
       ];
       mode = "single";
     }

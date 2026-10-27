@@ -1,43 +1,48 @@
-{ ordered }:
+{
+  entities,
+  ordered,
+  jinjaList,
+  state,
+  template,
+  isHome,
+  nightModeOff,
+  call,
+  ...
+}:
+let
+  inherit (entities) lights officePresence;
+
+  override = state "input_boolean.office_light_override" "off";
+  entered = {
+    trigger = "state";
+    entity_id = officePresence;
+    from = "off";
+    to = "on";
+  };
+
+  # turned off while working, the bedroom only during the day
+  otherRooms = [
+    lights.kitchen
+    lights.livingRoom
+  ];
+in
 {
   automation = [
     {
       id = "1753172024868";
       alias = "Office: Light On When Occupied";
-      description = "Turns the office lamp on when someone is at the desk and it is dark enough. Not while night mode is on.";
-      triggers = [
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.office_presence_sensor_occupancy";
-          from = "off";
-          to = "on";
-        }
-      ];
+      description = "Turns the office lamp on when someone is at the desk and it is dark enough. Not while night mode is on. The stringlights are only turned on manually.";
+      triggers = [ entered ];
       conditions = [
-        {
-          condition = "state";
-          entity_id = "input_boolean.office_light_override";
-          state = "off";
-        }
+        override
         {
           condition = "numeric_state";
           entity_id = "sensor.office_presence_sensor_illuminance";
           below = 150;
         }
-        {
-          condition = "state";
-          entity_id = "input_boolean.night_mode";
-          state = "off";
-        }
+        nightModeOff
       ];
-      actions = [
-        {
-          action = "light.turn_on";
-          target = {
-            entity_id = "light.office_lights";
-          };
-        }
-      ];
+      actions = [ (call "light.turn_on" "light.office_lamp") ];
       mode = "single";
     }
     {
@@ -47,28 +52,13 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = "binary_sensor.office_presence_sensor_occupancy";
+          entity_id = officePresence;
           to = "off";
-          for = {
-            minutes = 5;
-          };
+          for.minutes = 5;
         }
       ];
-      conditions = [
-        {
-          condition = "state";
-          entity_id = "input_boolean.office_light_override";
-          state = "off";
-        }
-      ];
-      actions = [
-        {
-          action = "light.turn_off";
-          target = {
-            entity_id = "light.office_lights";
-          };
-        }
-      ];
+      conditions = [ override ];
+      actions = [ (call "light.turn_off" lights.office) ];
       mode = "single";
     }
     {
@@ -78,24 +68,14 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = "binary_sensor.office_presence_sensor_occupancy";
+          entity_id = officePresence;
           to = "on";
-          for = {
-            minutes = 15;
-          };
+          for.minutes = 15;
         }
       ];
       conditions = [
-        {
-          condition = "state";
-          entity_id = "person.florian";
-          state = "home";
-        }
-        {
-          condition = "state";
-          entity_id = "input_boolean.night_mode";
-          state = "off";
-        }
+        isHome
+        nightModeOff
       ];
       actions = [
         {
@@ -103,29 +83,18 @@
             {
               bedroom_ok = ''
                 {{ today_at('08:00') <= now() < today_at('19:00')
-                   and is_state('script.bedroom_sunrise', 'off') }}'';
+                   and is_state('${entities.scripts.sunrise}', 'off') }}'';
             }
             {
               targets = ''
-                {{ (['light.kitchen_lights', 'light.living_room_lights']
-                    + (['light.bedroom_lights'] if bedroom_ok else []))
+                {{ (${jinjaList otherRooms}
+                    + (['${lights.bedroom}'] if bedroom_ok else []))
                    | select('is_state', 'on') | list }}'';
             }
           ];
         }
-        {
-          condition = "template";
-          value_template = "{{ targets | count > 0 }}";
-        }
-        {
-          action = "light.turn_off";
-          target = {
-            entity_id = "{{ targets }}";
-          };
-          data = {
-            transition = 5;
-          };
-        }
+        (template "{{ targets | count > 0 }}")
+        (call "light.turn_off" "{{ targets }}" // { data.transition = 5; })
       ];
       mode = "single";
     }
@@ -133,44 +102,22 @@
       id = "1792500000012";
       alias = "Office: Wake Desktop When Entering";
       description = "Sends Wake-on-LAN when someone enters the office and the desktop is asleep (plug below 60 W), between 06:00 and 23:00 and not in night mode.";
-      triggers = [
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.office_presence_sensor_occupancy";
-          from = "off";
-          to = "on";
-        }
-      ];
+      triggers = [ entered ];
       conditions = [
         {
           condition = "time";
           after = "06:00:00";
           before = "23:00:00";
         }
-        {
-          condition = "state";
-          entity_id = "input_boolean.night_mode";
-          state = "off";
-        }
-        {
-          condition = "state";
-          entity_id = "switch.office_desktop";
-          state = "on";
-        }
+        nightModeOff
+        (state entities.desktop "on")
         {
           condition = "numeric_state";
           entity_id = "sensor.office_desktop_power";
           below = 60;
         }
       ];
-      actions = [
-        {
-          action = "button.press";
-          target = {
-            entity_id = "button.office_desktop_wake_on_lan";
-          };
-        }
-      ];
+      actions = [ (call "button.press" "button.office_desktop_wake_on_lan") ];
       mode = "single";
       max_exceeded = "silent";
     }

@@ -4,18 +4,11 @@
 let
   inherit (pkgs) lib;
 
-  # maps whose keys home assistant reads in order (variables can refer to the
-  # ones before them), written as a list of single-attribute sets since nix
-  # always sorts attribute names
-  ordered =
-    entries:
-    assert lib.assertMsg (lib.all (
-      entry: lib.length (lib.attrNames entry) == 1
-    ) entries) "ordered: every entry needs exactly one attribute";
-    {
-      _type = "ordered";
-      inherit entries;
-    };
+  # what every package gets as arguments
+  entities = import ./entities.nix;
+  args = import ./lib.nix { inherit lib entities; } // {
+    inherit lib entities;
+  };
 
   # like builtins.toJSON, but keeps ordered maps in order
   toJSON =
@@ -83,7 +76,7 @@ let
     file: _:
     let
       name = slug file;
-      package = lib.toFunction (import ./packages/${file}) { inherit ordered; };
+      package = import ./packages/${file} args;
     in
     # list domains (automation) are concatenated as they are
     assert lib.all (

@@ -1,157 +1,95 @@
-{ ordered }:
+{
+  lib,
+  entities,
+  ordered,
+  changed,
+  state,
+  template,
+  call,
+  notify,
+  clearNotification,
+  timeOfDay,
+  ...
+}:
+let
+  inherit (entities) person vacuum;
+
+  # problems worth a notification, by trigger id; `message` is a template
+  # that can use `entity`
+  problems = [
+    {
+      id = "vacuum_error";
+      entity = "sensor.living_room_roborock_vacuum_error";
+      message = "Robot error: {{ state_translated(entity) }}";
+    }
+    {
+      id = "dock_error";
+      entity = "sensor.living_room_roborock_dock_dock_error";
+      message = "Dock: {{ state_translated(entity) }}";
+    }
+    {
+      id = "cleaning_fluid";
+      entity = "binary_sensor.living_room_roborock_dock_cleaning_fluid";
+      message = "The dock is running low on cleaning fluid.";
+    }
+    {
+      id = "dirty_water";
+      entity = "binary_sensor.living_room_roborock_dock_dirty_water_box";
+      message = "Empty the dirty-water tank in the dock.";
+    }
+    {
+      id = "clean_water";
+      entity = "binary_sensor.living_room_roborock_dock_clean_water_box";
+      message = "Refill the clean-water tank in the dock.";
+    }
+    {
+      id = "water_shortage";
+      entity = "binary_sensor.living_room_roborock_water_shortage";
+      message = "The robot is out of water. Check the clean-water tank.";
+    }
+  ];
+in
 {
   automation = [
     {
       id = "1791911060083";
       alias = "Roborock: Notify on Problems";
       description = "Notifies on robot errors, dock errors, low cleaning fluid, full dirty-water tank, empty clean-water tank, water shortage and when the robot is offline. Clears the notification once the problem is resolved. Does not notify on finished cleaning runs.";
-      triggers = [
-        {
-          trigger = "state";
-          entity_id = "sensor.living_room_roborock_vacuum_error";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "vacuum_error";
-        }
-        {
-          trigger = "state";
-          entity_id = "sensor.living_room_roborock_dock_dock_error";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "dock_error";
-        }
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.living_room_roborock_dock_cleaning_fluid";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "cleaning_fluid";
-        }
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.living_room_roborock_dock_dirty_water_box";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "dirty_water";
-        }
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.living_room_roborock_dock_clean_water_box";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "clean_water";
-        }
-        {
-          trigger = "state";
-          entity_id = "binary_sensor.living_room_roborock_water_shortage";
-          not_from = [
-            "unavailable"
-            "unknown"
-          ];
-          not_to = [
-            "unavailable"
-            "unknown"
-          ];
-          for = {
-            seconds = 30;
-          };
-          id = "water_shortage";
-        }
-        {
-          trigger = "state";
-          entity_id = "vacuum.living_room_roborock";
-          to = "unavailable";
-          for = {
-            minutes = 30;
-          };
-          id = "offline";
-        }
-        {
-          trigger = "state";
-          entity_id = "vacuum.living_room_roborock";
-          from = "unavailable";
-          id = "offline";
-        }
-      ];
+      triggers =
+        map (
+          problem:
+          changed problem.entity {
+            for.seconds = 30;
+            inherit (problem) id;
+          }
+        ) problems
+        ++ [
+          {
+            trigger = "state";
+            entity_id = vacuum;
+            to = "unavailable";
+            for.minutes = 30;
+            id = "offline";
+          }
+          {
+            trigger = "state";
+            entity_id = vacuum;
+            from = "unavailable";
+            id = "offline";
+          }
+        ];
       actions = [
         {
-          "if" = [
-            {
-              condition = "template";
-              value_template = "{{ problem }}";
-            }
-          ];
+          "if" = [ (template "{{ problem }}") ];
           "then" = [
-            {
-              action = "notify.mobile_app_florians_iphone_18";
-              data = {
-                title = "Roborock";
-                message = "{{ message }}";
-                data = {
-                  tag = "{{ tag }}";
-                  push = {
-                    interruption-level = "{{ \"time-sensitive\" if trigger.id == \"vacuum_error\" else \"active\" }}";
-                  };
-                };
-              };
-            }
+            (notify {
+              title = "Roborock";
+              message = "{{ message }}";
+              tag = "{{ tag }}";
+              interruptionLevel = "{{ \"time-sensitive\" if trigger.id == \"vacuum_error\" else \"active\" }}";
+            })
           ];
-          "else" = [
-            {
-              action = "notify.mobile_app_florians_iphone_18";
-              data = {
-                message = "clear_notification";
-                data = {
-                  tag = "{{ tag }}";
-                };
-              };
-            }
-          ];
+          "else" = [ (clearNotification "{{ tag }}") ];
         }
       ];
       mode = "queued";
@@ -162,7 +100,14 @@
           problem = "{{ (state not in [\"none\", \"ok\", \"off\"] and not (trigger.id == \"dock_error\" and state in [\"water_empty\", \"waste_water_tank_full\"])) if trigger.id != \"offline\" else state == \"unavailable\" }}";
         }
         {
-          message = "{% if trigger.id == \"vacuum_error\" %}Robot error: {{ state_translated(entity) }}{% elif trigger.id == \"dock_error\" %}Dock: {{ state_translated(entity) }}{% elif trigger.id == \"cleaning_fluid\" %}The dock is running low on cleaning fluid.{% elif trigger.id == \"dirty_water\" %}Empty the dirty-water tank in the dock.{% elif trigger.id == \"clean_water\" %}Refill the clean-water tank in the dock.{% elif trigger.id == \"water_shortage\" %}The robot is out of water. Check the clean-water tank.{% else %}The robot has been offline for 30 minutes.{% endif %}";
+          message =
+            lib.concatStrings (
+              lib.imap0 (
+                i: problem:
+                "{% ${if i == 0 then "if" else "elif"} trigger.id == \"${problem.id}\" %}${problem.message}"
+              ) problems
+            )
+            + "{% else %}The robot has been offline for 30 minutes.{% endif %}";
         }
         { tag = "roborock-{{ trigger.id }}"; }
       ];
@@ -174,12 +119,10 @@
       triggers = [
         {
           trigger = "state";
-          entity_id = "person.florian";
+          entity_id = person;
           from = "home";
           to = "not_home";
-          for = {
-            minutes = 10;
-          };
+          for.minutes = 10;
           id = "away";
         }
         {
@@ -194,7 +137,7 @@
         }
         {
           trigger = "state";
-          entity_id = "person.florian";
+          entity_id = person;
           from = "not_home";
           to = "home";
           id = "arrived";
@@ -225,22 +168,11 @@
                         }
                       ];
                     }
-                    {
-                      condition = "state";
-                      entity_id = "person.florian";
-                      state = "not_home";
-                    }
+                    (state person "not_home")
                   ];
                 }
-                {
-                  condition = "state";
-                  entity_id = "vacuum.living_room_roborock";
-                  state = "docked";
-                }
-                {
-                  condition = "template";
-                  value_template = "{{ not cleaned_today }}";
-                }
+                (state vacuum "docked")
+                (template "{{ not cleaned_today }}")
                 {
                   condition = "or";
                   conditions = [
@@ -256,14 +188,7 @@
                   ];
                 }
               ];
-              sequence = [
-                {
-                  action = "vacuum.start";
-                  target = {
-                    entity_id = "vacuum.living_room_roborock";
-                  };
-                }
-              ];
+              sequence = [ (call "vacuum.start" vacuum) ];
             }
             {
               conditions = [
@@ -271,29 +196,20 @@
                   condition = "trigger";
                   id = "arrived";
                 }
-                {
-                  condition = "state";
-                  entity_id = "vacuum.living_room_roborock";
-                  state = "cleaning";
-                }
+                (state vacuum "cleaning")
               ];
               sequence = [
-                {
-                  action = "notify.mobile_app_florians_iphone_18";
-                  data = {
-                    title = "Roborock";
-                    message = "Welcome home. The Roborock is still cleaning.";
-                    data = {
-                      tag = "roborock-arrival";
-                      actions = [
-                        {
-                          action = "ROBOROCK_DOCK";
-                          title = "Send to dock";
-                        }
-                      ];
-                    };
-                  };
-                }
+                (notify {
+                  title = "Roborock";
+                  message = "Welcome home. The Roborock is still cleaning.";
+                  tag = "roborock-arrival";
+                  actions = [
+                    {
+                      action = "ROBOROCK_DOCK";
+                      title = "Send to dock";
+                    }
+                  ];
+                })
               ];
             }
           ];
@@ -316,39 +232,30 @@
           at = "18:00:00";
         }
       ];
-      conditions = [
-        {
-          condition = "template";
-          value_template = "{{ due | count > 0 }}";
-        }
-      ];
+      conditions = [ (template "{{ due | count > 0 }}") ];
       actions = [
         {
           repeat = {
             for_each = "{{ due }}";
             sequence = [
-              {
-                action = "notify.mobile_app_florians_iphone_18";
-                data = {
-                  title = "Roborock maintenance";
-                  message = "{{ repeat.item.name }} ({{ repeat.item.left }} h of cleaning left).";
-                  data = {
-                    tag = "roborock-{{ repeat.item.button.split('.')[1] }}";
-                    actions = [
-                      {
-                        action = "ROBOROCK_RESET:{{ repeat.item.button }}";
-                        title = "Done, reset counter";
-                      }
-                    ];
-                  };
-                };
-              }
+              (notify {
+                title = "Roborock maintenance";
+                message = "{{ repeat.item.name }} ({{ repeat.item.left }} h of cleaning left).";
+                tag = "roborock-{{ repeat.item.button.split('.')[1] }}";
+                actions = [
+                  {
+                    action = "ROBOROCK_RESET:{{ repeat.item.button }}";
+                    title = "Done, reset counter";
+                  }
+                ];
+              })
             ];
           };
         }
       ];
       variables = ordered [
         {
+          # remind when less than `hours` of cleaning are left
           items = [
             {
               name = "Clean the robot's sensors";
@@ -401,9 +308,7 @@
     }
   ];
   input_datetime = {
-    roborock_fallback_time = {
-      has_date = false;
-      has_time = true;
+    roborock_fallback_time = timeOfDay {
       icon = "mdi:robot-vacuum";
       initial = "14:00:00";
       name = "Roborock Fallback Time";
