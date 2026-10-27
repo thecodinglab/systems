@@ -170,6 +170,7 @@ in
     # Writing
     pkgs.texliveFull
     pkgs.typst
+    pkgs.obsidian
   ];
 
   fonts.fontconfig.enable = true;

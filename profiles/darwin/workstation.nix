@@ -9,11 +9,6 @@
 {
   programs.gnupg.agent.enable = true;
 
-  environment.systemPackages = [
-    pkgs.ghostty-bin
-    pkgs.obsidian
-  ];
-
   system.primaryUser = "florian";
   users.users.florian = {
     name = "florian";

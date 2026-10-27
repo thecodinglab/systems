@@ -69,7 +69,6 @@
     pkgs.remmina
 
     # Other
-    pkgs.obsidian # on mac it is installed through `environment.systemPackage`
     pkgs.claude-desktop # on mac it is installed through `homebrew.casks`
     # on mac it is installed through `homebrew.casks`
     (pkgs.helium.override {
