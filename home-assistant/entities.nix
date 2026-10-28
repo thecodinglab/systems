@@ -105,7 +105,7 @@ rec {
     generic = {
       bright = {
         brightness_pct = 100;
-        color_temp_kelvin = 4000;
+        color_temp_kelvin = 3000;
       };
       relax = {
         brightness_pct = 60;
