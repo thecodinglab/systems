@@ -1,13 +1,27 @@
 # every file in ./packages becomes a home assistant package of the same name,
-# rendered to <name>.yaml and deployed to <config>/packages/nix (see deploy.nix)
+# rendered to packages/<name>.yaml, every file or directory in ./dashboards a
+# yaml mode dashboard rendered to dashboards/<name>.yaml, and ./www (the
+# dashboard cards) is copied to www/. deploy.nix puts each of them into its
+# directory in `targets`
 { pkgs }:
 let
   inherit (pkgs) lib;
 
-  # what every package gets as arguments
+  # where deploy.nix puts each part, relative to the config directory
+  targets = {
+    packages = "packages/nix";
+    dashboards = "dashboards/nix";
+    www = "www/nix";
+  };
+
+  # what every package and dashboard gets as arguments
   entities = import ./entities.nix;
   args = import ./lib.nix { inherit lib entities; } // {
     inherit lib entities;
+    # the dashboard files as home assistant needs them in its config and the
+    # url /local serves www/ at
+    dashboardFile = name: "${targets.dashboards}/${name}.yaml";
+    wwwUrl = "/local/${lib.removePrefix "www/" targets.www}";
   };
 
   # like builtins.toJSON, but keeps ordered maps in order
@@ -87,14 +101,33 @@ let
       value = package;
     }
   ) (builtins.readDir ./packages);
+
+  # file or directory name without .nix
+  dashboards = lib.mapAttrs' (file: _: {
+    name = lib.removeSuffix ".nix" file;
+    value = import ./dashboards/${file} args;
+  }) (builtins.readDir ./dashboards);
+
+  render = dir: name: value: ''
+    remarshal --from json --to yaml-1.1 ${pkgs.writeText "${name}.json" (toJSON value)} $out/${dir}/${name}.yaml
+  '';
 in
-pkgs.runCommand "home-assistant-config" { nativeBuildInputs = [ pkgs.remarshal ]; } (
-  ''
-    mkdir $out
-  ''
-  + lib.concatStrings (
-    lib.mapAttrsToList (name: package: ''
-      remarshal --from json --to yaml-1.1 ${pkgs.writeText "${name}.json" (toJSON package)} $out/${name}.yaml
-    '') packages
+pkgs.runCommand "home-assistant-config"
+  {
+    nativeBuildInputs = [ pkgs.remarshal ];
+    passthru = { inherit targets; };
+  }
+  (
+    ''
+      mkdir -p $out/packages $out/dashboards $out/www
+    ''
+    + lib.concatStrings (lib.mapAttrsToList (render "packages") packages)
+    + lib.concatStrings (lib.mapAttrsToList (render "dashboards") dashboards)
+    + ''
+      cp -r ${./www}/. $out/www/
+
+      # browsers keep /local files for a month, loader.js imports the cards
+      # with this appended so a deploy reaches them right away
+      (cd $out/www && find . -type f | sort | xargs sha256sum | sha256sum | cut -c1-12) > $out/www/version
+    ''
   )
-)

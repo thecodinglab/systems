@@ -13,6 +13,7 @@ let
     datura
     twilight
     lightTimes
+    lightPresets
     ;
 
   # sets <preset>_from to the time the preset starts, from its input_datetime
@@ -143,80 +144,8 @@ in
       sequence = [
         {
           variables = ordered [
-            {
-              generic = {
-                bright = {
-                  brightness_pct = 100;
-                  color_temp_kelvin = 4000;
-                };
-                relax = {
-                  brightness_pct = 60;
-                  color_temp_kelvin = 2700;
-                };
-                cozy = {
-                  brightness_pct = 30;
-                  color_temp_kelvin = 2200;
-                };
-                night = {
-                  brightness_pct = 10;
-                  color_temp_kelvin = 2200;
-                };
-              };
-            }
-            {
-              bedroom = {
-                main = {
-                  bright = {
-                    brightness_pct = 100;
-                    color_temp_kelvin = 3000;
-                    effect = "off";
-                  };
-                  relax = {
-                    brightness_pct = 40;
-                    color_temp_kelvin = 2700;
-                    effect = "off";
-                  };
-                  cozy = {
-                    brightness_pct = 15;
-                    color_temp_kelvin = 2200;
-                    effect = "off";
-                  };
-                  night = {
-                    brightness_pct = 3;
-                    color_temp_kelvin = 2000;
-                    effect = "off";
-                  };
-                };
-                ambiance = {
-                  bright = {
-                    brightness_pct = 70;
-                    color_temp_kelvin = 2700;
-                    effect = "off";
-                  };
-                  relax = {
-                    brightness_pct = 70;
-                    color_temp_kelvin = 2400;
-                    effect = "off";
-                  };
-                  cozy = {
-                    brightness_pct = 55;
-                    xy_color = [
-                      0.555
-                      0.408
-                    ];
-                    effect = "candle";
-                  };
-                  night = {
-                    brightness_pct = 8;
-                    xy_color = [
-                      0.575
-                      0.395
-                    ];
-                    effect = "off";
-                  };
-                };
-              };
-            }
+            { generic = lightPresets.generic; }
+            { bedroom = lightPresets.bedroom; }
             { bedroom_members = twilight.all; }
             { requested = "{{ preset | default('auto') }}"; }
             {

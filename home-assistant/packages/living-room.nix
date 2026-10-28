@@ -20,6 +20,7 @@ let
     weather
     window
     shutters
+    shutterPresets
     scripts
     ;
 
@@ -546,35 +547,7 @@ in
           variables = ordered [
             { top = shutters.top; }
             { bottom = shutters.bottom; }
-            {
-              presets =
-                let
-                  # 100 is fully open, for both the position and the blades
-                  pair = position: tilt: { inherit position tilt; };
-                in
-                {
-                  privacy = {
-                    top = pair 100 100;
-                    bottom = pair 0 35;
-                  };
-                  open = {
-                    top = pair 100 100;
-                    bottom = pair 100 100;
-                  };
-                  shade = {
-                    top = pair 0 50;
-                    bottom = pair 0 50;
-                  };
-                  closed = {
-                    top = pair 0 0;
-                    bottom = pair 0 0;
-                  };
-                  night = {
-                    top = pair 0 0;
-                    bottom = pair 0 35;
-                  };
-                };
-            }
+            { presets = shutterPresets; }
             { layout = "{{ presets[preset | default('privacy')] }}"; }
           ];
         }

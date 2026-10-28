@@ -97,4 +97,109 @@ rec {
     relax = "20:00:00";
     night = "22:30:00";
   };
+
+  # what script.light_preset sets per preset, the dashboard uses them to tell
+  # which preset a room is on. The bedroom Twilight lamps have their own calmer
+  # ones for the main (down) and ambiance (back) lights
+  lightPresets = {
+    generic = {
+      bright = {
+        brightness_pct = 100;
+        color_temp_kelvin = 4000;
+      };
+      relax = {
+        brightness_pct = 60;
+        color_temp_kelvin = 2700;
+      };
+      cozy = {
+        brightness_pct = 30;
+        color_temp_kelvin = 2200;
+      };
+      night = {
+        brightness_pct = 10;
+        color_temp_kelvin = 2200;
+      };
+    };
+    bedroom = {
+      main = {
+        bright = {
+          brightness_pct = 100;
+          color_temp_kelvin = 3000;
+          effect = "off";
+        };
+        relax = {
+          brightness_pct = 40;
+          color_temp_kelvin = 2700;
+          effect = "off";
+        };
+        cozy = {
+          brightness_pct = 15;
+          color_temp_kelvin = 2200;
+          effect = "off";
+        };
+        night = {
+          brightness_pct = 3;
+          color_temp_kelvin = 2000;
+          effect = "off";
+        };
+      };
+      ambiance = {
+        bright = {
+          brightness_pct = 70;
+          color_temp_kelvin = 2700;
+          effect = "off";
+        };
+        relax = {
+          brightness_pct = 70;
+          color_temp_kelvin = 2400;
+          effect = "off";
+        };
+        cozy = {
+          brightness_pct = 55;
+          xy_color = [
+            0.555
+            0.408
+          ];
+          effect = "candle";
+        };
+        night = {
+          brightness_pct = 8;
+          xy_color = [
+            0.575
+            0.395
+          ];
+          effect = "off";
+        };
+      };
+    };
+  };
+
+  # the living room shutter layouts of script.shutter_preset, 100 is fully open
+  # for both the position and the blades
+  shutterPresets =
+    let
+      pair = position: tilt: { inherit position tilt; };
+    in
+    {
+      privacy = {
+        top = pair 100 100;
+        bottom = pair 0 35;
+      };
+      open = {
+        top = pair 100 100;
+        bottom = pair 100 100;
+      };
+      shade = {
+        top = pair 0 50;
+        bottom = pair 0 50;
+      };
+      closed = {
+        top = pair 0 0;
+        bottom = pair 0 0;
+      };
+      night = {
+        top = pair 0 0;
+        bottom = pair 0 35;
+      };
+    };
 }
