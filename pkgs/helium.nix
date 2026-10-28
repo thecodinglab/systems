@@ -139,6 +139,13 @@ stdenvNoCC.mkDerivation rec {
     # qt shims would pull in qt, gtk is used instead
     rm $out/share/helium/libqt{5,6}_shim.so
 
+    # chromium ignores LC_TIME and formats dates/numbers with its ui locale, which
+    # falls back to en-GB for en-CH since there is no translation for it; an
+    # en-CH pack (english strings) makes it resolve to en-CH and use swiss formats
+    for pak in $out/share/helium/locales/en-GB*.pak; do
+      cp $pak ''${pak/en-GB/en-CH}
+    done
+
     rm $out/share/helium/libvulkan.so.1
     ln -s ${lib.getLib vulkan-loader}/lib/libvulkan.so.1 $out/share/helium/libvulkan.so.1
 
@@ -152,6 +159,7 @@ stdenvNoCC.mkDerivation rec {
       --suffix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
       --prefix XDG_DATA_DIRS : "$XDG_ICON_DIRS:$GSETTINGS_SCHEMAS_PATH:${addDriverRunpath.driverLink}/share" \
       --set CHROME_WRAPPER helium \
+      --set LANGUAGE en_CH \
       --add-flags ${lib.escapeShellArg (lib.concatStringsSep " " commandLineArgs)}
 
     install -m644 helium.desktop $out/share/applications/helium.desktop
