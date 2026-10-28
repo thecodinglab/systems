@@ -27,10 +27,6 @@ in
 
         "teslamate.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92/";
 
-        # superseded by home.florian-walter.ch on the macmini, which skips the
-        # site-to-site vpn; remove once nothing uses this hostname anymore
-        "home-assistant.thecodinglab.ch".locations."/".proxyPass = "http://192.168.128.100:8123/";
-
         "media.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
         "requests.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
         "media-tools.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
@@ -38,8 +34,6 @@ in
 
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
         "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
-
-        "kakeibo.ch".locations."/".proxyPass = "http://192.168.48.124/";
       };
     };
   };
