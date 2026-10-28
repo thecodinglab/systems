@@ -2,8 +2,13 @@
 {
   services.lvm = {
     enable = true;
+    # Despite the name, this also configures thin_check for the running system.
     boot.thin.enable = true;
   };
+
+  # vg0 isn't needed to boot. Activating it in the initrd races switch-root,
+  # which kills thin_check and leaves the thin pool half-activated.
+  boot.initrd.services.lvm.enable = false;
 
   virtualisation.incus = {
     enable = true;
