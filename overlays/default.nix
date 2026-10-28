@@ -3,7 +3,7 @@
   additions =
     final: prev:
     import ../pkgs {
-      pkgs = prev;
+      pkgs = final;
       inherit inputs;
     };
 

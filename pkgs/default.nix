@@ -17,7 +17,7 @@ let
   mkPrefix =
     prefix: attrs:
     builtins.listToAttrs (
-      pkgs.lib.mapAttrsToList (name: value: {
+      inputs.nixpkgs.lib.mapAttrsToList (name: value: {
         name = "${prefix}-${name}";
         inherit value;
       }) attrs
