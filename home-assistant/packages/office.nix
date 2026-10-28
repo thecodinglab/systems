@@ -31,7 +31,7 @@ in
     {
       id = "1753172024868";
       alias = "Office: Light On When Occupied";
-      description = "Turns the office lamp on when someone is at the desk and it is dark enough. Not while night mode is on. The stringlights are only turned on manually.";
+      description = "Turns the office lights on when someone is at the desk and it is dark enough. Not while night mode is on.";
       triggers = [ entered ];
       conditions = [
         override
@@ -42,13 +42,13 @@ in
         }
         nightModeOff
       ];
-      actions = [ (call "light.turn_on" "light.office_lamp") ];
+      actions = [ (call "light.turn_on" lights.office) ];
       mode = "single";
     }
     {
       id = "1753172088711";
       alias = "Office: Light Off When Vacant";
-      description = "";
+      description = "Turns the office lights off after 5 minutes without presence.";
       triggers = [
         {
           trigger = "state";
