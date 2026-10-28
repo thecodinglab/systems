@@ -185,6 +185,9 @@
       transparent = lib.nixvim.mkRaw ''vim.env.TERMINAL_BACKGROUND_TRANSPARENT == "1"'';
       dim_inactive = false;
     };
+    # the default separator uses `bg0`, which barely stands out from the
+    # editor background
+    settings.groups.all.WinSeparator.fg = "bg4";
   };
 
   # nightfox has no automatic light/dark flavor switching and its compiled
@@ -260,7 +263,7 @@
 
     fzf-lua = {
       enable = true;
-      settings.ui_select = {};
+      settings.ui_select = { };
     };
 
     oil = {
