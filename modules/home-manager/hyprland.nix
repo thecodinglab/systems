@@ -505,6 +505,10 @@
                 on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"off\")'";
                 on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch 'hl.dsp.dpms(\"on\")'";
               }
+              {
+                timeout = 1800; # 30min
+                on-timeout = "${pkgs.systemd}/bin/systemctl suspend";
+              }
             ];
           };
         };
@@ -521,7 +525,7 @@
           settings = {
             background = {
               monitor = "";
-              path = builtins.toString (
+              path = toString (
                 pkgs.runCommand "wallpaper-blurred.png" { buildInputs = [ pkgs.ffmpeg ]; } ''
                   ffmpeg -y -i ${config.stylix.image} -vf "gblur=sigma=30:steps=3" $out
                 ''
