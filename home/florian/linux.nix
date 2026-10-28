@@ -38,6 +38,25 @@
 
   services.easyeffects.enable = true;
 
+  # profiles and accounts are managed in thunderbird itself, only the theme is
+  # installed through policies (enable it once under Add-ons and Themes)
+  programs.thunderbird = {
+    enable = true;
+    policies.ExtensionSettings."{f6d05f0c-39a8-5c4d-96dd-4852202a8244}" = {
+      installation_mode = "force_installed";
+      install_url = "file://${
+        pkgs.fetchurl {
+          name = "catppuccin-mocha-blue.xpi";
+          url = "https://raw.githubusercontent.com/catppuccin/thunderbird/0289f3bd9566f9666682f66a3355155c0d0563fc/themes/mocha/mocha-blue.xpi";
+          hash = "sha256-ApuqSR6GWY1guajM+laozGNBVMq9BWlcKz16hbeFoLU=";
+        }
+      }";
+    };
+  };
+
+  # local IMAP/SMTP for thunderbird, keeps its login in gnome-keyring
+  services.protonmail-bridge.enable = true;
+
   # mpv decodes in software unless told otherwise
   programs.mpv = {
     enable = true;
