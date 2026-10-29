@@ -44,6 +44,17 @@ in
       (setting "mdi:weather-lightning" "Last storm detected" "input_datetime.storm_last_detected")
     ])
     (section [
+      (heading "mdi:radiator" "Heating & airing")
+      (markdown "In the heating period (below 15 °C outside) the living room window opens fully for 5-10 min at each airing time while you are home, unless it rains or the window was just open. A room averaging below 19 °C over 3 days sends a prepared email to Wincasa.")
+      (setting "mdi:window-open-variant" "Automatic airing" "automation.heating_airing_reminder")
+      (setting "mdi:play" "Air now" "script.airing")
+      (setting "mdi:weather-sunset-up" "Morning" "input_datetime.airing_time_morning")
+      (setting "mdi:white-balance-sunny" "Midday" "input_datetime.airing_time_midday")
+      (setting "mdi:weather-sunset-down" "Evening" "input_datetime.airing_time_evening")
+      (setting "mdi:bed-outline" "Bedroom, 3 day mean" "sensor.bedroom_temperature_3_day_mean")
+      (setting "mdi:countertop-outline" "Kitchen, 3 day mean" "sensor.kitchen_temperature_3_day_mean")
+    ])
+    (section [
       (heading "mdi:robot-vacuum" "Roborock")
       (markdown "Cleans once a day after you have been away for 10 min (09:00-19:00), or at the fallback time if it has not run yet.")
       (setting "mdi:clock-outline" "Fallback time" "input_datetime.roborock_fallback_time")

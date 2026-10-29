@@ -125,6 +125,16 @@ rec {
     hours:
     "{{ (fc['${weather}'].forecast if fc is defined and fc and '${weather}' in fc else [])[:${toString hours}] }}";
 
+  # weather conditions that count as rain for the window
+  wet = [
+    "rainy"
+    "pouring"
+    "lightning-rainy"
+    "snowy"
+    "snowy-rainy"
+    "hail"
+  ];
+
   ## helpers
 
   # input_datetime holding only a time of day

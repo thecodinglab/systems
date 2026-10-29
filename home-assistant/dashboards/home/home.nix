@@ -109,35 +109,6 @@ let
     }
   ];
 
-  # the window with its state and more-info, and next to it one button that
-  # opens it when it is closed and closes it otherwise. Only one of the two is
-  # shown, so the row stays the same
-  windowTile = half {
-    entity = entities.window;
-    name = "Window";
-  };
-
-  windowButton =
-    condition: name: icon: action:
-    half (
-      {
-        entity = entities.window;
-        inherit name icon;
-        hide_state = true;
-        visibility = [ condition ];
-      }
-      // onTap (performAction action { target.entity_id = entities.window; })
-    );
-
-  openWindow =
-    windowButton (stateIs entities.window "closed") "Open" "mdi:window-open-variant"
-      "cover.open_cover";
-  closeWindow = windowButton {
-    condition = "state";
-    entity = entities.window;
-    state_not = "closed";
-  } "Close" "mdi:window-closed-variant" "cover.close_cover";
-
   # the four shutters as one tile: the panes (tap one for its controls) and
   # the layouts. The icon lights up while a layout is applied, the name leads
   # to the shutters view like the subheading above (storm guard is its badge)
@@ -384,10 +355,18 @@ in
           tap_action.action = "toggle";
         })
       ])
-      windowTile
-      openWindow
-      closeWindow
       shutterTile
+      # opens the window for 5-10 minutes, the icon lights up until it is
+      # closed again
+      (
+        full {
+          entity = scripts.airing;
+          name = "Air now";
+          icon = "mdi:window-open-variant";
+          hide_state = true;
+        }
+        // onTap (performAction "script.turn_on" { target.entity_id = scripts.airing; })
+      )
     ])
     (section [
       (room "mdi:bed-outline" "Bedroom" (climate "bedroom"))

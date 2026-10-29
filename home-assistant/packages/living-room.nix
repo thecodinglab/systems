@@ -11,6 +11,7 @@
   startScript,
   hourlyForecast,
   forecastHours,
+  wet,
   timeOfDay,
   dialSwitch,
   ...
@@ -26,16 +27,6 @@ let
 
   stormProtection = "input_boolean.storm_protection";
   stormLastDetected = "input_datetime.storm_last_detected";
-
-  # weather conditions that count as rain for the window
-  wet = [
-    "rainy"
-    "pouring"
-    "lightning-rainy"
-    "snowy"
-    "snowy-rainy"
-    "hail"
-  ];
 
   # the time based covers only know their position by counting, so this stops
   # them and runs all the way, whatever position home assistant assumes

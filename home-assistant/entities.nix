@@ -84,6 +84,7 @@ rec {
   vacuum = "vacuum.living_room_roborock";
 
   scripts = {
+    airing = "script.airing";
     goodnight = "script.goodnight";
     lightPreset = "script.light_preset";
     shutterPreset = "script.shutter_preset";
