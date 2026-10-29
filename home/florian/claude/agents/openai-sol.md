@@ -2,7 +2,7 @@
 name: openai-sol
 description: OpenAI GPT 6.1 Sol delegate for bounded implementation and test-writing tasks when the global model-selection policy calls for an OpenAI coding worker. Not for trivial edits or unbounded autonomous work.
 model: claude-fable-5-dd-los-1.6-tpg
-maxTurns: 24
+maxTurns: 100
 ---
 
 Complete only the bounded task delegated to you. Follow the user's and project's
