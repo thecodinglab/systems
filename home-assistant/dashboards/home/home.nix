@@ -443,6 +443,7 @@ in
           "relax"
           "night"
         ];
+        table = entities.lightPresets.kitchen;
       })
       (room "mdi:robot-vacuum" "Roborock" [
         (badge "sensor.living_room_roborock_battery" { })

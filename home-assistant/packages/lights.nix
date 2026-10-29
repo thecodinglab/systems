@@ -100,7 +100,7 @@ in
   script = {
     light_preset = {
       alias = "Light Preset";
-      description = "Apply a light preset (Bright / Relax / Cozy / Night) to lights. 'auto' picks by time of day: Night between \"Lights Night From\" and \"Lights Bright From\", Relax from sunset or \"Lights Relax From\" (whichever is first), Bright otherwise. The bedroom Twilight lamps have their own calmer presets that lean on the indirect back light, and 'auto' there never picks Bright.";
+      description = "Apply a light preset (Bright / Relax / Cozy / Night) to lights. 'auto' picks by time of day: Night between \"Lights Night From\" and \"Lights Bright From\", Relax from sunset or \"Lights Relax From\" (whichever is first), Bright otherwise. The kitchen stays at full brightness in every preset, only the colour temperature changes. The bedroom Twilight lamps have their own calmer presets that lean on the indirect back light, and 'auto' there never picks Bright.";
       icon = "mdi:palette";
       mode = "parallel";
       fields = ordered [
@@ -145,6 +145,8 @@ in
         {
           variables = ordered [
             { generic = lightPresets.generic; }
+            { kitchen = lightPresets.kitchen; }
+            { kitchen_members = [ lights.kitchen ] ++ datura.kitchen; }
             { bedroom = lightPresets.bedroom; }
             { bedroom_members = twilight.all; }
             { requested = "{{ preset | default('auto') }}"; }
@@ -161,7 +163,8 @@ in
                       {%- set d = dict(bedroom['main' if light.endswith('_main') else 'ambiance'][p],
                                        transition=[transition | default(0.4) | float(0.4), 1.5] | max) -%}
                     {%- else -%}
-                      {%- set d = dict(generic[p], transition=transition | default(0.4) | float(0.4)) -%}
+                      {%- set d = dict((kitchen if light in kitchen_members else generic)[p],
+                                       transition=transition | default(0.4) | float(0.4)) -%}
                     {%- endif -%}
                     {%- set ns.calls = ns.calls + [{'entity_id': light, 'data': d}] -%}
                   {%- endfor -%}

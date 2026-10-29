@@ -99,8 +99,9 @@ rec {
   };
 
   # what script.light_preset sets per preset, the dashboard uses them to tell
-  # which preset a room is on. The bedroom Twilight lamps have their own calmer
-  # ones for the main (down) and ambiance (back) lights
+  # which preset a room is on. The kitchen stays at full brightness in every
+  # preset and only gets warmer, the bedroom Twilight lamps have their own
+  # calmer ones for the main (down) and ambiance (back) lights
   lightPresets = {
     generic = {
       bright = {
@@ -117,6 +118,24 @@ rec {
       };
       night = {
         brightness_pct = 10;
+        color_temp_kelvin = 2200;
+      };
+    };
+    kitchen = {
+      bright = {
+        brightness_pct = 100;
+        color_temp_kelvin = 3000;
+      };
+      relax = {
+        brightness_pct = 100;
+        color_temp_kelvin = 2700;
+      };
+      cozy = {
+        brightness_pct = 100;
+        color_temp_kelvin = 2400;
+      };
+      night = {
+        brightness_pct = 100;
         color_temp_kelvin = 2200;
       };
     };
