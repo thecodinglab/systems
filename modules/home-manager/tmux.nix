@@ -4,12 +4,18 @@
   lib,
   ...
 }:
+let
+  cfg = config.custom.tmux;
+  tmux = lib.getExe config.programs.tmux.package;
+  agentLabel = "org.nix-community.home.tmux";
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
+in
 {
   options.custom.tmux = {
     enable = lib.mkEnableOption "enable tmux";
   };
 
-  config = lib.mkIf config.custom.tmux.enable {
+  config = lib.mkIf cfg.enable {
     custom.fzf.enable = true;
 
     programs.tmux = {
@@ -18,7 +24,6 @@
       baseIndex = 1;
       customPaneNavigationAndResize = true;
       keyMode = "vi";
-      secureSocket = true;
       shortcut = "Space";
 
       plugins = [
@@ -118,6 +123,42 @@
     };
 
     programs.fzf.tmux.enableShellIntegration = true;
+
+    # an ssh login gets its own security session, which can't see the keychain
+    # unlocked by the gui login (no codesign etc.); a server started by launchd
+    # lives in the gui session and so do all of its panes
+    launchd.agents.tmux = lib.mkIf isDarwin {
+      enable = true;
+      config = {
+        # -D keeps the server in the foreground for launchd and turns
+        # exit-empty off, so it stays up without sessions
+        ProgramArguments = [
+          tmux
+          "-D"
+        ];
+        RunAtLoad = true;
+        KeepAlive = true;
+        ProcessType = "Interactive";
+        # launchd hands agents a bare environment and panes inherit it
+        EnvironmentVariables = {
+          SHELL = lib.getExe pkgs.zsh;
+          LANG = "en_US.UTF-8";
+        };
+      };
+    };
+
+    # never let an ssh login start the server, it would be stuck in the ssh
+    # security session; -N connects to a running server only
+    programs.zsh.initContent = lib.mkIf (isDarwin && config.custom.zsh.enable) ''
+      tmux() {
+        if [[ -n $SSH_CONNECTION && -z $TMUX ]] && ! command tmux -N start-server 2>/dev/null; then
+          print -u2 "tmux: no server running, refusing to start one from ssh (the keychain would be locked)"
+          print -u2 "tmux: start it in the gui session: launchctl kickstart gui/$UID/${agentLabel}"
+          return 1
+        fi
+        command tmux "$@"
+      }
+    '';
 
     home.packages = [ pkgs.devtools ];
   };
