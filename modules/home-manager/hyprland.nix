@@ -232,7 +232,7 @@
               };
             };
 
-            animations.enabled = false;
+            animations.enabled = true;
 
             misc = {
               disable_hyprland_logo = true;
@@ -262,6 +262,90 @@
               no_donation_nag = true;
             };
           };
+
+          #########################
+          # Animations            #
+          #########################
+
+          # curves are emitted at the top of the config (see
+          # `importantPrefixes`), so the animations below can reference them
+          curve =
+            let
+              bezier = name: p1: p2: {
+                _args = [
+                  name
+                  {
+                    type = "bezier";
+                    points = [
+                      p1
+                      p2
+                    ];
+                  }
+                ];
+              };
+              spring = name: stiffness: dampening: {
+                _args = [
+                  name
+                  {
+                    type = "spring";
+                    mass = 1;
+                    inherit stiffness dampening;
+                  }
+                ];
+              };
+            in
+            [
+              (bezier "easeOutQuint" [ 0.23 1 ] [ 0.32 1 ])
+              (bezier "easeOutExpo" [ 0.16 1 ] [ 0.3 1 ])
+              (bezier "almostLinear" [ 0.5 0.5 ] [ 0.75 1 ])
+              (bezier "linear" [ 0 0 ] [ 1 1 ])
+              (bezier "quick" [ 0.15 0 ] [ 0.1 1 ])
+
+              # slightly underdamped, windows settle with a soft overshoot
+              (spring "soft" 200 24)
+              # close to critically damped, for scrolling columns around
+              (spring "snappy" 320 34)
+            ];
+
+          animation =
+            let
+              anim =
+                leaf: speed: curve: extra:
+                {
+                  inherit leaf speed;
+                  enabled = true;
+                }
+                // curve
+                // extra;
+              bezier = name: { bezier = name; };
+              spring = name: { spring = name; };
+            in
+            [
+              (anim "global" 8 (bezier "default") { })
+
+              (anim "windows" 4.5 (spring "soft") { })
+              (anim "windowsIn" 4 (spring "soft") { style = "popin 85%"; })
+              (anim "windowsOut" 1.5 (bezier "linear") { style = "popin 90%"; })
+              (anim "windowsMove" 4 (spring "snappy") { })
+
+              (anim "border" 5 (bezier "easeOutQuint") { })
+
+              (anim "fade" 3 (bezier "quick") { })
+              (anim "fadeIn" 1.7 (bezier "almostLinear") { })
+              (anim "fadeOut" 1.5 (bezier "almostLinear") { })
+
+              (anim "layers" 3.8 (bezier "easeOutQuint") { })
+              (anim "layersIn" 4 (bezier "easeOutQuint") { style = "fade"; })
+              (anim "layersOut" 1.5 (bezier "linear") { style = "fade"; })
+              (anim "fadeLayersIn" 1.8 (bezier "almostLinear") { })
+              (anim "fadeLayersOut" 1.4 (bezier "almostLinear") { })
+
+              # workspaces stack vertically, the scrolling layout runs horizontally
+              (anim "workspaces" 4 (bezier "easeOutExpo") { style = "slidefadevert 20%"; })
+              (anim "specialWorkspace" 4 (bezier "easeOutExpo") { style = "slidefadevert 30%"; })
+
+              (anim "zoomFactor" 7 (bezier "quick") { })
+            ];
 
           #########################
           # Startup Programs      #
