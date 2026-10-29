@@ -211,7 +211,7 @@
 
               border_size = 2;
 
-              layout = "master";
+              layout = "scrolling";
 
               # only windows matched by an `immediate` rule (games) tear
               allow_tearing = true;
@@ -233,8 +233,6 @@
             };
 
             animations.enabled = false;
-
-            master.mfact = 0.7;
 
             misc = {
               disable_hyprland_logo = true;
@@ -336,6 +334,10 @@
             (mkBind "${mod} + L" (dsp ''focus({ direction = "right" })''))
             (mkBind "${mod} + K" (dsp ''focus({ direction = "up" })''))
             (mkBind "${mod} + J" (dsp ''focus({ direction = "down" })''))
+
+            # cycle the focused column through `scrolling.explicit_column_widths`
+            (mkBind "${mod} + R" (dsp ''layout("colresize +conf")''))
+            (mkBind "${mod} + SHIFT + R" (dsp ''layout("colresize -conf")''))
 
             # toggle fullscreen, floating
             (mkBind "${mod} + M" (dsp ''window.fullscreen({ mode = "maximized" })''))
