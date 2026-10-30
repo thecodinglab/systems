@@ -145,11 +145,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788611887,
-        "narHash": "sha256-VI/hHnbuH6biPLLSIsGKpqunBvoTUhxA3KQAacbVIAs=",
+        "lastModified": 1793373358,
+        "narHash": "sha256-Spb2XnqTPpftTJvG7BUsuTzSioO4UJNeSmvsv1f+ifE=",
         "owner": "thecodinglab",
         "repo": "devtools",
-        "rev": "ac53b5287fa0ae970568f24bd0b0cadc98daec22",
+        "rev": "7c1076d3f88738252c546f607ee5a30a9611018a",
         "type": "github"
       },
       "original": {

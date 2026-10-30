@@ -41,6 +41,11 @@ ifeq ($(DEV_XCLOUD),1)
 	override FLAKE_FLAGS += --override-input xcloud git+file://$(call expand-path,$(XCLOUD_SRC))
 endif
 
+DEVTOOLS_SRC ?= $(HOME)/dev/devtools/main
+ifeq ($(DEV_DEVTOOLS),1)
+	override FLAKE_FLAGS += --override-input devtools git+file://$(call expand-path,$(DEVTOOLS_SRC))
+endif
+
 # Everything is evaluated and built as the calling user, only the activation
 # runs as root (with -H: macOS sudo keeps the caller's HOME, which nix warns
 # about; darwin-rebuild resets it the same way). root has no GitHub
