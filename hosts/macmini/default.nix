@@ -1,4 +1,7 @@
 { inputs, ... }:
+let
+  home = "/Users/florian";
+in
 {
   imports = [
     ../../profiles/darwin/workstation.nix
@@ -21,7 +24,7 @@
     "/System/Applications/Mail.app"
     "/System/Applications/Calendar.app"
 
-    "/Applications/Nix Apps/Ghostty.app" # managed through nix-darwin
+    "${home}/Applications/Home Manager Apps/Ghostty.app" # managed through home-manager
 
     "/Applications/1Password.app" # managed through homebrew
     "/System/Applications/System Settings.app"
