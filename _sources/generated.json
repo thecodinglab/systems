@@ -1,4 +1,25 @@
 {
+    "apple-design-skill": {
+        "cargoLock": null,
+        "date": "2026-10-28",
+        "extract": null,
+        "name": "apple-design-skill",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "dickwu",
+            "repo": "apple-design-skill",
+            "rev": "ff4ebddf0488598723a82bfdce1afb04de0b1c44",
+            "sha256": "sha256-62qSK+EyUmKlNSNAVAj7nd1FprMzB72myZLbQ7UOKII=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "ff4ebddf0488598723a82bfdce1afb04de0b1c44"
+    },
     "claude-code-aarch64-darwin": {
         "cargoLock": null,
         "date": null,

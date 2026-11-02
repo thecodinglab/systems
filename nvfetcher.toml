@@ -33,3 +33,10 @@ fetch.url = "https://github.com/openai/codex/releases/download/rust-v$ver/codex-
 src.github = "openai/codex"
 src.prefix = "rust-v"
 fetch.url = "https://github.com/openai/codex/releases/download/rust-v$ver/codex-package-aarch64-apple-darwin.tar.gz"
+
+# claude code skills, installed through custom.claude-code.skills; they have no
+# releases, so the latest commit is used
+
+[apple-design-skill]
+src.git = "https://github.com/dickwu/apple-design-skill"
+fetch.github = "dickwu/apple-design-skill"

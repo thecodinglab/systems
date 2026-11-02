@@ -29,6 +29,8 @@ in
   claude-desktop = callPackage ./claude-desktop.nix { };
   claude-code = callPackage ./claude-code.nix { };
   codex = callPackage ./codex.nix { };
+  # claude code skill, the repository is the skill directory
+  apple-design-skill = deps.apple-design-skill.src;
   cliproxyapi-management-center = pkgs.callPackage ./cliproxyapi-management-center.nix { };
   devtools = inputs.devtools.packages.${pkgs.stdenv.hostPlatform.system}.default;
 }

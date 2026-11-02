@@ -6,6 +6,18 @@
   dockerTools,
 }:
 {
+  apple-design-skill = {
+    pname = "apple-design-skill";
+    version = "ff4ebddf0488598723a82bfdce1afb04de0b1c44";
+    src = fetchFromGitHub {
+      owner = "dickwu";
+      repo = "apple-design-skill";
+      rev = "ff4ebddf0488598723a82bfdce1afb04de0b1c44";
+      fetchSubmodules = false;
+      sha256 = "sha256-62qSK+EyUmKlNSNAVAj7nd1FprMzB72myZLbQ7UOKII=";
+    };
+    date = "2026-10-28";
+  };
   claude-code-aarch64-darwin = {
     pname = "claude-code-aarch64-darwin";
     version = "2.1.311";

@@ -53,6 +53,7 @@ in
     claude-code = {
       enable = true;
       context = ./claude/CLAUDE.md;
+      skills.apple-design = pkgs.apple-design-skill;
 
       settings = {
         permissions.defaultMode = "bypassPermissions";
