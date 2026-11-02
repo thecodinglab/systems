@@ -44,6 +44,24 @@ let
       }
     else
       cfg.package;
+
+  # written to a temporary file first, so concurrent instances never read a
+  # partial key and a failed or empty fetch is never cached
+  apiKeyHelper =
+    if cfg.proxy.apiKeyCacheFile == null then
+      cfg.proxy.apiKeyCommand
+    else
+      toString (
+        pkgs.writeShellScript "claude-code-api-key" ''
+          cache=${lib.escapeShellArg cfg.proxy.apiKeyCacheFile}
+          if [ ! -s "$cache" ]; then
+            key=$(${cfg.proxy.apiKeyCommand}) && [ -n "$key" ] || exit 1
+            mkdir -p "$(dirname "$cache")"
+            (umask 077 && printf '%s\n' "$key" > "$cache.$$") && mv -f "$cache.$$" "$cache"
+          fi
+          exec cat "$cache"
+        ''
+      );
 in
 {
   options.custom.claude-code = {
@@ -116,6 +134,17 @@ in
         example = ''op read "op://Private/CLIProxyAPI/password"'';
         description = "Shell command printing the key of the server (apiKeyHelper).";
       };
+
+      apiKeyCacheFile = mkOption {
+        type = types.nullOr types.str;
+        default = "${config.xdg.cacheHome}/claude-code/proxy-key";
+        defaultText = lib.literalExpression ''"''${config.xdg.cacheHome}/claude-code/proxy-key"'';
+        description = ''
+          File the key is cached in, so apiKeyCommand only runs (and 1password
+          only asks) when it does not exist yet. Delete it after changing the
+          key. null runs apiKeyCommand every time.
+        '';
+      };
     };
   };
 
@@ -129,7 +158,7 @@ in
 
     # https://help.router-for.me/agent-client/claude-code.html
     custom.claude-code.settings = lib.mkIf cfg.proxy.enable {
-      apiKeyHelper = cfg.proxy.apiKeyCommand;
+      inherit apiKeyHelper;
       env = {
         ANTHROPIC_BASE_URL = cfg.proxy.url;
         # the key never changes, so only ask for it again after a 401 (or a day)

@@ -9,5 +9,6 @@
   custom.claude-code.proxy = {
     url = "http://127.0.0.1:8317";
     apiKeyCommand = "cat ~/.config/cliproxyapi/api-key";
+    apiKeyCacheFile = null;
   };
 }
