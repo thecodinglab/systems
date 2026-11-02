@@ -15,6 +15,13 @@
       reduceTransparency = lib.mkEnableOption "opaque terminals and shell surfaces instead of frosted ones";
       increaseContrast = lib.mkEnableOption "stronger window outlines and shell hairlines";
     };
+
+    headphones = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      example = "90:62:3F:9B:23:F7";
+      description = "Bluetooth address of the headphones Super+B connects and disconnects.";
+    };
   };
 
   config =
@@ -241,6 +248,24 @@
         ${notify} -a Hyprland -t 3000 \
           -h string:x-canonical-private-synchronous:log-out \
           "Log out?" "Press Super+Alt+Q again to quit all apps and log out."
+      '';
+
+      # Connects the headphones, or disconnects them if they already are, and
+      # says which it did once it is done; connecting takes a few seconds.
+      toggleHeadphones = pkgs.writers.writeBash "toggle-headphones" ''
+        bluetoothctl=${lib.getExe' pkgs.bluez "bluetoothctl"}
+        device=${lib.escapeShellArg config.custom.hyprland.headphones}
+        name=$($bluetoothctl info "$device" | sed -n 's/^\s*Alias: //p')
+
+        if $bluetoothctl info "$device" | grep -q 'Connected: yes'; then
+          $bluetoothctl disconnect "$device" >/dev/null && message="Disconnected"
+        else
+          $bluetoothctl connect "$device" >/dev/null && message="Connected"
+        fi
+
+        ${notify} -a Bluetooth -t 3000 \
+          -h string:x-canonical-private-synchronous:headphones \
+          "''${name:-Headphones}" "''${message:-Could not reach them}"
       '';
 
       # helpers for the lua based hyprland configuration, see
@@ -641,6 +666,9 @@
             (mkBind "${mod} + SHIFT + F4" (exec "${screenshot} area"))
             (mkBind "${mod} + SHIFT + F3" (exec "${screenshot} window"))
           ]
+          ++ lib.optional (config.custom.hyprland.headphones != null) (
+            mkBind "${mod} + B" (exec "${toggleHeadphones}")
+          )
           ++
             # locked binds, these also fire while the session is locked
             (
