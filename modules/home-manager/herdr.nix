@@ -9,6 +9,7 @@ let
   herdr = lib.getExe config.programs.herdr.package;
   agentLabel = "org.nix-community.home.herdr";
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
+  palette = import ./theme/palette.nix;
 
   # Smart pane switching with awareness of Vim splits, like vim-tmux-navigator:
   # vim, fzf and a nested tmux get the key, nvim hands over to herdr at its
@@ -82,33 +83,26 @@ in
       settings = {
         onboarding = false;
 
-        # follows the system appearance like the theme switcher does for tmux;
-        # the colors are the ones the theme switcher gives the tmux status
-        # line and borders (panes never get a background, so terminal
-        # transparency/blur shows through either way)
+        # Its "terminal" theme draws in the terminal's own colours, so it
+        # switches with ghostty, see the ghostty module. The grounds it can't
+        # take from those come from the same palette, one set per appearance:
+        # the status line (also behind dialogs) a step off the ground with
+        # inactive tabs and input fields on the ground itself, its entries in
+        # the comment grey like the tmux status line, and the row under the
+        # cursor raised rather than filled in that grey, which leaves the ink
+        # on it under 3:1.
         theme = {
-          name = "catppuccin";
+          name = "terminal";
           auto_switch = true;
-          dark_name = "catppuccin";
-          light_name = "catppuccin-latte";
-          custom = {
-            dark = {
-              accent = "#89b4fa";
-              # status line, also behind dialogs
-              panel_bg = "#181825";
-              # inactive tabs blend into the status line, input fields stay
-              # visible in dialogs
-              surface0 = "#1e1e2e";
-              # the status entries, like the date in tmux
-              overlay1 = "#9399b2";
-            };
-            light = {
-              accent = "#1e66f5";
-              panel_bg = "#e6e9ef";
-              surface0 = "#eff1f5";
-              overlay1 = "#6c6f85";
-            };
-          };
+          dark_name = "terminal";
+          light_name = "terminal";
+          custom = lib.mapAttrs (_: colors: {
+            accent = "#${colors.base0D}";
+            panel_bg = "#${colors.base01}";
+            surface0 = "#${colors.base00}";
+            overlay1 = "#${colors.base03}";
+            active_row_bg = "#${colors.base02}";
+          }) (removeAttrs palette [ "selection" ]);
         };
 
         terminal = {

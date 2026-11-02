@@ -179,24 +179,249 @@
     }
   ];
 
-  colorschemes.nightfox = {
-    enable = true;
-    settings.options = {
-      transparent = lib.nixvim.mkRaw ''vim.env.TERMINAL_BACKGROUND_TRANSPARENT == "1"'';
-      dim_inactive = false;
-    };
-    # the default separator uses `bg0`, which barely stands out from the
-    # editor background
-    settings.groups.all.WinSeparator.fg = "bg4";
-  };
+  # The palette the rest of the system is drawn in (see the theme module) as
+  # a colorscheme of its own: neovim reloads the loaded colorscheme whenever
+  # 'background' changes, so it takes the light or the dark half from the
+  # background detected above, and again when the terminal reports another.
+  extraFiles."colors/system.lua".text = ''
+    local palettes = vim.json.decode([[${
+      builtins.toJSON (
+        lib.mapAttrs (_: lib.mapAttrs (_: hex: "#${hex}")) (
+          removeAttrs (import ../../../modules/home-manager/theme/palette.nix) [ "selection" ]
+        )
+      )
+    }]])
+    local selections = vim.json.decode([[${
+      builtins.toJSON (
+        lib.mapAttrs (_: hex: "#${hex}") (import ../../../modules/home-manager/theme/palette.nix).selection
+      )
+    }]])
+    local appearance = palettes[vim.o.background] and vim.o.background or "dark"
+    local p = palettes[appearance]
 
-  # nightfox has no automatic light/dark flavor switching and its compiled
-  # schemes force 'background' themselves, so pick the flavor at startup
-  # based on the background detected above
-  colorscheme = null;
+    vim.cmd.highlight("clear")
+    vim.g.colors_name = "system"
+
+    local function mix(from, to, amount)
+      local out = "#"
+      for i = 2, 6, 2 do
+        local a, b = tonumber(from:sub(i, i + 1), 16), tonumber(to:sub(i, i + 1), 16)
+        out = out .. string.format("%02x", math.floor(a + (b - a) * amount + 0.5))
+      end
+      return out
+    end
+
+    -- the tiers, see the palette
+    local ground, raised, rule = p.base00, p.base01, p.base02
+    local dim, ink, strong = p.base03, p.base05, p.base06
+    local red, orange, amber, green, blue = p.base08, p.base09, p.base0A, p.base0B, p.base0D
+
+    -- Quiet: what you wrote is in the ink, what the language says in the
+    -- strong ink and bold, names being defined or called in the strong ink,
+    -- comments and punctuation in the grey. Only literals get a hue --
+    -- strings green, numbers and constants amber -- and everything else
+    -- with a colour is a signal: red an error, orange a warning, blue the
+    -- accent.
+    local groups = {
+      Normal = { fg = ink, bg = ground },
+      NormalNC = { link = "Normal" },
+      NormalFloat = { fg = ink, bg = raised },
+      FloatBorder = { fg = dim, bg = raised },
+      FloatTitle = { fg = strong, bg = raised, bold = true },
+      Pmenu = { fg = ink, bg = raised },
+      PmenuSel = { fg = strong, bg = rule, bold = true },
+      PmenuMatch = { fg = strong, bold = true },
+      PmenuMatchSel = { fg = strong, bg = rule, bold = true },
+      PmenuSbar = { bg = raised },
+      PmenuThumb = { bg = dim },
+
+      CursorLine = { bg = raised },
+      CursorColumn = { bg = raised },
+      ColorColumn = { bg = raised },
+      CursorLineNr = { fg = strong, bg = raised },
+      LineNr = { fg = dim },
+      SignColumn = { fg = dim },
+      FoldColumn = { fg = dim },
+      Folded = { fg = dim, bg = raised },
+      EndOfBuffer = { fg = ground },
+      NonText = { fg = dim },
+      Whitespace = { fg = rule },
+      SpecialKey = { fg = dim },
+      Conceal = { fg = dim },
+
+      Visual = { bg = selections[appearance] },
+      VisualNOS = { link = "Visual" },
+      -- found text is a signal, so it is the one ground laid in a hue
+      Search = { fg = ground, bg = amber },
+      CurSearch = { fg = ground, bg = orange, bold = true },
+      IncSearch = { link = "CurSearch" },
+      Substitute = { link = "CurSearch" },
+      MatchParen = { bg = rule, bold = true },
+      QuickFixLine = { bg = raised, bold = true },
+
+      -- splits are told apart by a quiet line, the comment grey, like the
+      -- border round the active tmux pane
+      WinSeparator = { fg = dim },
+      StatusLine = { fg = ink, bg = raised },
+      StatusLineNC = { fg = dim, bg = raised },
+      TabLine = { fg = dim, bg = raised },
+      TabLineFill = { bg = raised },
+      TabLineSel = { fg = strong, bg = ground, bold = true },
+      WinBar = { fg = ink, bold = true },
+      WinBarNC = { fg = dim },
+
+      Title = { fg = strong, bold = true },
+      Directory = { fg = strong },
+      ModeMsg = { fg = strong, bold = true },
+      MoreMsg = { fg = ink },
+      Question = { fg = ink },
+      OkMsg = { fg = green },
+      ErrorMsg = { fg = red },
+      WarningMsg = { fg = orange },
+
+      Comment = { fg = dim, italic = true },
+      Constant = { fg = amber },
+      String = { fg = green },
+      Character = { link = "String" },
+      Number = { fg = amber },
+      Boolean = { fg = amber },
+      Float = { fg = amber },
+      Identifier = { fg = ink },
+      Function = { fg = strong },
+      Statement = { fg = strong, bold = true },
+      Keyword = { link = "Statement" },
+      Conditional = { link = "Statement" },
+      Repeat = { link = "Statement" },
+      Label = { link = "Statement" },
+      Exception = { link = "Statement" },
+      Operator = { fg = ink },
+      PreProc = { fg = dim },
+      Include = { link = "Statement" },
+      Define = { link = "Statement" },
+      Macro = { fg = strong },
+      Type = { fg = ink, italic = true },
+      StorageClass = { link = "Statement" },
+      Structure = { link = "Statement" },
+      Typedef = { link = "Statement" },
+      Special = { fg = strong },
+      SpecialChar = { fg = amber },
+      Tag = { fg = strong },
+      Delimiter = { fg = dim },
+      Debug = { fg = dim },
+      Underlined = { underline = true },
+      Error = { fg = red },
+      Todo = { fg = strong, bold = true },
+
+      ["@variable"] = { fg = ink },
+      ["@variable.builtin"] = { fg = strong, italic = true },
+      ["@variable.parameter"] = { fg = ink },
+      ["@variable.member"] = { fg = ink },
+      ["@property"] = { fg = ink },
+      ["@module"] = { fg = ink },
+      ["@constant"] = { link = "Constant" },
+      ["@constant.builtin"] = { link = "Constant" },
+      ["@string"] = { link = "String" },
+      ["@string.escape"] = { link = "SpecialChar" },
+      ["@string.special"] = { link = "SpecialChar" },
+      ["@type"] = { link = "Type" },
+      ["@type.builtin"] = { link = "Type" },
+      ["@attribute"] = { fg = dim },
+      ["@function"] = { link = "Function" },
+      ["@function.builtin"] = { link = "Function" },
+      ["@constructor"] = { fg = strong },
+      ["@operator"] = { link = "Operator" },
+      ["@keyword"] = { link = "Statement" },
+      ["@punctuation"] = { link = "Delimiter" },
+      ["@punctuation.special"] = { fg = amber },
+      ["@tag"] = { link = "Tag" },
+      ["@tag.attribute"] = { fg = ink },
+      ["@tag.delimiter"] = { link = "Delimiter" },
+      ["@comment"] = { link = "Comment" },
+      ["@comment.error"] = { fg = red, bold = true },
+      ["@comment.warning"] = { fg = orange, bold = true },
+      ["@comment.todo"] = { link = "Todo" },
+      ["@comment.note"] = { fg = blue, bold = true },
+      ["@markup.heading"] = { link = "Title" },
+      ["@markup.strong"] = { bold = true },
+      ["@markup.italic"] = { italic = true },
+      ["@markup.strikethrough"] = { strikethrough = true },
+      ["@markup.link"] = { fg = blue },
+      ["@markup.link.url"] = { fg = blue, underline = true },
+      ["@markup.raw"] = { fg = green },
+      ["@markup.quote"] = { fg = dim, italic = true },
+      ["@markup.list"] = { fg = dim },
+      ["@diff.plus"] = { fg = green },
+      ["@diff.minus"] = { fg = red },
+      ["@diff.delta"] = { fg = orange },
+
+      Added = { fg = green },
+      Changed = { fg = orange },
+      Removed = { fg = red },
+      DiffAdd = { bg = mix(ground, green, 0.16) },
+      DiffChange = { bg = mix(ground, blue, 0.10) },
+      DiffText = { bg = mix(ground, blue, 0.28) },
+      DiffDelete = { fg = mix(ground, red, 0.5), bg = mix(ground, red, 0.12) },
+
+      DiagnosticError = { fg = red },
+      DiagnosticWarn = { fg = orange },
+      DiagnosticInfo = { fg = blue },
+      DiagnosticHint = { fg = dim },
+      DiagnosticOk = { fg = green },
+      DiagnosticUnderlineError = { undercurl = true, sp = red },
+      DiagnosticUnderlineWarn = { undercurl = true, sp = orange },
+      DiagnosticUnderlineInfo = { undercurl = true, sp = blue },
+      DiagnosticUnderlineHint = { undercurl = true, sp = dim },
+      DiagnosticUnderlineOk = { undercurl = true, sp = green },
+      DiagnosticUnnecessary = { fg = dim },
+      DiagnosticDeprecated = { strikethrough = true },
+      SpellBad = { undercurl = true, sp = red },
+      SpellCap = { undercurl = true, sp = orange },
+      SpellLocal = { undercurl = true, sp = blue },
+      SpellRare = { undercurl = true, sp = blue },
+
+      LspReferenceText = { bg = rule },
+      LspReferenceRead = { bg = rule },
+      LspReferenceWrite = { bg = rule, bold = true },
+      LspInlayHint = { fg = dim, italic = true },
+      LspSignatureActiveParameter = { bold = true, underline = true },
+
+      -- fzf-lua picks named X11 colours of its own (CadetBlue1, LightGreen,
+      -- PaleVioletRed1...) for anything not linked to a standard group;
+      -- these are context, so the grey, and what you act on the strong ink
+      FzfLuaHeaderBind = { fg = strong, bold = true },
+      FzfLuaHeaderText = { fg = dim },
+      FzfLuaPathColNr = { fg = dim },
+      FzfLuaPathLineNr = { fg = dim },
+      FzfLuaLivePrompt = { fg = strong },
+      FzfLuaLiveSym = { fg = strong },
+      FzfLuaBufNr = { fg = dim },
+      FzfLuaBufFlagCur = { fg = strong, bold = true },
+      FzfLuaBufFlagAlt = { fg = dim },
+      FzfLuaTabTitle = { fg = strong, bold = true },
+      FzfLuaTabMarker = { fg = strong, bold = true },
+    }
+
+    -- let the terminal's translucency show through the editor
+    if vim.env.TERMINAL_BACKGROUND_TRANSPARENT == "1" then
+      groups.Normal.bg = nil
+      groups.EndOfBuffer.fg = nil
+    end
+
+    for name, spec in pairs(groups) do
+      vim.api.nvim_set_hl(0, name, spec)
+    end
+
+    -- :terminal in the same sixteen colours as the terminal around it
+    for index, slot in ipairs({
+      "base00", "base08", "base0B", "base0A", "base0D", "base0E", "base0C", "base05",
+      "base03", "base08", "base0B", "base0A", "base0D", "base0E", "base0C", "base07",
+    }) do
+      vim.g["terminal_color_" .. (index - 1)] = p[slot]
+    end
+  '';
+  colorscheme = "system";
+
   extraConfigLua = ''
-    vim.cmd.colorscheme(vim.o.background == "light" and "dayfox" or "nordfox")
-
     -- tmux-navigator only knows tmux, inside herdr move to the herdr pane
     -- next to the editor once there is no split left in that direction
     if vim.env.HERDR_ENV == "1" and vim.env.TMUX == nil then
@@ -316,6 +541,11 @@
       ];
     };
 
-    web-devicons.enable = true;
+    # file icons in the ink of whatever they sit in rather than one colour
+    # per language, in the finder, the file browser and the status line
+    web-devicons = {
+      enable = true;
+      settings.color_icons = false;
+    };
   };
 }

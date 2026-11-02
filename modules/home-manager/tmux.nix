@@ -32,8 +32,6 @@ in
           plugin = pkgs.tmuxPlugins.sensible;
           extraConfig = ''
             set -g default-command '${lib.getExe pkgs.zsh}'
-            set-environment -g TINTED_TMUX_OPTION_ACTIVE 1
-            set-environment -g TINTED_TMUX_OPTION_STATUSBAR 1
             set-environment -g TERMINAL_BACKGROUND_TRANSPARENT 1
           '';
         }
@@ -45,21 +43,33 @@ in
           ''
             set-option -sa terminal-overrides ",xterm*:Tc"
           ''
-          # let terminal transparency/blur show through tmux panes
+          # Drawn in the terminal's colours (indices as laid out by the ghostty
+          # module), so it switches with the terminal, and with no grounds of
+          # its own, so the terminal's transparency shows through.
+          #
+          # The status line reads like a mac's menu bar: the session's name in
+          # the ink, the other windows and the clock's context in the comment
+          # grey, and the window you are in named in the accent, which only
+          # ever says *here*. Panes are told apart the way the windows around
+          # the terminal are, by a brighter line round the one with the keys
+          # rather than a coloured one.
           ''
             set -g window-style "fg=default,bg=default"
             set -g window-active-style "fg=default,bg=default"
-            set -g pane-border-style "bg=default"
-              set -g pane-active-border-style "bg=default"
-              set -g message-style "fg=default,bg=default"
-              set -g popup-style "fg=default,bg=default"
-              set -g mode-style "fg=default,bg=default,reverse"
-          ''
-          # status bar length
-          ''
-            # Hide stale theme output while the login shell is starting.
-            # The zsh theme hook turns this back on after applying colors.
-            set -g status off
+            set -g pane-border-style "fg=colour19,bg=default"
+            set -g pane-active-border-style "fg=colour8,bg=default"
+            set -g popup-style "fg=default,bg=default"
+            set -g popup-border-style "fg=colour8"
+            set -g message-style "fg=default,bg=colour18"
+            set -g message-command-style "fg=default,bg=colour18"
+            set -g mode-style "fg=default,bg=colour19"
+
+            set -g status-style "fg=colour8,bg=default"
+            set -g status-left "#[fg=default,bold]#S  "
+            set -g status-right "#h  %a %-d %b  #[fg=default]%H:%M"
+            set -g window-status-format "#I #W#{?window_zoomed_flag, 🔍,}"
+            set -g window-status-current-format "#[fg=blue,bold]#I #W#{?window_zoomed_flag, 🔍,}"
+            set -g window-status-separator "  "
             set -g status-left-length 80
             set -g status-right-length 80
           ''

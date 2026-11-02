@@ -35,6 +35,10 @@
         };
       };
 
+      # In the terminal's colours, and only three of them: the ink for what you
+      # are looking at, the comment grey for what is only context, and a
+      # colour only when it says something -- red when the last command
+      # failed, the accent while vi mode is on.
       starship = {
         enable = true;
 
@@ -45,19 +49,21 @@
 
           character = {
             format = "$symbol";
-            success_symbol = "[➜](bold green)";
+            success_symbol = "[➜](bold)";
             error_symbol = "[➜](bold red)";
-            vimcmd_symbol = "[➜](bold purple)";
+            vimcmd_symbol = "[➜](bold blue)";
           };
 
           os = {
             disabled = false;
-            style = "#777777";
+            style = "bright-black";
             symbols = {
               Macos = " ";
               NixOS = " ";
             };
           };
+
+          directory.style = "bold";
 
           username = {
             format = "$user";
@@ -67,7 +73,7 @@
           hostname = {
             format = "[$hostname]($style)";
             ssh_only = false;
-            style = "#777777";
+            style = "bright-black";
           };
 
           shlvl = {
@@ -75,11 +81,15 @@
             disabled = false;
             format = "[$symbol]($style) ";
             symbol = "";
+            style = "bright-black";
             threshold = 3;
           };
 
+          direnv.style = "bright-black";
+
           cmd_duration = {
-            format = "[$duration](bold yellow) ";
+            format = "[$duration]($style) ";
+            style = "bright-black";
           };
         };
       };

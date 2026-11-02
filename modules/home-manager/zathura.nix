@@ -15,7 +15,8 @@
       package = pkgs.zathura.override { useMupdf = true; };
 
       options = {
-        font = config.stylix.fonts.monospace.name + " 10";
+        # its status bar and inputbar are interface, not code
+        font = config.stylix.fonts.sansSerif.name + " " + toString config.stylix.fonts.sizes.desktop;
         selection-clipboard = "clipboard";
 
         page-padding = 10;

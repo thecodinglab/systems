@@ -95,6 +95,10 @@
     programs.delta = {
       enable = true;
       enableGitIntegration = true;
+
+      # Code in the terminal's colours, like bat; delta asks the terminal
+      # whether it is light or dark for the added and removed lines.
+      options.syntax-theme = "base16";
     };
 
     programs.gpg = {

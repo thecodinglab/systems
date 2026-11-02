@@ -44,7 +44,6 @@ in
     tmux.enable = true;
     herdr.enable = true;
     git.enable = true;
-    theme-switcher.enable = true;
     neovim.enable = true;
 
     zsh.enable = true;
