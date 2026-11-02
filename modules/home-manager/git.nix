@@ -39,6 +39,7 @@
         branch.autoSetupMerge = "simple";
         worktree.guessRemote = "true";
         pull.rebase = "true";
+        rebase.autoStash = "true"; # stash and restore local changes around a pull
 
         diff = {
           algorithm = "histogram"; # clearer diffs on moved/edited lines
