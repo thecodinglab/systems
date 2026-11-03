@@ -48,13 +48,19 @@ let
     }
   ];
   mean = room: "sensor.${room.id}_temperature_3_day_mean";
+
+  # airing also runs while away, as long as you were home at some point within
+  # this many hours; the sensor is the time at home in that window, from the
+  # recorder (so a restart doesn't reset it)
+  recentlyHomeHours = 48;
+  recentlyHome = "sensor.home_last_48_hours";
 in
 {
   automation = [
     {
       id = "1792500000015";
       alias = "Heating: Air the Living Room";
-      description = "In the heating period (Met.no mean below ${toString heatingLimit} °C over the next 24 h) airs the living room at the three airing times: opens the window fully for 5 minutes below 5 °C outside, 10 otherwise, then closes it (script.airing). Skipped while away, in night mode, when it rains or storm protection is on and while the window is open or was closed less than an hour ago (just aired).";
+      description = "In the heating period (Met.no mean below ${toString heatingLimit} °C over the next 24 h) airs the living room at the three airing times: opens the window fully for 5 minutes below 5 °C outside, 10 otherwise, then closes it (script.airing). Also runs while away if you were home at some point in the last ${toString recentlyHomeHours} h; skipped after longer absences, in night mode, when it rains or storm protection is on and while the window is open or was closed less than an hour ago (just aired).";
       triggers =
         map
           (n: {
@@ -67,7 +73,14 @@ in
             "evening"
           ];
       conditions = [
-        isHome
+        {
+          condition = "or";
+          alias = "Home, or home at some point in the last ${toString recentlyHomeHours} h";
+          conditions = [
+            isHome
+            (template "{{ states('${recentlyHome}') | float(0) > 0 }}")
+          ];
+        }
         nightModeOff
         (
           template "{{ is_state('${window}', 'closed') and now() - states.${window}.last_changed > timedelta(hours=1) }}"
@@ -190,7 +203,19 @@ in
     max_age.hours = 72;
     sampling_size = 10000;
     precision = 1;
-  }) rooms;
+  }) rooms
+  ++ [
+    {
+      platform = "history_stats";
+      name = "Home Last 48 Hours";
+      unique_id = "home_last_48_hours";
+      entity_id = entities.person;
+      state = "home";
+      type = "time";
+      start = "{{ now() - timedelta(hours=${toString recentlyHomeHours}) }}";
+      end = "{{ now() }}";
+    }
+  ];
   script = {
     airing = {
       alias = "Airing";

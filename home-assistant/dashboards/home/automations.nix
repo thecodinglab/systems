@@ -45,7 +45,7 @@ in
     ])
     (section [
       (heading "mdi:radiator" "Heating & airing")
-      (markdown "In the heating period (below 15 °C outside) the living room window opens fully for 5-10 min at each airing time while you are home, unless it rains or the window was just open. A room averaging below 19 °C over 3 days sends a prepared email to Wincasa.")
+      (markdown "In the heating period (below 15 °C outside) the living room window opens fully for 5-10 min at each airing time while you are home or were home within the last 48 h, unless it rains or the window was just open. A room averaging below 19 °C over 3 days sends a prepared email to Wincasa.")
       (setting "mdi:window-open-variant" "Automatic airing" "automation.heating_airing_reminder")
       (setting "mdi:play" "Air now" "script.airing")
       (setting "mdi:weather-sunset-up" "Morning" "input_datetime.airing_time_morning")
