@@ -33,7 +33,14 @@ in
         "paperless.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.233/";
 
         "iot.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.65:3000";
-        "aphrodite.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.52/";
+        "aphrodite.thecodinglab.ch".locations."/" = {
+          proxyPass = "http://172.16.0.52/";
+          # Stream responses (videos are GBs) straight through: with buffering
+          # on, nginx read each one up to 1 GB ahead of the client into temp
+          # files, so every video seek cost ~1 GB of reads and writes on the
+          # shared HDDs.
+          extraConfig = "proxy_buffering off;";
+        };
       };
     };
   };
