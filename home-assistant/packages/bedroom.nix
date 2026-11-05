@@ -188,6 +188,16 @@ in
       mode = "single";
     }
   ];
+  # the three Ökensand bulbs as one lamp, the bulbs themselves are hidden in the
+  # entity registry
+  light = [
+    {
+      platform = "group";
+      name = "Bedroom Ökensand";
+      unique_id = "bedroom_okensand";
+      entities = entities.okensand.bulbs;
+    }
+  ];
   input_boolean = {
     bedroom_wake_up_light = {
       icon = "mdi:weather-sunset-up";

@@ -59,12 +59,15 @@ rec {
   };
 
   # the Ökensand lamp, three colour temperature only bulbs (2202-6535 K) behind
-  # one paper shade
-  okensand = [
-    "light.bedroom_okensand_top"
-    "light.bedroom_okensand_middle"
-    "light.bedroom_okensand_bottom"
-  ];
+  # one paper shade, controlled through the light group in the bedroom package
+  okensand = {
+    group = "light.bedroom_okensand";
+    bulbs = [
+      "light.bedroom_okensand_top"
+      "light.bedroom_okensand_middle"
+      "light.bedroom_okensand_bottom"
+    ];
+  };
 
   # hue tap dials, see dialSwitch in lib.nix
   dialSwitches = {

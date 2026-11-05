@@ -32,7 +32,7 @@ let
     entities.datura.kitchen
     ++ entities.datura.livingRoom
     ++ entities.twilight.main
-    ++ entities.okensand
+    ++ entities.okensand.bulbs
     ++ [
       "light.office_lamp"
       "sensor.kitchen_climate_temperature"

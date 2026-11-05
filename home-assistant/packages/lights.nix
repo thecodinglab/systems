@@ -64,7 +64,7 @@ in
           rooms = [
             datura.kitchen
             datura.livingRoom
-            (twilight.all ++ okensand)
+            (twilight.all ++ [ okensand.group ])
           ];
         }
         {
@@ -149,8 +149,8 @@ in
             { kitchen = lightPresets.kitchen; }
             { kitchen_members = [ lights.kitchen ] ++ datura.kitchen; }
             { bedroom = lightPresets.bedroom; }
-            { inherit okensand; }
-            { bedroom_members = twilight.all ++ okensand; }
+            { okensand = okensand.group; }
+            { bedroom_members = twilight.all ++ [ okensand.group ]; }
             { requested = "{{ preset | default('auto') }}"; }
             {
               by_time = "{%- set t = now().strftime('%H:%M:%S') -%} ${starts "bright"} ${starts "relax"} ${starts "night"} {%- if t >= night_from or t < bright_from -%}night {%- elif t >= relax_from or (t >= '12:00:00' and state_attr('sun.sun', 'elevation') | float(90) < 0) -%}relax {%- else -%}bright {%- endif -%}";
@@ -162,7 +162,7 @@ in
                     {%- set p = by_time if requested == 'auto' else requested -%}
                     {%- if light in bedroom_members -%}
                       {%- set p = 'relax' if requested == 'auto' and p == 'bright' else p -%}
-                      {%- set d = dict(bedroom['okensand' if light in okensand else 'main' if light.endswith('_main') else 'ambiance'][p],
+                      {%- set d = dict(bedroom['okensand' if light == okensand else 'main' if light.endswith('_main') else 'ambiance'][p],
                                        transition=[transition | default(0.4) | float(0.4), 1.5] | max) -%}
                     {%- else -%}
                       {%- set d = dict((kitchen if light in kitchen_members else generic)[p],
