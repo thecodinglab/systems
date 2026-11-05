@@ -67,5 +67,16 @@ in
     };
   };
 
+  # plex (library under /Volumes/Media) and sift (nas_root) need these; the
+  # password is the keychain item of UNAS-Pro._smb._tcp.local
+  services.smb-mounts = {
+    enable = true;
+    server = "UNAS-Pro._smb._tcp.local";
+    shares = [
+      "Media"
+      "Personal-Drive"
+    ];
+  };
+
   homebrew.casks = [ "helium-browser" ];
 }
