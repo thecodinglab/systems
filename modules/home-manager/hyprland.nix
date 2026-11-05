@@ -250,22 +250,17 @@
           "Log out?" "Press Super+Alt+Q again to quit all apps and log out."
       '';
 
-      # Connects the headphones, or disconnects them if they already are, and
-      # says which it did once it is done; connecting takes a few seconds.
+      # Connects the headphones, or disconnects them if they already are,
+      # through the shell so its notch knows the connection is under way; run
+      # from the profile so the ipc call reaches the instance the user service
+      # runs. The shell has no toggle, but says when they already are.
       toggleHeadphones = pkgs.writers.writeBash "toggle-headphones" ''
-        bluetoothctl=${lib.getExe' pkgs.bluez "bluetoothctl"}
+        shell=${config.home.profileDirectory}/bin/shell
         device=${lib.escapeShellArg config.custom.hyprland.headphones}
-        name=$($bluetoothctl info "$device" | sed -n 's/^\s*Alias: //p')
 
-        if $bluetoothctl info "$device" | grep -q 'Connected: yes'; then
-          $bluetoothctl disconnect "$device" >/dev/null && message="Disconnected"
-        else
-          $bluetoothctl connect "$device" >/dev/null && message="Connected"
+        if [[ $($shell ipc call bluetooth connect "$device") == *"is already connected" ]]; then
+          $shell ipc call bluetooth disconnect "$device" >/dev/null
         fi
-
-        ${notify} -a Bluetooth -t 3000 \
-          -h string:x-canonical-private-synchronous:headphones \
-          "''${name:-Headphones}" "''${message:-Could not reach them}"
       '';
 
       # helpers for the lua based hyprland configuration, see
