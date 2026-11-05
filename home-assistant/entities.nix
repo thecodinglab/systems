@@ -32,7 +32,7 @@ rec {
   };
 
   # the two bedside lamps, each a main (down) and an ambiance (back) light;
-  # light.bedroom_lights groups all four
+  # light.bedroom_lights groups them with the Ökensand bulbs
   twilight = rec {
     left = {
       main = "light.bedroom_twilight_left_main";
@@ -57,6 +57,14 @@ rec {
       right.ambiance
     ];
   };
+
+  # the Ökensand lamp, three colour temperature only bulbs (2202-6535 K) behind
+  # one paper shade
+  okensand = [
+    "light.bedroom_okensand_top"
+    "light.bedroom_okensand_middle"
+    "light.bedroom_okensand_bottom"
+  ];
 
   # hue tap dials, see dialSwitch in lib.nix
   dialSwitches = {
@@ -102,7 +110,8 @@ rec {
   # what script.light_preset sets per preset, the dashboard uses them to tell
   # which preset a room is on. The kitchen stays at full brightness in every
   # preset and only gets warmer, the bedroom Twilight lamps have their own
-  # calmer ones for the main (down) and ambiance (back) lights
+  # calmer ones for the main (down) and ambiance (back) lights, and so does the
+  # Ökensand lamp
   lightPresets = {
     generic = {
       bright = {
@@ -188,6 +197,29 @@ rec {
             0.575
             0.395
           ];
+          effect = "off";
+        };
+      };
+      # colour temperature only, the bulbs clamp to 2202 K
+      okensand = {
+        bright = {
+          brightness_pct = 100;
+          color_temp_kelvin = 3000;
+          effect = "off";
+        };
+        relax = {
+          brightness_pct = 45;
+          color_temp_kelvin = 2700;
+          effect = "off";
+        };
+        cozy = {
+          brightness_pct = 30;
+          color_temp_kelvin = 2200;
+          effect = "candle";
+        };
+        night = {
+          brightness_pct = 3;
+          color_temp_kelvin = 2200;
           effect = "off";
         };
       };
