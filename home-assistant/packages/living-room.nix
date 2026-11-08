@@ -467,6 +467,16 @@ in
       mode = "single";
     }
   ];
+  # the three Ökensand bulbs as one lamp, the bulbs themselves are hidden in the
+  # entity registry
+  light = [
+    {
+      platform = "group";
+      name = "Living Room Ökensand";
+      unique_id = "living_room_okensand";
+      entities = entities.okensand.livingRoom.bulbs;
+    }
+  ];
   input_boolean = {
     storm_protection = {
       icon = "mdi:weather-windy";

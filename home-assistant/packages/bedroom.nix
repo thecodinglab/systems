@@ -195,7 +195,7 @@ in
       platform = "group";
       name = "Bedroom Ökensand";
       unique_id = "bedroom_okensand";
-      entities = entities.okensand.bulbs;
+      entities = entities.okensand.bedroom.bulbs;
     }
   ];
   input_boolean = {

@@ -63,8 +63,8 @@ in
         {
           rooms = [
             datura.kitchen
-            datura.livingRoom
-            (twilight.all ++ [ okensand.group ])
+            (datura.livingRoom ++ [ okensand.livingRoom.group ])
+            (twilight.all ++ [ okensand.bedroom.group ])
           ];
         }
         {
@@ -101,7 +101,7 @@ in
   script = {
     light_preset = {
       alias = "Light Preset";
-      description = "Apply a light preset (Bright / Relax / Cozy / Night) to lights. 'auto' picks by time of day: Night between \"Lights Night From\" and \"Lights Bright From\", Relax from sunset or \"Lights Relax From\" (whichever is first), Bright otherwise. The kitchen stays at full brightness in every preset, only the colour temperature changes. The bedroom Twilight lamps and the Ökensand have their own calmer presets that lean on the indirect back light (candlelight on the Ökensand for Cozy), and 'auto' there never picks Bright.";
+      description = "Apply a light preset (Bright / Relax / Cozy / Night) to lights. 'auto' picks by time of day: Night between \"Lights Night From\" and \"Lights Bright From\", Relax from sunset or \"Lights Relax From\" (whichever is first), Bright otherwise. The kitchen stays at full brightness in every preset, only the colour temperature changes. The bedroom Twilight lamps and the bedroom Ökensand have their own calmer presets that lean on the indirect back light (candlelight on the Ökensand for Cozy), and 'auto' there never picks Bright.";
       icon = "mdi:palette";
       mode = "parallel";
       fields = ordered [
@@ -149,8 +149,8 @@ in
             { kitchen = lightPresets.kitchen; }
             { kitchen_members = [ lights.kitchen ] ++ datura.kitchen; }
             { bedroom = lightPresets.bedroom; }
-            { okensand = okensand.group; }
-            { bedroom_members = twilight.all ++ [ okensand.group ]; }
+            { bedroom_okensand = okensand.bedroom.group; }
+            { bedroom_members = twilight.all ++ [ okensand.bedroom.group ]; }
             { requested = "{{ preset | default('auto') }}"; }
             {
               by_time = "{%- set t = now().strftime('%H:%M:%S') -%} ${starts "bright"} ${starts "relax"} ${starts "night"} {%- if t >= night_from or t < bright_from -%}night {%- elif t >= relax_from or (t >= '12:00:00' and state_attr('sun.sun', 'elevation') | float(90) < 0) -%}relax {%- else -%}bright {%- endif -%}";
@@ -162,7 +162,7 @@ in
                     {%- set p = by_time if requested == 'auto' else requested -%}
                     {%- if light in bedroom_members -%}
                       {%- set p = 'relax' if requested == 'auto' and p == 'bright' else p -%}
-                      {%- set d = dict(bedroom['okensand' if light == okensand else 'main' if light.endswith('_main') else 'ambiance'][p],
+                      {%- set d = dict(bedroom['okensand' if light == bedroom_okensand else 'main' if light.endswith('_main') else 'ambiance'][p],
                                        transition=[transition | default(0.4) | float(0.4), 1.5] | max) -%}
                     {%- else -%}
                       {%- set d = dict((kitchen if light in kitchen_members else generic)[p],

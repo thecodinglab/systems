@@ -58,16 +58,24 @@ rec {
     ];
   };
 
-  # the Ökensand lamp, three colour temperature only bulbs (2202-6535 K) behind
-  # one paper shade, controlled through the light group in the bedroom package
-  okensand = {
-    group = "light.bedroom_okensand";
-    bulbs = [
-      "light.bedroom_okensand_top"
-      "light.bedroom_okensand_middle"
-      "light.bedroom_okensand_bottom"
-    ];
-  };
+  # the Ökensand lamps, each three colour temperature only bulbs (2202-6535 K)
+  # behind one paper shade, controlled through the light group in the room's
+  # package; the bulbs themselves are hidden in the entity registry
+  okensand =
+    let
+      lamp = room: {
+        group = "light.${room}_okensand";
+        bulbs = map (bulb: "light.${room}_okensand_${bulb}") [
+          "top"
+          "middle"
+          "bottom"
+        ];
+      };
+    in
+    {
+      bedroom = lamp "bedroom";
+      livingRoom = lamp "living_room";
+    };
 
   # hue tap dials, see dialSwitch in lib.nix
   dialSwitches = {
