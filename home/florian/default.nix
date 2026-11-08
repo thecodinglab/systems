@@ -44,6 +44,7 @@ in
     tmux.enable = true;
     herdr.enable = true;
     git.enable = true;
+    ssh.enable = true;
     neovim.enable = true;
 
     zsh.enable = true;

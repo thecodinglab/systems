@@ -8,6 +8,7 @@
   hyprland = import ./hyprland.nix;
   neovim = import ./neovim.nix;
   omniwm = import ./omniwm;
+  ssh = import ./ssh.nix;
   theme = import ./theme;
   tmux = import ./tmux.nix;
   zathura = import ./zathura.nix;
