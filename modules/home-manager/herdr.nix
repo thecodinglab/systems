@@ -47,8 +47,16 @@ let
     '';
   };
 
-  # devtools opens worktrees as herdr workspaces when it runs inside herdr;
-  # popups get the server's environment, so bring along what it calls
+  # popups get the server's bare launchd environment, so not the fzf colours
+  # of the shell either; devtools' own switcher draws in the terminal's
+  # palette, its agent and machine pickers are still fzf
+  fzfOptions = lib.optionalString (
+    config.home.sessionVariables ? FZF_DEFAULT_OPTS
+  ) "export FZF_DEFAULT_OPTS=${lib.escapeShellArg config.home.sessionVariables.FZF_DEFAULT_OPTS}";
+
+  # devtools opens worktrees as herdr workspaces when it runs inside herdr,
+  # and takes the pane under a popup as where you are; popups get the
+  # server's environment, so bring along what it calls
   devtools =
     command:
     lib.getExe (
@@ -60,6 +68,7 @@ let
           pkgs.git
         ];
         text = ''
+          ${fzfOptions}
           exec devtools ${command}
         '';
       }
@@ -185,26 +194,45 @@ in
             "prefix+d"
           ];
 
-          # prefix+o and prefix+s pick a project / workspace, see below
+          # worktrees belong to devtools (prefix+f below), so none of herdr's
+          # own, which live in a layout of their own under ~/.herdr/worktrees
+          new_worktree = "";
+          open_worktree = "";
+          remove_worktree = "";
+
+          # prefix+o and prefix+s pick a project / workspace, prefix+f starts a
+          # feature worktree, see below
           settings = "prefix+shift+s";
           open_notification_target = "prefix+shift+o";
 
           command = [
+            # the devtools switcher: every worktree, switch, start a feature
+            # by typing its name, merge one into main
             {
               key = "prefix+o";
               type = "popup";
               command = devtools "pick";
-              description = "devtools pick";
+              description = "devtools: switch worktree";
               width = "90%";
               height = "80%";
             }
+            # the same on the open workspaces
             {
               key = "prefix+s";
               type = "popup";
               command = devtools "sessions";
-              description = "devtools sessions";
+              description = "devtools: switch workspace";
               width = "90%";
               height = "80%";
+            }
+            # the same, ready to name a feature in the current project
+            {
+              key = "prefix+f";
+              type = "popup";
+              command = devtools "work";
+              description = "devtools: new feature";
+              width = "90%";
+              height = "50%";
             }
             (navigateKey "h" "left")
             (navigateKey "j" "down")
