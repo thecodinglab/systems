@@ -4,7 +4,7 @@
   jinjaList,
   state,
   template,
-  isHome,
+  onePersonHome,
   nightModeOff,
   call,
   ...
@@ -64,7 +64,7 @@ in
     {
       id = "1792500000009";
       alias = "Office: Turn Off Other Rooms While Working";
-      description = "After 15 minutes of continuous presence in the office, turns off the kitchen and living room lights, and between 08:00 and 19:00 also the bedroom (unless the wake-up sunrise is running).";
+      description = "Only while one person is home (nobody else could be using the other rooms): after 15 minutes of continuous presence in the office, turns off the kitchen and living room lights, and between 08:00 and 19:00 also the bedroom (unless the wake-up sunrise is running).";
       triggers = [
         {
           trigger = "state";
@@ -74,7 +74,7 @@ in
         }
       ];
       conditions = [
-        isHome
+        onePersonHome
         nightModeOff
       ];
       actions = [

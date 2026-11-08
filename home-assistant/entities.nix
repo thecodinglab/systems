@@ -2,7 +2,14 @@
 # device in home assistant only needs a change here
 rec {
   phone = "notify.mobile_app_florians_iphone_18";
+  # me, the one who gets the notifications
   person = "person.florian";
+  # everyone who lives here (part of the time), for the "anyone home" checks;
+  # a person whose state is unknown (location off) counts as not home
+  people = [
+    person
+    "person.charly"
+  ];
   nightMode = "input_boolean.night_mode";
   weather = "weather.forecast_home";
 

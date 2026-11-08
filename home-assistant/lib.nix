@@ -61,6 +61,41 @@ rec {
   isHome = state entities.person "home";
   nightModeOff = state entities.nightMode "off";
 
+  # entities.people at home; unknown (location off) counts as away
+  anyoneHome = state entities.people "home" // {
+    match = "any";
+  };
+  nobodyHome = {
+    condition = "not";
+    conditions = [ anyoneHome ];
+  };
+  onePersonHome = template "{{ ${jinjaList entities.people} | select('is_state', 'home') | list | count == 1 }}";
+
+  ## presence triggers, combine `left` with nobodyHome for "the last one left"
+
+  # someone left. home -> not_home, so a restart (home -> unknown -> home)
+  # doesn't count
+  left =
+    extra:
+    {
+      trigger = "state";
+      entity_id = entities.people;
+      from = "home";
+      to = "not_home";
+    }
+    // extra;
+
+  # someone came home, not counting the restart flip from unknown
+  arrived =
+    extra:
+    {
+      trigger = "state";
+      entity_id = entities.people;
+      from = "not_home";
+      to = "home";
+    }
+    // extra;
+
   ## actions
 
   # an action on entities, add `data` with `//`

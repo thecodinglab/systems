@@ -5,6 +5,10 @@
   changed,
   state,
   template,
+  nobodyHome,
+  onePersonHome,
+  left,
+  arrived,
   call,
   notify,
   clearNotification,
@@ -115,16 +119,12 @@ in
     {
       id = "1792500000010";
       alias = "Roborock: Clean While Away";
-      description = "Starts the daily clean once you have been away for 10 minutes (09:00-19:00, or at 09:00 if you left earlier), with \"Roborock Fallback Time\" as a fallback if nothing ran yet today. Arriving home while it is still cleaning asks whether to send it to the dock. Disable the schedule in the Roborock app, otherwise both run.";
+      description = "Starts the daily clean once the last person has been away for 10 minutes (09:00-19:00, or at 09:00 if everyone left earlier), with \"Roborock Fallback Time\" as a fallback if nothing ran yet today (also while someone is home). When the first person comes home while it is still cleaning, asks me whether to send it to the dock. Disable the schedule in the Roborock app, otherwise both run.";
       triggers = [
-        {
-          trigger = "state";
-          entity_id = person;
-          from = "home";
-          to = "not_home";
+        (left {
           for.minutes = 10;
           id = "away";
-        }
+        })
         {
           trigger = "time";
           at = "input_datetime.roborock_fallback_time";
@@ -135,13 +135,7 @@ in
           at = "09:00:00";
           id = "window_open";
         }
-        {
-          trigger = "state";
-          entity_id = person;
-          from = "not_home";
-          to = "home";
-          id = "arrived";
-        }
+        (arrived { id = "arrived"; })
       ];
       actions = [
         {
@@ -160,15 +154,10 @@ in
                   condition = "or";
                   conditions = [
                     {
-                      condition = "not";
-                      conditions = [
-                        {
-                          condition = "trigger";
-                          id = "window_open";
-                        }
-                      ];
+                      condition = "trigger";
+                      id = "fallback";
                     }
-                    (state person "not_home")
+                    nobodyHome
                   ];
                 }
                 (state vacuum "docked")
@@ -197,11 +186,12 @@ in
                   id = "arrived";
                 }
                 (state vacuum "cleaning")
+                (onePersonHome // { alias = "The first one home"; })
               ];
               sequence = [
                 (notify {
                   title = "Roborock";
-                  message = "Welcome home. The Roborock is still cleaning.";
+                  message = "{{ 'Welcome home.' if trigger.entity_id == '${person}' else trigger.to_state.name ~ ' is home.' }} The Roborock is still cleaning.";
                   tag = "roborock-arrival";
                   actions = [
                     {

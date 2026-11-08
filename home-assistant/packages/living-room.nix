@@ -4,6 +4,7 @@
   jinjaList,
   state,
   notState,
+  nobodyHome,
   template,
   call,
   notify,
@@ -328,7 +329,7 @@ in
     {
       id = "1792500000005";
       alias = "Living Room: Window Rain Guard";
-      description = "While the living room window is open and it rains (or Met.no expects rain in the next hour): away -> close it right away; home -> ask, and close it after 10 minutes without an answer. \"Keep open\" silences the question for 2 hours.";
+      description = "While the living room window is open and it rains (or Met.no expects rain in the next hour): nobody home -> close it right away; anyone home -> ask me, and close it after 10 minutes without an answer. \"Keep open\" silences the question for 2 hours.";
       triggers = [
         {
           trigger = "state";
@@ -357,7 +358,7 @@ in
         }
         (template "{{ rain_now or rain_soon }}")
         {
-          "if" = [ (notState entities.person "home") ];
+          "if" = [ nobodyHome ];
           "then" = [
             closeWindow
             (notify {
