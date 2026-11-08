@@ -20,7 +20,7 @@
       type = lib.types.nullOr lib.types.str;
       default = null;
       example = "90:62:3F:9B:23:F7";
-      description = "Bluetooth address of the headphones Super+B connects and disconnects.";
+      description = "Bluetooth address of the headphones Super+B connects (tap) and disconnects (hold).";
     };
   };
 
@@ -250,18 +250,12 @@
           "Log out?" "Press Super+Alt+Q again to quit all apps and log out."
       '';
 
-      # Connects the headphones, or disconnects them if they already are,
-      # through the shell so its notch knows the connection is under way; run
-      # from the profile so the ipc call reaches the instance the user service
-      # runs. The shell has no toggle, but says when they already are.
-      toggleHeadphones = pkgs.writers.writeBash "toggle-headphones" ''
-        shell=${config.home.profileDirectory}/bin/shell
-        device=${lib.escapeShellArg config.custom.hyprland.headphones}
-
-        if [[ $($shell ipc call bluetooth connect "$device") == *"is already connected" ]]; then
-          $shell ipc call bluetooth disconnect "$device" >/dev/null
-        fi
-      '';
+      # Connects or disconnects the headphones through the shell so its notch
+      # knows the connection is under way; run from the profile so the ipc
+      # call reaches the instance the user service runs.
+      headphones =
+        action:
+        "${config.home.profileDirectory}/bin/shell ipc call bluetooth ${action} ${lib.escapeShellArg config.custom.hyprland.headphones} >/dev/null";
 
       # helpers for the lua based hyprland configuration, see
       # https://wiki.hypr.land/Configuring/Start/
@@ -661,9 +655,13 @@
             (mkBind "${mod} + SHIFT + F4" (exec "${screenshot} area"))
             (mkBind "${mod} + SHIFT + F3" (exec "${screenshot} window"))
           ]
-          ++ lib.optional (config.custom.hyprland.headphones != null) (
-            mkBind "${mod} + B" (exec "${toggleHeadphones}")
-          )
+          # tap to connect, hold (longer than repeat_delay) to disconnect. The
+          # tap bind also fires at the start of a hold, which is harmless as
+          # connecting is a no-op while they already are.
+          ++ lib.optionals (config.custom.hyprland.headphones != null) [
+            (mkBind "${mod} + B" (exec (headphones "connect")))
+            (mkBindWith { long_press = true; } "${mod} + B" (exec (headphones "disconnect")))
+          ]
           ++
             # locked binds, these also fire while the session is locked
             (
