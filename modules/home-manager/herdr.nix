@@ -6,10 +6,80 @@
 }:
 let
   cfg = config.custom.herdr;
-  herdr = lib.getExe config.programs.herdr.package;
   agentLabel = "org.nix-community.home.herdr";
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
   palette = import ./theme/palette.nix;
+
+  # The server only runs as the launchd agent below. An ssh login gets its own
+  # security session, which can't see the keychain unlocked by the gui login
+  # (no codesign etc.), and a server started by launchd lives in the gui
+  # session with all of its panes. A client that finds no server starts one
+  # from its own executable, so no shell guard can stop that; the server
+  # itself refuses to start without the marker only the agent sets. It drops
+  # the marker right away so panes don't pass it on (a tmux in a pane outlives
+  # the server). A handoff import is spawned by the running server and keeps
+  # its context, as upstream does for the macOS service context.
+  launchMarker = "HERDR_LAUNCHD_AGENT";
+  server =
+    if isDarwin then
+      pkgs.herdr.overrideAttrs (old: {
+        postPatch = (old.postPatch or "") + ''
+          substituteInPlace src/server/headless/bootstrap.rs \
+            --replace-fail \
+              'let handoff_import = args.get(2).map(String::as_str) == Some("--handoff-import");' \
+              'let handoff_import = args.get(2).map(String::as_str) == Some("--handoff-import");
+              let launched_by_agent = std::env::var_os("${launchMarker}").is_some();
+              std::env::remove_var("${launchMarker}");
+              if !handoff_import && !launched_by_agent {
+                  eprintln!("error: this herdr server only runs as the launchd agent ${agentLabel}");
+                  if std::env::var_os("SSH_CONNECTION").is_some() {
+                      eprintln!("an ssh login has its own security session, which cannot see the keychain");
+                  }
+                  eprintln!(
+                      "start it in the gui session: launchctl kickstart gui/{}/${agentLabel}",
+                      unsafe { libc::getuid() }
+                  );
+                  std::process::exit(1);
+              }'
+        '';
+      })
+    else
+      pkgs.herdr;
+  herdr = lib.getExe server;
+
+  # Launching or attaching the ui with no server running would start one,
+  # which the server refuses only after the client waited 15s for it. Refuse
+  # up front, in every shell and over ssh, and say how to start it instead.
+  # Every other command only talks to a running server, `herdr server` runs
+  # into the refusal itself. Panes get the server's own path in
+  # HERDR_BIN_PATH, so the custom commands below skip the wrapper.
+  guarded = pkgs.symlinkJoin {
+    name = "${server.pname}-launchd-only-${server.version}";
+    paths = [ server ];
+    meta.mainProgram = "herdr";
+    postBuild = ''
+      ln -sf ${lib.getExe guard} $out/bin/herdr
+    '';
+  };
+  guard = pkgs.writeShellApplication {
+    name = "herdr";
+    text = ''
+      starts=0 session=
+      case ''${1-} in
+        "") starts=1 ;;
+        --session) (( $# <= 2 )) && starts=1 session=''${2-} ;;
+        session) [[ ''${2-} == attach ]] && starts=1 session=''${3-} ;;
+      esac
+      [[ -n $session ]] && export HERDR_SESSION=$session
+      if (( starts )) && [[ -z ''${HERDR_ENV-} ]] \
+        && [[ $(${herdr} status server 2>/dev/null) != *"status: running"* ]]; then
+        echo >&2 "herdr: no server running, and only launchd starts one (from ssh it could not see the keychain)"
+        echo >&2 "herdr: start it in the gui session: launchctl kickstart gui/$UID/${agentLabel}"
+        exit 1
+      fi
+      exec ${herdr} "$@"
+    '';
+  };
 
   # Smart pane switching with awareness of Vim splits, like vim-tmux-navigator:
   # vim, fzf and a nested tmux get the key, nvim hands over to herdr at its
@@ -89,6 +159,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.herdr = {
       enable = true;
+      package = if isDarwin then guarded else server;
       settings = {
         onboarding = false;
 
@@ -243,9 +314,7 @@ in
       };
     };
 
-    # an ssh login gets its own security session, which can't see the keychain
-    # unlocked by the gui login (no codesign etc.); a server started by launchd
-    # lives in the gui session and so do all of its panes
+    # the only place the server starts, see `server` above
     launchd.agents.herdr = lib.mkIf isDarwin {
       enable = true;
       config = {
@@ -260,31 +329,10 @@ in
         EnvironmentVariables = {
           SHELL = lib.getExe pkgs.zsh;
           LANG = "en_US.UTF-8";
+          ${launchMarker} = "1";
         };
       };
     };
-
-    # never let an ssh login start the server, it would be stuck in the ssh
-    # security session; launching or attaching the ui and `herdr server` may
-    # start one, every other command only talks to a running server
-    programs.zsh.initContent = lib.mkIf (isDarwin && config.custom.zsh.enable) ''
-      herdr() {
-        local starts=0 session=''${HERDR_SESSION:-}
-        case $1 in
-          "") starts=1 ;;
-          --session) (( $# <= 2 )) && starts=1 session=$2 ;;
-          session) [[ $2 == attach ]] && starts=1 session=$3 ;;
-          server) (( $# == 1 )) && starts=1 ;;
-        esac
-        if (( starts )) && [[ -n $SSH_CONNECTION && -z $HERDR_ENV ]] \
-          && ! command env ''${session:+HERDR_SESSION=$session} herdr status server 2>/dev/null | grep -q 'status: running'; then
-          print -u2 "herdr: no server running, refusing to start one from ssh (the keychain would be locked)"
-          print -u2 "herdr: start it in the gui session: launchctl kickstart gui/$UID/${agentLabel}"
-          return 1
-        fi
-        command herdr "$@"
-      }
-    '';
 
     home.packages = [ pkgs.devtools ];
   };
