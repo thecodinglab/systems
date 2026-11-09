@@ -213,15 +213,15 @@
 
     -- the tiers, see the palette
     local ground, raised, rule = p.base00, p.base01, p.base02
-    local dim, ink, strong = p.base03, p.base05, p.base06
-    local red, orange, amber, green, blue = p.base08, p.base09, p.base0A, p.base0B, p.base0D
+    local dim, muted, ink, strong = p.base03, p.base04, p.base05, p.base06
+    local red, orange, amber, green = p.base08, p.base09, p.base0A, p.base0B
+    local cyan, blue, purple = p.base0C, p.base0D, p.base0E
 
-    -- Quiet: what you wrote is in the ink, what the language says in the
-    -- strong ink and bold, names being defined or called in the strong ink,
-    -- comments and punctuation in the grey. Only literals get a hue --
-    -- strings green, numbers and constants amber -- and everything else
-    -- with a colour is a signal: red an error, orange a warning, blue the
-    -- accent.
+    -- Quiet Colour: what you wrote is in the ink, comments and punctuation
+    -- in the grey, operators a step toward it. Each kind of word the
+    -- language supplies has a hue: keywords purple, functions blue, types
+    -- cyan, strings green, numbers and constants amber. Builtins keep the
+    -- strong ink. Red is an error and orange a warning, never syntax.
     local groups = {
       Normal = { fg = ink, bg = ground },
       NormalNC = { link = "Normal" },
@@ -287,25 +287,25 @@
       Boolean = { fg = amber },
       Float = { fg = amber },
       Identifier = { fg = ink },
-      Function = { fg = strong },
-      Statement = { fg = strong, bold = true },
+      Function = { fg = blue },
+      Statement = { fg = purple },
       Keyword = { link = "Statement" },
       Conditional = { link = "Statement" },
       Repeat = { link = "Statement" },
       Label = { link = "Statement" },
       Exception = { link = "Statement" },
-      Operator = { fg = ink },
+      Operator = { fg = muted },
       PreProc = { fg = dim },
       Include = { link = "Statement" },
       Define = { link = "Statement" },
-      Macro = { fg = strong },
-      Type = { fg = ink, italic = true },
+      Macro = { link = "Function" },
+      Type = { fg = cyan },
       StorageClass = { link = "Statement" },
       Structure = { link = "Statement" },
       Typedef = { link = "Statement" },
       Special = { fg = strong },
       SpecialChar = { fg = amber },
-      Tag = { fg = strong },
+      Tag = { fg = blue },
       Delimiter = { fg = dim },
       Debug = { fg = dim },
       Underlined = { underline = true },
@@ -328,7 +328,7 @@
       ["@attribute"] = { fg = dim },
       ["@function"] = { link = "Function" },
       ["@function.builtin"] = { link = "Function" },
-      ["@constructor"] = { fg = strong },
+      ["@constructor"] = { link = "Type" },
       ["@operator"] = { link = "Operator" },
       ["@keyword"] = { link = "Statement" },
       ["@punctuation"] = { link = "Delimiter" },

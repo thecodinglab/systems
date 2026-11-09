@@ -15,7 +15,7 @@ in
     image = ./wallpaper.jpg;
     base16Scheme = {
       system = "base16";
-      name = "Quiet Dark";
+      name = "Quiet Colour Dark";
       author = "florian";
       variant = "dark";
       palette = palette.dark;

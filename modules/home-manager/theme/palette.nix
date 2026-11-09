@@ -1,11 +1,12 @@
 # The one palette everything is drawn in, as base16, for both appearances.
 #
-# Quiet: almost monochrome. The grounds and four tiers of ink carry nearly
-# all of it -- what you wrote in the ink, what the language says in a
-# brighter, bolder one, comments and punctuation in the grey -- and the few
-# hues are pulled most of the way to grey, so a colour on screen is either
-# a literal (strings green, numbers amber) or a signal: red for an error,
-# orange for a warning, blue for the accent, which only ever says *on* or
+# Quiet Colour: the grounds and four tiers of ink carry the structure --
+# what you wrote in the ink, comments and punctuation in the grey -- and
+# each kind of word the language supplies has a hue of its own: keywords
+# purple, functions blue, types cyan, strings green, numbers and constants
+# amber. The five sit at about one lightness, so none jumps out of a line,
+# with enough colour to tell apart at a glance. Red is kept for errors and
+# orange for warnings, and blue doubles as the accent, which says *on* or
 # *here*.
 #
 # Every text colour clears 4.5:1 on base01, the ground of a status line and
@@ -21,15 +22,15 @@
     base03 = "8a8d96"; # comments, punctuation, context      5.13 / 4.56
     base04 = "a6a8b0"; # muted                                7.17 / 6.38
     base05 = "c3c5cb"; # ink                                  9.87 / 8.77
-    base06 = "e6e7eb"; # strong ink: keywords, definitions   13.78 / 12.25
+    base06 = "e6e7eb"; # strong ink: titles, builtins        13.78 / 12.25
     base07 = "ffffff";
     base08 = "ef5b52"; # red, errors only                     5.10 / 4.53
     base09 = "ec8a3f"; # orange, warnings                     6.71 / 5.96
-    base0A = "d6b98a"; # amber, numbers and constants         9.05 / 8.05
-    base0B = "9cc4a4"; # green, strings                       8.79 / 7.82
-    base0C = "8fc0c9"; # cyan                                 8.55 / 7.61
-    base0D = "8fb0e8"; # blue, the accent                     7.74 / 6.88
-    base0E = "b8a6dc"; # purple                               7.72 / 6.87
+    base0A = "e6b46e"; # amber, numbers and constants         9.01 / 8.02
+    base0B = "a0cc8e"; # green, strings                       9.34 / 8.31
+    base0C = "7cc4cc"; # cyan, types                          8.61 / 7.66
+    base0D = "84b0f0"; # blue, functions and the accent       7.66 / 6.81
+    base0E = "b9a2ec"; # purple, keywords                     7.65 / 6.81
     base0F = "b09a82"; # brown                                6.32 / 5.62
   };
 
@@ -44,11 +45,11 @@
     base07 = "000000";
     base08 = "c4271d"; #                                      5.56 / 5.08
     base09 = "b04a00"; #                                      5.31 / 4.86
-    base0A = "7f5a12"; #                                      6.02 / 5.51
-    base0B = "2f7543"; #                                      5.42 / 4.96
-    base0C = "25707f"; #                                      5.48 / 5.02
-    base0D = "2f5fb3"; #                                      5.96 / 5.45
-    base0E = "6d4fa3"; #                                      6.16 / 5.63
+    base0A = "8a5500"; #                                      6.01 / 5.50
+    base0B = "2e7536"; #                                      5.47 / 5.00
+    base0C = "19707a"; #                                      5.58 / 5.10
+    base0D = "2459b8"; #                                      6.35 / 5.81
+    base0E = "6a45b5"; #                                      6.48 / 5.93
     base0F = "76604a"; #                                      5.73 / 5.25
   };
 
