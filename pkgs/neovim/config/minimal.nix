@@ -40,7 +40,6 @@
     # other
     showmode = false;
     termguicolors = true;
-    conceallevel = 2;
 
     mouse = "";
     shortmess = "IF";
