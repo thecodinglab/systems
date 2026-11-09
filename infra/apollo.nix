@@ -1,6 +1,15 @@
 { config, lib, ... }:
 {
   resource = {
+    # local NVMe scratch space for SABnzbd's incomplete downloads: writing,
+    # repairing and unpacking them on the NAS over NFS is slow enough that
+    # adding a job takes longer than Sonarr's 100s request timeout
+    incus_storage_volume.apollo-scratch = {
+      name = "apollo-scratch";
+      pool = "fast";
+      config.size = "400GiB";
+    };
+
     incus_instance.apollo = {
       name = "apollo";
       image = "images:nixos/23.11";
@@ -26,6 +35,15 @@
           properties = {
             source = "/media/unas/documents";
             path = "/mnt/documents";
+          };
+        }
+        {
+          name = "scratch";
+          type = "disk";
+          properties = {
+            pool = "\${incus_storage_volume.apollo-scratch.pool}";
+            source = "\${incus_storage_volume.apollo-scratch.name}";
+            path = "/mnt/scratch";
           };
         }
       ];
