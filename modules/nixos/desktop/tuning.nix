@@ -208,14 +208,10 @@
     # Applications        #
     #######################
 
-    # Keep container logs bounded instead of growing until the disk is full.
-    virtualisation.docker.daemon.settings = lib.mkIf config.virtualisation.docker.enable {
-      log-driver = "json-file";
-      log-opts = {
-        max-size = "10m";
-        max-file = "5";
-      };
-    };
+    # Keep container logs bounded instead of growing until the disk is full:
+    # in the journal they fall under journald's size limits.
+    virtualisation.containers.containersConf.settings.containers.log_driver =
+      lib.mkIf config.virtualisation.podman.enable "journald";
 
     # Map the web/Electron platform font families onto the generic families
     # so pages asking for the macOS system font render with the configured

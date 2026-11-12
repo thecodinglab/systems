@@ -104,7 +104,7 @@ in
       ];
 
       # everything on the home LAN may reach any port (dev environments,
-      # iperf, ...); docker bridges stay filtered
+      # iperf, ...); podman bridges stay filtered
       trustedInterfaces = [
         "enp13s0"
         "wlp11s0"
@@ -170,19 +170,23 @@ in
     '';
   };
 
-  environment.systemPackages = [
-    # TODO: move to home-manager config
-    pkgs.docker-compose
-  ];
-
   virtualisation = {
-    docker = {
+    # daemonless and rootless; `docker` is an alias for podman, and
+    # `docker compose` runs docker-compose against podman's API socket
+    podman = {
       enable = true;
-      # docker.socket stays, dockerd starts on first use instead of at boot
-      enableOnBoot = false;
+      dockerCompat = true;
     };
     vswitch.enable = true;
   };
+
+  # `podman compose` (and `docker compose` through the alias) delegates to
+  # this provider
+  environment.systemPackages = [ pkgs.docker-compose ];
+
+  # tools that talk to the docker API directly (docker-compose, testcontainers,
+  # ...) use the rootless podman socket; it is socket activated per user
+  environment.variables.DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
 
   # allow running non nix-packaged applications
   programs.nix-ld.enable = true;
@@ -197,7 +201,6 @@ in
     isNormalUser = true;
     extraGroups = [
       "wheel"
-      "docker"
       "plugdev"
 
       "xcloud"
