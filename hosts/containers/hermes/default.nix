@@ -23,7 +23,6 @@ in
       enable = true;
       vhosts = {
         "hermes.thecodinglab.ch".locations."/".proxyPass = "http://localhost:7575/";
-        "uptime.thecodinglab.ch".locations."/".proxyPass = "http://localhost:3001/";
 
         "teslamate.thecodinglab.ch".locations."/".proxyPass = "http://172.16.0.92/";
 
@@ -49,8 +48,6 @@ in
     hostName = "hermes";
     firewall.allowedTCPPorts = [ 443 ];
   };
-
-  services.uptime-kuma.enable = true;
 
   virtualisation.oci-containers.containers = {
     homarr = withAutoUpdate {
