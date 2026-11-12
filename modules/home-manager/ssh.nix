@@ -86,6 +86,14 @@ let
     set -- $SSH_CONNECTION
     [ "$1" = "$3" ] && exit 0
     ${lib.getExe' pkgs.coreutils "mkdir"} -p -m 700 ${lib.escapeShellArg registry}
+    # the picker only drops dead logins newer than the first live one, so
+    # tidy up here: dead logins, and this one's agent registered by another
+    # of its sessions, which moves up to here
+    for entry in ${lib.escapeShellArg registry}/*; do
+      if [ ! -S "$entry" ] || [ "$(${lib.getExe' pkgs.coreutils "readlink"} "$entry")" = "$SSH_AUTH_SOCK" ]; then
+        ${lib.getExe' pkgs.coreutils "rm"} -f "$entry"
+      fi
+    done
     ${lib.getExe' pkgs.coreutils "ln"} -sf "$SSH_AUTH_SOCK" \
       ${lib.escapeShellArg registry}/"$(${lib.getExe' pkgs.coreutils "date"} +%s%N).$$"
   '';

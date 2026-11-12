@@ -59,10 +59,20 @@
           format = "ssh";
           ssh = {
             # op-ssh-sign asks the local 1password app; with forwarded agents
-            # ssh-keygen signs through SSH_AUTH_SOCK, see the ssh module
+            # ssh-keygen signs through their proxy, see the ssh module, also
+            # where SSH_AUTH_SOCK is something else (herdr popups, tmux panes
+            # created from an ssh login)
             program =
               if config.custom.ssh.forwardedAgents.enable then
-                lib.getExe' pkgs.openssh "ssh-keygen"
+                lib.getExe (
+                  pkgs.writeShellApplication {
+                    name = "ssh-keygen-forwarded";
+                    text = ''
+                      SSH_AUTH_SOCK=${lib.escapeShellArg config.custom.ssh.forwardedAgents.socket} \
+                        exec ${lib.getExe' pkgs.openssh "ssh-keygen"} "$@"
+                    '';
+                  }
+                )
               else if pkgs.stdenv.hostPlatform.isDarwin then
                 "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
               else

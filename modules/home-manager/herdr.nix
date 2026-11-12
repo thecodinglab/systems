@@ -47,6 +47,23 @@ let
       pkgs.herdr;
   herdr = lib.getExe server;
 
+  # Panes and popups get herdr's own agent link as SSH_AUTH_SOCK, and a
+  # server prefers what that link pointed to before over the SSH_AUTH_SOCK
+  # it inherits (src/platform/ssh_agent.rs). A server stopped by launchd
+  # leaves the link behind, so the next one would keep the agent from before
+  # the forwarded agents' proxy (see the ssh module). Drop it before a fresh
+  # start; never under a running server, e.g. one a handoff left behind.
+  agentLink = "${config.home.homeDirectory}/.config/herdr/herdr.sock.agent";
+  startWithAgentProxy = pkgs.writeShellApplication {
+    name = "herdr-server";
+    text = ''
+      if [[ $(${herdr} status server 2>/dev/null) != *"status: running"* ]]; then
+        rm -f ${lib.escapeShellArg agentLink}
+      fi
+      exec ${herdr} server
+    '';
+  };
+
   # Launching or attaching the ui with no server running would start one,
   # which the server refuses only after the client waited 15s for it. Refuse
   # up front, in every shell and over ssh, and say how to start it instead.
@@ -318,10 +335,14 @@ in
     launchd.agents.herdr = lib.mkIf isDarwin {
       enable = true;
       config = {
-        ProgramArguments = [
-          herdr
-          "server"
-        ];
+        ProgramArguments =
+          if config.custom.ssh.forwardedAgents.enable then
+            [ (lib.getExe startWithAgentProxy) ]
+          else
+            [
+              herdr
+              "server"
+            ];
         RunAtLoad = true;
         KeepAlive = true;
         ProcessType = "Interactive";
