@@ -806,10 +806,6 @@
               # hold the suspend until hyprlock has the session, so waking up
               # shows the lock screen rather than a frame of the desktop first
               inhibit_sleep = 3;
-
-              # browsers can leave wayland idle inhibitors dangling after
-              # playback stops; rely on their dbus wake locks instead
-              ignore_wayland_inhibit = true;
             };
 
             listener = [
