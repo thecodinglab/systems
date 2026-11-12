@@ -24,8 +24,6 @@
       # stable packages
 
       # bleeding packages
-      antigravity-cli = bleeding.antigravity-cli;
-
       _1password-gui = bleeding._1password-gui;
       _1password-cli = bleeding._1password-cli;
 

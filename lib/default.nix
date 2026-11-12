@@ -30,7 +30,6 @@ let
             "postman"
 
             # AI
-            "antigravity-cli"
             "claude-code"
             "claude-desktop"
 

@@ -7,10 +7,6 @@
     pkgs.neovide
     pkgs.zed-editor
 
-    # AI
-    pkgs.antigravity-cli
-    pkgs.pi-coding-agent
-
     # Kubernetes
     pkgs.kubectl
     (pkgs.wrapHelm pkgs.kubernetes-helm { plugins = [ pkgs.kubernetes-helmPlugins.helm-diff ]; })
