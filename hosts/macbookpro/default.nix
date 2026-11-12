@@ -11,6 +11,8 @@ in
     localHostName = "Florians-MacBook-Pro";
   };
 
+  sops.defaultSopsFile = ./secrets.yaml;
+
   home-manager.users.florian = ./home.nix;
 
   system.defaults.dock.autohide = true;

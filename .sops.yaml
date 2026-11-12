@@ -4,6 +4,9 @@ keys:
   # age key (1Password item "SOPS Age Key"), kept as fallback
   - &user_florian age1wgenz0mv90afzts5ay84k24yykquv4cudt208wels0v2w66j3psqwxqsk9
   - &nixos_desktop age1l6ekk5r643nqa7n49d94ux5e37uwj3zju4lch0vj88tzkxjzkcmscc4dh4
+  # the macs' ssh host keys (/etc/ssh/ssh_host_ed25519_key.pub, ssh-to-age)
+  - &darwin_macmini age19cas24pa6svtxv643ycskav8kwkurn880htnh5yj4d25a48nef4suwyanl
+  - &darwin_macbookpro age1z9yyp857emw08wtpd5lx2p4zgvuuf52e4waqw5qh6luvrh3hyegqgz6lqy
   - &server_hermes age17zu2f06ux4yyr85jwp22yx22589cz49gda6p7c7d5rv4wxgg6ecqs4p2uw
   - &nixos_server age1kmxesxpeyvywuqehgnphqwakjltcm8sru64x645a4349yudncacqg6aa8u
 
@@ -26,6 +29,18 @@ creation_rules:
         - *personal
         - *user_florian
         - *server_hermes
+  - path_regex: ^hosts/macmini/secrets.yaml$
+    key_groups:
+      - age:
+        - *personal
+        - *user_florian
+        - *darwin_macmini
+  - path_regex: ^hosts/macbookpro/secrets.yaml$
+    key_groups:
+      - age:
+        - *personal
+        - *user_florian
+        - *darwin_macbookpro
   - path_regex: ^home/florian/secrets.yaml$
     key_groups:
       - age:

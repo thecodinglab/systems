@@ -132,6 +132,7 @@
       };
 
       darwinModules = import ./modules/darwin // {
+        sops = sops-nix.darwinModules.sops;
         stylix = stylix.darwinModules.stylix;
         homebrew = inputs.homebrew.darwinModules.nix-homebrew;
       };

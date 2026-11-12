@@ -18,6 +18,45 @@
     openssh.authorizedKeys.keys = [ keys.personal ];
   };
 
+  # x86_64-linux builds go to the desktop (authorized in hosts/desktop). The
+  # daemon connects as root, which has neither ~/.ssh/config nor the 1password
+  # agent, hence its own key (from sops, see keys.nixBuilders) and host entry.
+  sops.secrets.nix_builder_ssh_key = { };
+  nix = {
+    distributedBuilds = true;
+    settings.builders-use-substitutes = true;
+    buildMachines = [
+      {
+        hostName = "desktop";
+        protocol = "ssh-ng";
+        sshUser = "florian";
+        sshKey = config.sops.secrets.nix_builder_ssh_key.path;
+        systems = [ "x86_64-linux" ];
+        maxJobs = 8;
+        speedFactor = 2;
+        supportedFeatures = [
+          "big-parallel"
+          "kvm"
+          "nixos-test"
+          "benchmark"
+        ];
+      }
+    ];
+  };
+  programs.ssh = {
+    extraConfig = ''
+      Host desktop
+        HostName 192.168.48.10
+    '';
+    knownHosts.desktop = {
+      hostNames = [
+        "desktop"
+        "192.168.48.10"
+      ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOoh3EBcxypmphIIht1rlm4hKJClIKo72by+X93f8fTJ";
+    };
+  };
+
   security.sudo.extraConfig = ''
     %admin ALL=(ALL) NOPASSWD: ALL
   '';

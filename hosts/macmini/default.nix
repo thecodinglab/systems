@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, keys, ... }:
 let
   home = "/Users/florian";
 in
@@ -14,9 +14,18 @@ in
     localHostName = "Florians-Mac-Mini";
   };
 
+  sops.defaultSopsFile = ./secrets.yaml;
+
   home-manager.users.florian = ./home.nix;
 
   nix.linux-builder.enable = true;
+
+  # remote builder for the desktop (nix.buildMachines in hosts/desktop): its
+  # key may only run the daemon, as a trusted user so it can build
+  nix.settings.trusted-users = [ "florian" ];
+  users.users.florian.openssh.authorizedKeys.keys = [
+    ''restrict,command="/run/current-system/sw/bin/nix-daemon --stdio" ${keys.nixBuilders.desktop}''
+  ];
 
   system.defaults.dock.persistent-apps = [
     "/System/Cryptexes/App/System/Applications/Safari.app"

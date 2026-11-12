@@ -209,10 +209,52 @@ in
 
     shell = pkgs.zsh;
 
-    openssh.authorizedKeys.keys = [ keys.personal ];
+    openssh.authorizedKeys.keys = [
+      keys.personal
+    ]
+    # the macs' x86_64-linux builds come here (profiles/darwin/workstation.nix):
+    # their daemons' keys may only run the daemon, as a trusted user so they
+    # can build
+    ++ map (key: ''restrict,command="/run/current-system/sw/bin/nix-daemon --stdio" ${key}'') (
+      builtins.attrValues (removeAttrs keys.nixBuilders [ "desktop" ])
+    );
   };
 
   nix.settings.trusted-users = [ "florian" ];
+
+  # darwin builds go to the mac mini. The daemon connects as root, which has
+  # neither ~/.ssh/config nor the 1password agent, hence its own key (only
+  # allowed to run nix-daemon there, see hosts/macmini) and host entry.
+  sops.secrets.nix_builder_ssh_key = { };
+  nix = {
+    distributedBuilds = true;
+    settings.builders-use-substitutes = true;
+    buildMachines = [
+      {
+        hostName = "macmini";
+        protocol = "ssh-ng";
+        sshUser = "florian";
+        sshKey = config.sops.secrets.nix_builder_ssh_key.path;
+        system = "aarch64-darwin";
+        maxJobs = 4;
+        speedFactor = 2;
+        supportedFeatures = [ "big-parallel" ];
+      }
+    ];
+  };
+  programs.ssh = {
+    extraConfig = ''
+      Host macmini
+        HostName 192.168.48.124
+    '';
+    knownHosts.macmini = {
+      hostNames = [
+        "macmini"
+        "192.168.48.124"
+      ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICrxTjFdOR/HM9EnaHa5DUDbcLN3MbDnPIvK4LVh7TwV";
+    };
+  };
 
   home-manager.users.florian = ./home.nix;
 }
