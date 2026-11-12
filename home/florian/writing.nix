@@ -21,7 +21,8 @@ in
 
   config = lib.mkMerge [
     {
-      programs.sioyek.enable = true;
+      # the pdf viewer for vimtex on darwin; linux uses zathura (see linux.nix)
+      programs.sioyek.enable = pkgs.stdenv.hostPlatform.isDarwin;
 
       custom.neovim.extensions = [
         {

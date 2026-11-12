@@ -36,8 +36,6 @@
     };
   };
 
-  services.easyeffects.enable = true;
-
   # profiles and accounts are managed in thunderbird itself; it is left in
   # its own system theme, which follows the dark gtk theme stylix draws from
   # the palette, rather than given one of its own
@@ -72,7 +70,6 @@
     pkgs.imv
     pkgs.spotify
 
-    pkgs.easyeffects
     pkgs.obs-studio
     pkgs.remmina
 

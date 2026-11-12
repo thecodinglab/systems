@@ -1,7 +1,6 @@
 # cross-platform core of the user environment; platform and feature specific
 # parts live next to it and are picked per host in hosts/<name>/home.nix
 {
-  config,
   lib,
   pkgs,
   ...
@@ -19,7 +18,6 @@ in
 
   home = {
     sessionVariables = {
-      LEDGER_FILE = "${config.home.homeDirectory}/finance/All.journal";
       TERMINAL_BACKGROUND_TRANSPARENT = "1";
 
       SOPS_AGE_SSH_PRIVATE_KEY_CMD = "${sopsKey} ssh";
@@ -122,10 +120,6 @@ in
   };
 
   home.packages = [
-    pkgs.hledger
-    pkgs.hledger-ui
-    pkgs.hledger-web
-
     # Utilities
     pkgs.openssl
     pkgs.jq
@@ -143,7 +137,6 @@ in
     pkgs.git
     pkgs.git-crypt
     pkgs.gh
-    pkgs.glab
     pkgs.sops
 
     # C/C++
@@ -159,11 +152,6 @@ in
     pkgs.clippy
     pkgs.rustfmt
     pkgs.rust-analyzer
-
-    # Haskell
-    pkgs.ghc
-    pkgs.cabal-install
-    pkgs.haskell-language-server
 
     # JavaScript
     pkgs.nodejs

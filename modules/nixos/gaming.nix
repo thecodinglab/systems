@@ -49,13 +49,6 @@ in
         };
 
         security.rtkit.enable = true;
-
-        services.sunshine = {
-          enable = true;
-          autoStart = true;
-          capSysAdmin = true;
-          openFirewall = true;
-        };
       }
 
       (lib.mkIf config.custom.nvidia.enable {

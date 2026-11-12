@@ -7,5 +7,4 @@
   gaming = import ./gaming.nix;
   nvidia = import ./nvidia.nix;
   proxy = import ./proxy.nix;
-  vpn = import ./vpn;
 }

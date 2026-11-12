@@ -53,7 +53,6 @@ in
     gaming.enable = true;
     desktop.enable = true;
     backup.enable = false;
-    vpn.enable = true;
   };
 
   #######################
@@ -105,9 +104,8 @@ in
       ];
 
       # everything on the home LAN may reach any port (dev environments,
-      # iperf, ...); the VPN tunnel and docker bridges stay filtered
+      # iperf, ...); docker bridges stay filtered
       trustedInterfaces = [
-        "virbr0"
         "enp13s0"
         "wlp11s0"
       ];
@@ -162,8 +160,6 @@ in
         adapters = [ "hci0" ];
       };
     };
-
-    virt-manager.enable = true;
   };
 
   # custom 1password browser integration
@@ -202,7 +198,6 @@ in
     extraGroups = [
       "wheel"
       "docker"
-      "libvirtd"
       "plugdev"
 
       "xcloud"

@@ -8,12 +8,6 @@ keys:
   - &nixos_server age1kmxesxpeyvywuqehgnphqwakjltcm8sru64x645a4349yudncacqg6aa8u
 
 creation_rules:
-  - path_regex: ^modules/nixos/vpn/secrets.yaml$
-    key_groups:
-      - age:
-        - *personal
-        - *user_florian
-        - *nixos_desktop
   - path_regex: ^hosts/desktop/secrets.yaml$
     key_groups:
       - age:

@@ -96,10 +96,6 @@
           ""
           "${lib.getExe pkgs.gh} auth git-credential"
         ];
-        credential."https://gitlab.deepengine.io".helper = [
-          ""
-          "${lib.getExe pkgs.glab} auth git-credential"
-        ];
         credential."https://git.overleaf.com".helper = [
           ""
           ''!f() { test "$1" = get && echo "password=$(op item get Overleaf --fields 'git auth token')"; }; f''
