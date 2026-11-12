@@ -153,6 +153,8 @@ in
         EnvironmentVariables = {
           SHELL = lib.getExe pkgs.zsh;
           LANG = "en_US.UTF-8";
+          # forwarded ssh agents, see the ssh module
+          SSH_AUTH_SOCK = lib.mkIf config.custom.ssh.forwardedAgents.enable config.custom.ssh.forwardedAgents.socket;
         };
       };
     };

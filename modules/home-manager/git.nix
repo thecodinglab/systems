@@ -58,8 +58,12 @@
         gpg = {
           format = "ssh";
           ssh = {
+            # op-ssh-sign asks the local 1password app; with forwarded agents
+            # ssh-keygen signs through SSH_AUTH_SOCK, see the ssh module
             program =
-              if pkgs.stdenv.hostPlatform.isDarwin then
+              if config.custom.ssh.forwardedAgents.enable then
+                lib.getExe' pkgs.openssh "ssh-keygen"
+              else if pkgs.stdenv.hostPlatform.isDarwin then
                 "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
               else
                 lib.getExe' pkgs._1password-gui "op-ssh-sign";
