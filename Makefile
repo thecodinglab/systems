@@ -26,25 +26,16 @@ ifneq ($(wildcard $(LOCAL_DIR)),)
 	override FLAKE_FLAGS += --override-input local path:$(call expand-path,$(LOCAL_DIR))
 endif
 
-KAKEIBO_SRC ?= $(HOME)/dev/kakeibo/main
-ifeq ($(DEV_KAKEIBO),1)
-	override FLAKE_FLAGS += --override-input kakeibo git+file://$(call expand-path,$(KAKEIBO_SRC))
-endif
+# point an input at a local checkout instead of its locked revision, e.g.
+# `make switch DEV_SHELL=~/dev/shell/main`, so every machine can keep its
+# checkouts wherever it likes
+dev-input = $(if $(2),--override-input $(1) git+file://$(call check-dir,$(call expand-path,$(2)),$(1)))
+check-dir = $(if $(wildcard $(1)/.),$(1),$(error $(2): no checkout at '$(1)'))
 
-SHELL_SRC ?= $(HOME)/dev/shell
-ifeq ($(DEV_SHELL),1)
-	override FLAKE_FLAGS += --override-input shell git+file://$(call expand-path,$(SHELL_SRC))
-endif
-
-XCLOUD_SRC ?= $(HOME)/dev/xcloud/main
-ifeq ($(DEV_XCLOUD),1)
-	override FLAKE_FLAGS += --override-input xcloud git+file://$(call expand-path,$(XCLOUD_SRC))
-endif
-
-DEVTOOLS_SRC ?= $(HOME)/dev/devtools/main
-ifeq ($(DEV_DEVTOOLS),1)
-	override FLAKE_FLAGS += --override-input devtools git+file://$(call expand-path,$(DEVTOOLS_SRC))
-endif
+override FLAKE_FLAGS += $(call dev-input,kakeibo,$(DEV_KAKEIBO))
+override FLAKE_FLAGS += $(call dev-input,shell,$(DEV_SHELL))
+override FLAKE_FLAGS += $(call dev-input,xcloud,$(DEV_XCLOUD))
+override FLAKE_FLAGS += $(call dev-input,devtools,$(DEV_DEVTOOLS))
 
 # Everything is evaluated and built as the calling user, only the activation
 # runs as root (with -H: macOS sudo keeps the caller's HOME, which nix warns
