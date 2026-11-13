@@ -11,6 +11,7 @@
   ssh = import ./ssh.nix;
   theme = import ./theme;
   tmux = import ./tmux.nix;
+  tuicr = import ./tuicr.nix;
   zathura = import ./zathura.nix;
   zsh = import ./zsh;
 }

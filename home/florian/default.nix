@@ -44,6 +44,7 @@ in
     git.enable = true;
     ssh.enable = true;
     neovim.enable = true;
+    tuicr.enable = true;
 
     zsh.enable = true;
     ghostty.enable = true;
