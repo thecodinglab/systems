@@ -1,5 +1,7 @@
 # claude code with declarative settings, optionally talking to a CLIProxyAPI
 # instance (see modules/darwin/cliproxyapi.nix) instead of using its own login.
+# With the proxy, `claude` falls back to that login when the proxy is not
+# reachable at startup, and `claude-direct` never uses the proxy.
 # ~/.claude/settings.json is written by claude itself, so the settings are
 # passed with --settings instead: they take precedence over the ones in that
 # file, which is left for whatever is changed interactively (theme, model, ...)
@@ -14,7 +16,42 @@ let
   inherit (lib) mkOption types;
 
   format = pkgs.formats.json { };
-  settingsFile = format.generate "claude-code-settings.json" cfg.settings;
+
+  # https://help.router-for.me/agent-client/claude-code.html
+  proxySettings = {
+    inherit apiKeyHelper;
+    # the connectors need the claude.ai login, which the key takes precedence
+    # over; disabling them explicitly drops the warning about that at startup
+    disableClaudeAiConnectors = true;
+    env = {
+      ANTHROPIC_BASE_URL = cfg.proxy.url;
+      # the key never changes, so only ask for it again after a 401 (or a day)
+      CLAUDE_CODE_API_KEY_HELPER_TTL_MS = toString (24 * 60 * 60 * 1000);
+      # lists the models of the proxy in /model, including the ones of other
+      # subscriptions (codex), which the proxy maps to claude-fable-5-dd-<id>
+      CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY = "1";
+      # translated requests to other providers can take a while
+      API_TIMEOUT_MS = toString (10 * 60 * 1000);
+    };
+  };
+
+  directSettingsFile = format.generate "claude-code-settings.json" cfg.settings;
+  proxySettingsFile = format.generate "claude-code-proxy-settings.json" (
+    lib.recursiveUpdate cfg.settings proxySettings
+  );
+
+  # any http response counts as up, only a failed connection (mini off, other
+  # network) falls back to the same as claude-direct
+  proxyLauncher = pkgs.writeShellScript "claude" ''
+    ${lib.optionalString cfg.proxy.fallback ''
+      if ! ${lib.getExe pkgs.curl} --silent --output /dev/null \
+        --connect-timeout 1 --max-time 3 ${lib.escapeShellArg cfg.proxy.url}; then
+        echo "claude: CLIProxyAPI at ${cfg.proxy.url} is unreachable, using the own login (claude-direct)" >&2
+        exec ${cfg.package}/bin/claude --settings ${directSettingsFile} "$@"
+      fi
+    ''}
+    exec ${cfg.package}/bin/claude --settings ${proxySettingsFile} "$@"
+  '';
 
   # each skill is linked on its own, ~/.claude/skills also holds the ones
   # claude itself manages (synced from claude.ai)
@@ -32,15 +69,24 @@ let
   ) cfg.skills;
 
   package =
-    if cfg.settings != { } then
+    if cfg.settings != { } || cfg.proxy.enable then
       pkgs.symlinkJoin {
         # same name as the package, which is on the unfree allowlist
         inherit (cfg.package) pname version meta;
         paths = [ cfg.package ];
         nativeBuildInputs = [ pkgs.makeWrapper ];
-        postBuild = ''
-          wrapProgram $out/bin/claude --add-flags "--settings ${settingsFile}"
-        '';
+        postBuild =
+          if cfg.proxy.enable then
+            ''
+              rm $out/bin/claude
+              makeWrapper ${cfg.package}/bin/claude $out/bin/claude-direct \
+                --add-flags "--settings ${directSettingsFile}"
+              install -m 755 ${proxyLauncher} $out/bin/claude
+            ''
+          else
+            ''
+              wrapProgram $out/bin/claude --add-flags "--settings ${directSettingsFile}"
+            '';
       }
     else
       cfg.package;
@@ -135,6 +181,17 @@ in
         description = "Shell command printing the key of the server (apiKeyHelper).";
       };
 
+      fallback = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Check at startup whether the server is reachable (taking up to a
+          second when it is not) and use the own login of claude code if it is
+          not. Only decided at startup, a server going away mid-session is not
+          handled. `claude-direct` always skips the server, e.g. to run /login.
+        '';
+      };
+
       apiKeyCacheFile = mkOption {
         type = types.nullOr types.str;
         default = "${config.xdg.cacheHome}/claude-code/proxy-key";
@@ -154,21 +211,6 @@ in
       ".claude/CLAUDE.md" = lib.mkIf (cfg.context != null) (
         if lib.isPath cfg.context then { source = cfg.context; } else { text = cfg.context; }
       );
-    };
-
-    # https://help.router-for.me/agent-client/claude-code.html
-    custom.claude-code.settings = lib.mkIf cfg.proxy.enable {
-      inherit apiKeyHelper;
-      env = {
-        ANTHROPIC_BASE_URL = cfg.proxy.url;
-        # the key never changes, so only ask for it again after a 401 (or a day)
-        CLAUDE_CODE_API_KEY_HELPER_TTL_MS = toString (24 * 60 * 60 * 1000);
-        # lists the models of the proxy in /model, including the ones of other
-        # subscriptions (codex), which the proxy maps to claude-fable-5-dd-<id>
-        CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY = "1";
-        # translated requests to other providers can take a while
-        API_TIMEOUT_MS = toString (10 * 60 * 1000);
-      };
     };
   };
 }

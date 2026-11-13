@@ -13,5 +13,8 @@
     url = "http://127.0.0.1:8317";
     apiKeyCommand = "cat ~/.config/cliproxyapi/api-key";
     apiKeyCacheFile = null;
+    # the proxy is on this machine, if it is down so is the fallback's reason
+    # to exist; claude-direct still skips it
+    fallback = false;
   };
 }
