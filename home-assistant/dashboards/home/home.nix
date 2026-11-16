@@ -237,19 +237,16 @@ let
 
   press = button: performAction "button.press" { target.entity_id = button; };
 
-  # the programs as segments without a selection, one tap to start
-  vacuumProgram = key: name: icon: perform_action: data: {
-    inherit
-      key
-      name
-      icon
-      perform_action
-      data
-      ;
+  # the programs as segments without a selection, one tap starts a script
+  # (see packages/roborock.nix)
+  vacuumProgram = key: name: icon: script: variables: {
+    inherit key name icon;
+    perform_action = "script.turn_on";
+    data = {
+      entity_id = script;
+    }
+    // lib.optionalAttrs (variables != { }) { inherit variables; };
   };
-  pressProgram =
-    key: name: icon: button:
-    vacuumProgram key name icon "button.press" { entity_id = button; };
 in
 {
   title = "Home";
@@ -438,12 +435,9 @@ in
             kind = "presets";
             color = "--state-vacuum-active-color";
             options = [
-              (vacuumProgram "all" "All" "mdi:home-outline" "vacuum.start" { entity_id = entities.vacuum; })
-              (pressProgram "common" "Common" "mdi:sofa-outline"
-                "button.living_room_roborock_vacuum_common_areas"
-              )
-              (pressProgram "bedroom" "Bedroom" "mdi:bed-outline" "button.living_room_roborock_vacuum_bedroom")
-              (pressProgram "mop" "Mop" "mdi:water-outline" "button.living_room_roborock_vacuum_and_mop")
+              (vacuumProgram "vacuum" "Vacuum" "mdi:robot-vacuum" scripts.roborockClean { mop = false; })
+              (vacuumProgram "mop" "Vacuum & mop" "mdi:water-outline" scripts.roborockClean { mop = true; })
+              (vacuumProgram "upstairs" "Upstairs" "mdi:stairs-up" scripts.roborockUpstairs { })
             ];
           }
         ];

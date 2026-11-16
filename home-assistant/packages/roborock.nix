@@ -4,6 +4,7 @@
   ordered,
   changed,
   state,
+  notState,
   template,
   nobodyHome,
   onePersonHome,
@@ -16,7 +17,66 @@
   ...
 }:
 let
-  inherit (entities) person vacuum;
+  inherit (entities) person vacuum scripts;
+
+  weekdays = [
+    "Monday"
+    "Tuesday"
+    "Wednesday"
+    "Thursday"
+    "Friday"
+    "Saturday"
+    "Sunday"
+  ];
+  # the daily clean only mops on these days, the others vacuum only
+  mopDays = [
+    "Monday"
+    "Thursday"
+  ];
+  # python's weekday() of each, 0 is monday
+  mopWeekdays = map (
+    day: lib.lists.findFirstIndex (d: d == day) (throw "unknown weekday ${day}") weekdays
+  ) mopDays;
+
+  cleaningMode = "select.living_room_roborock_cleaning_mode";
+  selectedMap = "select.living_room_roborock_selected_map";
+  # dock actions: on starts the job, the state is on while it runs
+  dustEmptying = "switch.living_room_roborock_dock_dust_emptying";
+  mopWashing = "switch.living_room_roborock_dock_mop_washing";
+  mopDrying = "switch.living_room_roborock_dock_mop_drying";
+  # when the upstairs clean started, so the daily clean doesn't take it for
+  # its own run
+  upstairsStarted = "input_datetime.roborock_upstairs_started";
+
+  selectOption =
+    entity: option: call "select.select_option" entity // { data = { inherit option; }; };
+  loadMap = name: {
+    "if" = [ (template "{{ not is_state('${selectedMap}', '${name}') }}") ];
+    "then" = [ (selectOption selectedMap name) ];
+  };
+  # runs a dock job and waits for it; a short job can be over before the
+  # integration has seen it running, so not seeing it start is fine
+  dockJob = switch: [
+    (call "switch.turn_on" switch)
+    {
+      wait_template = "{{ is_state('${switch}', 'on') }}";
+      timeout.minutes = 1;
+      continue_on_timeout = true;
+    }
+    {
+      wait_template = "{{ is_state('${switch}', 'off') }}";
+      timeout.minutes = 30;
+      continue_on_timeout = true;
+    }
+  ];
+  upstairsTag = "roborock-upstairs";
+  stopDrying = {
+    "if" = [ (state mopDrying "on") ];
+    "then" = [
+      (call "switch.turn_off" mopDrying)
+      { delay.seconds = 5; }
+    ];
+  };
 
   # problems worth a notification, by trigger id; `message` is a template
   # that can use `entity`
@@ -119,7 +179,8 @@ in
     {
       id = "1792500000010";
       alias = "Roborock: Clean While Away";
-      description = "Starts the daily clean once the last person has been away for 10 minutes (09:00-19:00, or at 09:00 if everyone left earlier), with \"Roborock Fallback Time\" as a fallback if nothing ran yet today (also while someone is home). When the first person comes home while it is still cleaning, asks me whether to send it to the dock. Disable the schedule in the Roborock app, otherwise both run.";
+      description = "Starts the daily clean once the last person has been away for 10 minutes (09:00-19:00, or at 09:00 if everyone left earlier), with \"Roborock Fallback Time\" as a fallback if nothing ran yet today (also while someone is home). Mops on ${lib.concatStringsSep " and " mopDays}, vacuums only on the other days. An upstairs clean doesn't count as the daily one, and nothing happens while it is in progress. When the first person comes home while it is still cleaning, asks me whether to send it to the dock. Disable the schedule in the Roborock app, otherwise both run.";
+      conditions = [ (state scripts.roborockUpstairs "off") ];
       triggers = [
         (left {
           for.minutes = 10;
@@ -177,7 +238,12 @@ in
                   ];
                 }
               ];
-              sequence = [ (call "vacuum.start" vacuum) ];
+              sequence = [
+                {
+                  action = scripts.roborockClean;
+                  data.mop = "{{ mop_day }}";
+                }
+              ];
             }
             {
               conditions = [
@@ -207,8 +273,14 @@ in
       ];
       variables = ordered [
         {
-          cleaned_today = "{% set b = states('sensor.living_room_roborock_last_clean_begin') | as_datetime(none) %} {{ b is not none and as_local(b).date() == now().date() }}";
+          # a run that began within 10 min of the upstairs clean is that one
+          cleaned_today = ''
+            {%- set b = states('sensor.living_room_roborock_last_clean_begin') | as_datetime(none) -%}
+            {%- set u = state_attr('${upstairsStarted}', 'timestamp') | float(0) -%}
+            {{ b is not none and as_local(b).date() == now().date()
+               and (as_timestamp(b) - u) | abs > 600 }}'';
         }
+        { mop_day = "{{ now().weekday() in ${builtins.toJSON mopWeekdays} }}"; }
       ];
       mode = "single";
     }
@@ -297,11 +369,186 @@ in
       mode = "single";
     }
   ];
+  script = {
+    roborock_clean = {
+      alias = "Roborock Clean";
+      description = "Cleans downstairs, vacuum only or vacuum and mop. Sets the cleaning mode every time, since the robot keeps the last one. Does nothing while an upstairs clean is in progress.";
+      icon = "mdi:robot-vacuum";
+      mode = "single";
+      max_exceeded = "silent";
+      fields = ordered [
+        {
+          mop = {
+            name = "Mop";
+            description = "Vacuum and mop instead of vacuum only.";
+            default = false;
+            selector.boolean = null;
+          };
+        }
+      ];
+      sequence = [
+        (state scripts.roborockUpstairs "off")
+        (loadMap "Downstairs")
+        (selectOption cleaningMode "{{ 'vac_and_mop' if mop | bool(false) else 'vacuum' }}")
+        (call "vacuum.start" vacuum)
+      ];
+    };
+
+    roborock_upstairs = {
+      alias = "Roborock Upstairs";
+      description = "Upstairs clean, where there is no dock: washes the mop, asks me to carry the robot upstairs and tap Start (or start it on the robot or in the app), vacuums and mops the Upstairs map, asks me to carry it back down and, once it is on the dock again, loads the Downstairs map, empties the dustbin and washes and dries the mop.";
+      icon = "mdi:stairs-up";
+      mode = "single";
+      max_exceeded = "silent";
+      sequence = [
+        {
+          "if" = [ (notState vacuum "docked") ];
+          "then" = [
+            (notify {
+              title = "Roborock";
+              message = "Put the Roborock on the dock first, an upstairs clean starts with washing the mop.";
+              tag = upstairsTag;
+            })
+            { stop = "Not on the dock"; }
+          ];
+        }
+      ]
+      # it may still be drying from the last run
+      ++ [ stopDrying ]
+      ++ dockJob mopWashing
+      ++ [
+        # and may start drying after the wash, pointless without the robot
+        stopDrying
+        # until it is off the dock or was started some other way (its own
+        # button, the app)
+        {
+          repeat = {
+            sequence = [
+              (notify {
+                title = "Roborock";
+                message = "{{ 'The Roborock is still on the dock.' if repeat.index > 1 else 'The mop is clean.' }} Carry it upstairs, then tap Start (or start it on the robot).";
+                tag = upstairsTag;
+                actions = [
+                  {
+                    action = "ROBOROCK_UPSTAIRS_START";
+                    title = "Start";
+                  }
+                  {
+                    action = "ROBOROCK_UPSTAIRS_CANCEL";
+                    title = "Cancel";
+                  }
+                ];
+              })
+              {
+                wait_for_trigger = [
+                  {
+                    trigger = "event";
+                    event_type = "mobile_app_notification_action";
+                    event_data.action = "ROBOROCK_UPSTAIRS_START";
+                    id = "start";
+                  }
+                  {
+                    trigger = "event";
+                    event_type = "mobile_app_notification_action";
+                    event_data.action = "ROBOROCK_UPSTAIRS_CANCEL";
+                    id = "cancel";
+                  }
+                  # started off the dock, not a downstairs run from the dock
+                  {
+                    trigger = "state";
+                    entity_id = vacuum;
+                    to = "cleaning";
+                    not_from = "docked";
+                    id = "started";
+                  }
+                ];
+                timeout.hours = 3;
+                continue_on_timeout = true;
+              }
+              {
+                "if" = [ (template "{{ wait.trigger is none or wait.trigger.id == 'cancel' }}") ];
+                "then" = [
+                  (clearNotification upstairsTag)
+                  { stop = "Cancelled"; }
+                ];
+              }
+            ];
+            until = [ (notState vacuum "docked") ];
+          };
+        }
+        (clearNotification upstairsTag)
+        {
+          "if" = [ (notState vacuum "cleaning") ];
+          "then" = [
+            (loadMap "Upstairs")
+            (selectOption cleaningMode "vac_and_mop")
+            (call "vacuum.start" vacuum)
+            {
+              wait_template = "{{ is_state('${vacuum}', 'cleaning') }}";
+              timeout.minutes = 2;
+              continue_on_timeout = true;
+            }
+            {
+              "if" = [ (template "{{ not wait.completed }}") ];
+              "then" = [
+                (notify {
+                  title = "Roborock";
+                  message = "The Roborock didn't start cleaning upstairs. Check the Roborock app, then carry it back to the dock.";
+                  tag = upstairsTag;
+                })
+                { stop = "Didn't start"; }
+              ];
+            }
+          ];
+        }
+        (
+          call "input_datetime.set_datetime" upstairsStarted
+          // {
+            data.timestamp = "{{ now().timestamp() }}";
+          }
+        )
+        {
+          wait_template = "{{ states('${vacuum}') not in ['cleaning', 'returning', 'paused'] }}";
+          timeout.hours = 4;
+          continue_on_timeout = true;
+        }
+        (notify {
+          title = "Roborock";
+          message = "{{ 'The Roborock is done upstairs.' if is_state('${vacuum}', 'idle') else 'The Roborock has stopped upstairs.' }} Carry it back to the dock.";
+          tag = upstairsTag;
+        })
+        {
+          wait_template = "{{ is_state('${vacuum}', 'docked') }}";
+          timeout.hours = 8;
+          continue_on_timeout = false;
+        }
+        (clearNotification upstairsTag)
+        (loadMap "Downstairs")
+      ]
+      ++ dockJob dustEmptying
+      ++ dockJob mopWashing
+      ++ [
+        # unless the dock started drying by itself after the wash
+        { delay.seconds = 30; }
+        {
+          "if" = [ (state mopDrying "off") ];
+          "then" = [ (call "switch.turn_on" mopDrying) ];
+        }
+      ];
+    };
+  };
+
   input_datetime = {
     roborock_fallback_time = timeOfDay {
       icon = "mdi:robot-vacuum";
       initial = "14:00:00";
       name = "Roborock Fallback Time";
+    };
+    roborock_upstairs_started = {
+      has_date = true;
+      has_time = true;
+      icon = "mdi:stairs-up";
+      name = "Roborock Upstairs Started";
     };
   };
 }

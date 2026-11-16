@@ -56,7 +56,7 @@ in
     ])
     (section [
       (heading "mdi:robot-vacuum" "Roborock")
-      (markdown "Cleans once a day after you have been away for 10 min (09:00-19:00), or at the fallback time if it has not run yet.")
+      (markdown "Cleans downstairs once a day after you have been away for 10 min (09:00-19:00), or at the fallback time if it has not run yet. Mops on Mondays and Thursdays, vacuums only on the other days. **Upstairs** on the home view washes the mop, then guides you through carrying it up and back down, and empties the dustbin and washes the mop once it is on the dock again.")
       (setting "mdi:clock-outline" "Fallback time" "input_datetime.roborock_fallback_time")
       (roborock "mdi:eye-outline" "Sensors" "sensor")
       (roborock "mdi:brush" "Side brush" "side_brush")

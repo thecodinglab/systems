@@ -113,6 +113,8 @@ rec {
     airing = "script.airing";
     goodnight = "script.goodnight";
     lightPreset = "script.light_preset";
+    roborockClean = "script.roborock_clean";
+    roborockUpstairs = "script.roborock_upstairs";
     shutterPreset = "script.shutter_preset";
     sunrise = "script.bedroom_sunrise";
   };
