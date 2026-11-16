@@ -24,6 +24,15 @@ let
   stormProtection = "input_boolean.storm_protection";
   airing = entities.scripts.airing;
 
+  # only the scheduled airing waits for dry, calm weather; "Air now" (the
+  # script on its own) always opens, and the rain guard and storm protection
+  # leave the window to it while it runs
+  noRainNoStorm =
+    template "{{ not is_state('${weather}', ${jinjaList wet}) and is_state('${stormProtection}', 'off') }}"
+    // {
+      alias = "No rain and no storm protection";
+    };
+
   # the floor heating follows the outside temperature, below this (mean over
   # the next 24 h) it is heating period
   heatingLimit = 15;
@@ -82,6 +91,7 @@ in
           ];
         }
         nightModeOff
+        noRainNoStorm
         (
           template "{{ is_state('${window}', 'closed') and now() - states.${window}.last_changed > timedelta(hours=1) }}"
           // {
@@ -219,18 +229,12 @@ in
   script = {
     airing = {
       alias = "Airing";
-      description = "Stosslüften with the living room window: opens it fully for 5 minutes (below 5 °C outside) or 10 minutes, then closes it again (earlier if you close it yourself). Does nothing while it rains or storm protection is on.";
+      description = "Stosslüften with the living room window: opens it fully for 5 minutes (below 5 °C outside) or 10 minutes, then closes it again (earlier if you close it yourself). Runs whatever the weather: the rain and storm checks are only in the scheduled airing, and the rain guard and storm protection leave the window alone while this runs.";
       icon = "mdi:window-open-variant";
       mode = "single";
       max_exceeded = "silent";
       sequence = [
         { variables = ordered [ { minutes = airingMinutes; } ]; }
-        (
-          template "{{ not is_state('${weather}', ${jinjaList wet}) and is_state('${stormProtection}', 'off') }}"
-          // {
-            alias = "No rain and no storm protection";
-          }
-        )
         (call "cover.open_cover" window)
         {
           wait_for_trigger = [

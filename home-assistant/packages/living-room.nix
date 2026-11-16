@@ -175,7 +175,7 @@ in
     {
       id = "1792500000004";
       alias = "Living Room: Storm Protection";
-      description = "Raises all four outdoor blinds and closes the window when Met.no reports thunder, hail or storm wind now or within the next 2 hours (mean wind at or above \"Storm Wind Threshold\"; Met.no has no gust data). While Storm Protection is on, the shutter presets and the dusk/morning automations leave the blinds alone. It turns off again after 45 calm minutes; the dusk automation then closes all shutters if it is evening. Below 0 °C the blinds may be frozen to the sill, so it asks instead of moving them.";
+      description = "Raises all four outdoor blinds and closes the window (unless it is being aired, which closes it itself) when Met.no reports thunder, hail or storm wind now or within the next 2 hours (mean wind at or above \"Storm Wind Threshold\"; Met.no has no gust data). While Storm Protection is on, the shutter presets and the dusk/morning automations leave the blinds alone. It turns off again after 45 calm minutes; the dusk automation then closes all shutters if it is evening. Below 0 °C the blinds may be frozen to the sill, so it asks instead of moving them.";
       triggers = [
         {
           trigger = "state";
@@ -239,8 +239,14 @@ in
                 markStorm
                 (call "input_boolean.turn_on" stormProtection)
                 {
-                  alias = "Close the window with a full run, whatever position HA assumes";
-                  sequence = fullRun "close" window;
+                  # not while airing, which closes it after 5-10 minutes
+                  "if" = [ (notState scripts.airing "on") ];
+                  "then" = [
+                    {
+                      alias = "Close the window with a full run, whatever position HA assumes";
+                      sequence = fullRun "close" window;
+                    }
+                  ];
                 }
                 {
                   "if" = [ (template "{{ freezing }}") ];
@@ -329,7 +335,7 @@ in
     {
       id = "1792500000005";
       alias = "Living Room: Window Rain Guard";
-      description = "While the living room window is open and it rains (or Met.no expects rain in the next hour): nobody home -> close it right away; anyone home -> ask me, and close it after 10 minutes without an answer. \"Keep open\" silences the question for 2 hours.";
+      description = "While the living room window is open (and not being aired, which closes it itself) and it rains (or Met.no expects rain in the next hour): nobody home -> close it right away; anyone home -> ask me, and close it after 10 minutes without an answer. \"Keep open\" silences the question for 2 hours.";
       triggers = [
         {
           trigger = "state";
@@ -341,7 +347,11 @@ in
           minutes = "/15";
         }
       ];
-      conditions = [ (notState window "closed") ];
+      conditions = [
+        (notState window "closed")
+        # "Air now" opened it on purpose and closes it itself
+        (notState scripts.airing "on")
+      ];
       actions = [
         hourlyForecast
         {
