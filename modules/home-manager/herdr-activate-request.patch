@@ -1,9 +1,9 @@
 diff --git c/src/client/activation_request.rs i/src/client/activation_request.rs
 new file mode 100644
-index 0000000..278acae
+index 0000000..26f14ac
 --- /dev/null
 +++ i/src/client/activation_request.rs
-@@ -0,0 +1,122 @@
+@@ -0,0 +1,171 @@
 +//! External requests to show a workspace, on Local or on a saved SSH machine.
 +//!
 +//! The socket API reaches one server, never the client that chooses which
@@ -15,17 +15,25 @@ index 0000000..278acae
 +//! {"nonce": "unique", "machine": "<profile id, empty for Local>", "workspace": "w1"}
 +//! ```
 +//!
-+//! and every attached client activates that machine and workspace the way a
-+//! sidebar click does, then writes the nonce to `activate-ack.json`, so the
-+//! tool can tell a client took it. A request already there when a client
-+//! starts is never acted on.
++//! Every attached client answers in `activate-ack.json`, first with
++//! `{"nonce": ..., "state": "received"}` at once, so the tool knows a client
++//! listens, then with `"state": "done"` once it activates that machine and
++//! workspace the way a sidebar click does. A machine saved a moment ago is
++//! waited for until its catalog entry is loaded and it is connected, for
++//! `PATIENCE` at most. A request already there when a client starts is
++//! never acted on.
 +
 +use super::*;
 +
 +use serde::{Deserialize, Serialize};
 +
++/// How long a request waits for its machine to be saved and connected.
++const PATIENCE: Duration = Duration::from_secs(30);
++/// How often a waiting request looks again.
++const RETRY: Duration = Duration::from_millis(200);
++
 +#[derive(Deserialize)]
-+struct ActivationRequest {
++struct ActivationRequestFile {
 +    nonce: String,
 +    #[serde(default)]
 +    machine: String,
@@ -35,6 +43,15 @@ index 0000000..278acae
 +#[derive(Serialize)]
 +struct ActivationAck<'a> {
 +    nonce: &'a str,
++    state: &'a str,
++}
++
++/// A request waiting for its machine, as the client loop sees it.
++pub(super) struct ActivationRequest {
++    pub(super) nonce: String,
++    pub(super) endpoint_id: endpoint::ClientEndpointId,
++    pub(super) workspace: String,
++    pub(super) deadline: std::time::Instant,
 +}
 +
 +fn request_path() -> std::path::PathBuf {
@@ -49,7 +66,7 @@ index 0000000..278acae
 +        .join("activate-ack.json")
 +}
 +
-+fn read_request(path: &std::path::Path) -> Option<ActivationRequest> {
++fn read_request(path: &std::path::Path) -> Option<ActivationRequestFile> {
 +    let data = std::fs::read(path).ok()?;
 +    // a request is a few ids, anything bigger is not one
 +    if data.len() > 4096 {
@@ -62,15 +79,48 @@ index 0000000..278acae
 +    std::fs::metadata(path).ok()?.modified().ok()
 +}
 +
-+fn write_ack(nonce: &str) {
++pub(super) fn write_ack(nonce: &str, state: &str) {
 +    let path = ack_path();
-+    let Ok(data) = serde_json::to_vec(&ActivationAck { nonce }) else {
++    let Ok(data) = serde_json::to_vec(&ActivationAck { nonce, state }) else {
 +        return;
 +    };
 +    let temp = path.with_extension(format!("json.{}", std::process::id()));
 +    if std::fs::write(&temp, data).is_ok() && std::fs::rename(&temp, &path).is_err() {
 +        let _ = std::fs::remove_file(&temp);
 +    }
++}
++
++/// Whether the client can activate the request's machine now: it is in the
++/// loaded catalog, enabled, and connected. Local always is.
++pub(super) fn ready(
++    request: &ActivationRequest,
++    catalog: &endpoint::EndpointCatalog,
++    endpoints: &endpoint::EndpointRegistry,
++) -> bool {
++    let known = match &request.endpoint_id {
++        endpoint::ClientEndpointId::Local => true,
++        endpoint::ClientEndpointId::Ssh(id) => catalog
++            .ssh
++            .iter()
++            .any(|profile| &profile.id == id && profile.enabled),
++    };
++    known && endpoints.connection(&request.endpoint_id).is_some()
++}
++
++/// Sends a request that is not ready yet back to the loop a little later,
++/// until its deadline.
++pub(super) fn retry(
++    event_tx: tokio::sync::mpsc::Sender<ClientLoopEvent>,
++    request: ActivationRequest,
++) {
++    if std::time::Instant::now() >= request.deadline {
++        warn!(nonce = %request.nonce, "activation request expired before its machine was ready");
++        return;
++    }
++    std::thread::spawn(move || {
++        std::thread::sleep(RETRY);
++        let _ = event_tx.blocking_send(ClientLoopEvent::ActivationRequest(request));
++    });
 +}
 +
 +pub(super) fn watch_requests(
@@ -110,24 +160,36 @@ index 0000000..278acae
 +            if request.workspace.is_empty() {
 +                continue;
 +            }
++            write_ack(&request.nonce, "received");
 +            if event_tx
-+                .blocking_send(ClientLoopEvent::ActivateEndpoint {
++                .blocking_send(ClientLoopEvent::ActivationRequest(ActivationRequest {
++                    nonce: request.nonce,
 +                    endpoint_id,
-+                    target: Some(shell::ClientEndpointFocusTarget::Workspace(
-+                        request.workspace,
-+                    )),
-+                    force: false,
-+                })
++                    workspace: request.workspace,
++                    deadline: std::time::Instant::now() + PATIENCE,
++                }))
 +                .is_err()
 +            {
 +                break;
 +            }
-+            write_ack(&request.nonce);
 +        }
 +    });
 +}
+diff --git c/src/client/events.rs i/src/client/events.rs
+index dc4415b..b7abd22 100644
+--- c/src/client/events.rs
++++ i/src/client/events.rs
+@@ -25,6 +25,8 @@ pub(super) enum ClientLoopEvent {
+     },
+     EndpointSupervisor(endpoint::EndpointSupervisorEvent),
+     EndpointCatalog(Result<Vec<endpoint::SavedSshEndpoint>, String>),
++    /// A request from activate-request.json to show a machine and workspace.
++    ActivationRequest(activation_request::ActivationRequest),
+     ActivateEndpoint {
+         endpoint_id: endpoint::ClientEndpointId,
+         target: Option<shell::ClientEndpointFocusTarget>,
 diff --git c/src/client/mod.rs i/src/client/mod.rs
-index f55db19..4a31c37 100644
+index f55db19..465c7b3 100644
 --- c/src/client/mod.rs
 +++ i/src/client/mod.rs
 @@ -12,6 +12,7 @@
@@ -146,3 +208,36 @@ index f55db19..4a31c37 100644
      }
  
      // This (foreground) client owns the prefix ASCII input-source switch
+@@ -1400,6 +1402,32 @@ async fn run_client_loop(
+                     });
+                 }
+             },
++            ClientLoopEvent::ActivationRequest(request) => {
++                // a machine saved a moment ago is loaded and connected soon
++                if !activation_request::ready(&request, &endpoint_catalog, &write_stream) {
++                    activation_request::retry(event_tx.clone(), request);
++                    continue;
++                }
++                if !endpoint_catalog.select_endpoint(&request.endpoint_id) {
++                    continue;
++                }
++                if let Err(error) = endpoint_catalog.store_selection() {
++                    warn!(%error, "failed to persist desired endpoint selection");
++                }
++                activation_request::write_ack(&request.nonce, "done");
++                begin_endpoint_activation(
++                    &mut state,
++                    &mut write_stream,
++                    &mut endpoint_commands,
++                    &mut pending_activation,
++                    &mut next_surface_serial,
++                    request.endpoint_id,
++                    Some(shell::ClientEndpointFocusTarget::Workspace(request.workspace)),
++                    false,
++                    now,
++                    &mut scheduled_activation,
++                )?;
++            }
+             ClientLoopEvent::ActivateEndpoint {
+                 endpoint_id,
+                 target,
