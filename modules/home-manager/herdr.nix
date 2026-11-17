@@ -10,6 +10,15 @@ let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
   palette = import ./theme/palette.nix;
 
+  # The client chooses which machine a window shows, and the socket API only
+  # reaches a server, so the devtools switcher could focus a workspace on a
+  # saved machine but not bring it into view. The patch lets a client take a
+  # request to show a machine and workspace from a file in its state
+  # directory, the way a sidebar click does; see the patch itself.
+  patched = pkgs.herdr.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [ ./herdr-activate-request.patch ];
+  });
+
   # The server only runs as the launchd agent below. An ssh login gets its own
   # security session, which can't see the keychain unlocked by the gui login
   # (no codesign etc.), and a server started by launchd lives in the gui
@@ -22,7 +31,7 @@ let
   launchMarker = "HERDR_LAUNCHD_AGENT";
   server =
     if isDarwin then
-      pkgs.herdr.overrideAttrs (old: {
+      patched.overrideAttrs (old: {
         postPatch = (old.postPatch or "") + ''
           substituteInPlace src/server/headless/bootstrap.rs \
             --replace-fail \
@@ -44,7 +53,7 @@ let
         '';
       })
     else
-      pkgs.herdr;
+      patched;
   herdr = lib.getExe server;
 
   # Panes and popups get herdr's own agent link as SSH_AUTH_SOCK, and a

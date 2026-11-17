@@ -1,0 +1,148 @@
+diff --git c/src/client/activation_request.rs i/src/client/activation_request.rs
+new file mode 100644
+index 0000000..278acae
+--- /dev/null
++++ i/src/client/activation_request.rs
+@@ -0,0 +1,122 @@
++//! External requests to show a workspace, on Local or on a saved SSH machine.
++//!
++//! The socket API reaches one server, never the client that chooses which
++//! machine a window shows, so a tool running in a pane (a project switcher,
++//! say) has no way to bring up a workspace on another machine. It writes
++//! `activate-request.json` in the client state directory instead:
++//!
++//! ```json
++//! {"nonce": "unique", "machine": "<profile id, empty for Local>", "workspace": "w1"}
++//! ```
++//!
++//! and every attached client activates that machine and workspace the way a
++//! sidebar click does, then writes the nonce to `activate-ack.json`, so the
++//! tool can tell a client took it. A request already there when a client
++//! starts is never acted on.
++
++use super::*;
++
++use serde::{Deserialize, Serialize};
++
++#[derive(Deserialize)]
++struct ActivationRequest {
++    nonce: String,
++    #[serde(default)]
++    machine: String,
++    workspace: String,
++}
++
++#[derive(Serialize)]
++struct ActivationAck<'a> {
++    nonce: &'a str,
++}
++
++fn request_path() -> std::path::PathBuf {
++    crate::config::state_dir()
++        .join("client")
++        .join("activate-request.json")
++}
++
++fn ack_path() -> std::path::PathBuf {
++    crate::config::state_dir()
++        .join("client")
++        .join("activate-ack.json")
++}
++
++fn read_request(path: &std::path::Path) -> Option<ActivationRequest> {
++    let data = std::fs::read(path).ok()?;
++    // a request is a few ids, anything bigger is not one
++    if data.len() > 4096 {
++        return None;
++    }
++    serde_json::from_slice(&data).ok()
++}
++
++fn modified(path: &std::path::Path) -> Option<std::time::SystemTime> {
++    std::fs::metadata(path).ok()?.modified().ok()
++}
++
++fn write_ack(nonce: &str) {
++    let path = ack_path();
++    let Ok(data) = serde_json::to_vec(&ActivationAck { nonce }) else {
++        return;
++    };
++    let temp = path.with_extension(format!("json.{}", std::process::id()));
++    if std::fs::write(&temp, data).is_ok() && std::fs::rename(&temp, &path).is_err() {
++        let _ = std::fs::remove_file(&temp);
++    }
++}
++
++pub(super) fn watch_requests(
++    event_tx: tokio::sync::mpsc::Sender<ClientLoopEvent>,
++    should_quit: Arc<AtomicBool>,
++) {
++    // A stat every 100ms; the file is only read when it changed.
++    std::thread::spawn(move || {
++        let path = request_path();
++        let mut last_modified = modified(&path);
++        let mut last_nonce = read_request(&path).map(|request| request.nonce);
++        while !should_quit.load(Ordering::Acquire) {
++            std::thread::sleep(Duration::from_millis(100));
++            let current = modified(&path);
++            if current.is_none() || current == last_modified {
++                continue;
++            }
++            last_modified = current;
++            let Some(request) = read_request(&path) else {
++                continue;
++            };
++            if last_nonce.as_deref() == Some(request.nonce.as_str()) {
++                continue;
++            }
++            last_nonce = Some(request.nonce.clone());
++            let endpoint_id = if request.machine.is_empty() {
++                endpoint::ClientEndpointId::Local
++            } else {
++                match endpoint::ProfileId::parse(request.machine) {
++                    Ok(profile) => endpoint::ClientEndpointId::Ssh(profile),
++                    Err(error) => {
++                        warn!(%error, "ignoring activation request for an invalid machine");
++                        continue;
++                    }
++                }
++            };
++            if request.workspace.is_empty() {
++                continue;
++            }
++            if event_tx
++                .blocking_send(ClientLoopEvent::ActivateEndpoint {
++                    endpoint_id,
++                    target: Some(shell::ClientEndpointFocusTarget::Workspace(
++                        request.workspace,
++                    )),
++                    force: false,
++                })
++                .is_err()
++            {
++                break;
++            }
++            write_ack(&request.nonce);
++        }
++    });
++}
+diff --git c/src/client/mod.rs i/src/client/mod.rs
+index f55db19..4a31c37 100644
+--- c/src/client/mod.rs
++++ i/src/client/mod.rs
+@@ -12,6 +12,7 @@
+ //! - Forwards OSC 52 clipboard writes from server to its own stdout
+ //! - Displays sound/toast notifications forwarded from server
+ 
++mod activation_request;
+ mod attach;
+ mod catalog_reload;
+ mod clipboard_forwarding;
+@@ -665,6 +666,7 @@ async fn run_client_loop(
+     let mut pending_catalog: Option<Result<Vec<endpoint::SavedSshEndpoint>, String>> = None;
+     if state.shell.is_some() && !is_remote_client && state.attach_escape.is_none() {
+         catalog_reload::watch_profiles(event_tx.clone(), should_quit.clone());
++        activation_request::watch_requests(event_tx.clone(), should_quit.clone());
+     }
+ 
+     // This (foreground) client owns the prefix ASCII input-source switch
