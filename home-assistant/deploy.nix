@@ -33,7 +33,22 @@ pkgs.writeShellApplication {
 
     staging="$HA_CONFIG_DIR/.nix-deploy"
 
-    token=$(sops -d --extract '["HOME_ASSISTANT_TOKEN"]' ${./secrets.yaml})
+    # decrypted once per boot (sops asks 1Password), then read from the
+    # user's runtime dir (tmpfs, only readable by the user)
+    # (no cache where there is none, e.g. macOS)
+    runtime_dir=''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+    token_cache=
+    if [ -d "$runtime_dir" ]; then
+      token_cache="$runtime_dir/home-assistant-token"
+    fi
+    if [ -n "$token_cache" ] && [ -s "$token_cache" ]; then
+      token=$(<"$token_cache")
+    else
+      token=$(sops -d --extract '["HOME_ASSISTANT_TOKEN"]' ${./secrets.yaml})
+      if [ -n "$token_cache" ]; then
+        (umask 077 && printf '%s' "$token" >"$token_cache") || true
+      fi
+    fi
 
     api() {
       curl -fsS -X POST \
