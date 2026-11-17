@@ -7,6 +7,12 @@
     ../../home/florian/writing.nix
   ];
 
+  # the devtools switchers on the macs list this machine's projects
+  custom.devtools.serve = {
+    enable = true;
+    name = "desktop";
+  };
+
   # AirPods Max, toggled with Super+B
   custom.hyprland.headphones = "90:62:3F:9B:23:F7";
 

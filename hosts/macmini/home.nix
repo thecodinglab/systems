@@ -5,6 +5,12 @@
     ../../home/florian/darwin.nix
   ];
 
+  # the devtools switchers on the other machines list this machine's projects
+  custom.devtools.serve = {
+    enable = true;
+    name = "macmini";
+  };
+
   # ssh keys come from the machine you log in from, see the ssh module
   custom.ssh.forwardedAgents.enable = true;
 
