@@ -3,12 +3,12 @@
 // spacing from the theme and comes in two kinds:
 //   presets  a segmented control that runs a script with {lights, preset} or
 //            {preset}; the segment whose values match the entities is selected
-//   panes    the four living room shutters as a window, tap one for more-info
+//   panes    the four living room blinds as a window, tap one for more-info
 // Config, see ../dashboards/home/home.nix:
 //   { type: custom:home-feature, kind: presets, action: script.light_preset,
 //     lights: light.x, probe: light.y, color: --state-light-active-color,
 //     options: [{ key, name, icon, match: { brightness_pct, color_temp_kelvin } }] }
-//   { type: custom:home-feature, kind: presets, action: script.shutter_preset,
+//   { type: custom:home-feature, kind: presets, action: script.blind_preset,
 //     color: --state-cover-active-color,
 //     options: [{ key, name, icon, match: { <cover>: { position, tilt } } }] }
 //   { type: custom:home-feature, kind: panes, rows: [[cover, cover], [cover, cover]] }
@@ -354,7 +354,7 @@ if (!customElements.get("home-feature")) {
   window.customCardFeatures = window.customCardFeatures || [];
   window.customCardFeatures.push({
     type: "home-feature",
-    name: "Presets and shutter panes",
+    name: "Presets and blind panes",
     supported: () => true,
   });
 }

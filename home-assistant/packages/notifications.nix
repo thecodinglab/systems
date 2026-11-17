@@ -21,9 +21,9 @@ let
     CLOSE_WINDOW = [ (call "cover.close_cover" entities.window) ];
     WAKEUP_SKIP_NEXT = [ (call "input_boolean.turn_on" skipNextWakeUp) ];
     WAKEUP_UNSKIP = [ (call "input_boolean.turn_off" skipNextWakeUp) ];
-    SHUTTERS_RAISE = [ (startScript scripts.shutterPreset { preset = "open"; }) ];
-    SHUTTERS_PRIVACY = [ (startScript scripts.shutterPreset { preset = "privacy"; }) ];
-    SHUTTERS_NIGHT = [ (startScript scripts.shutterPreset { preset = "night"; }) ];
+    BLINDS_RAISE = [ (startScript scripts.blindPreset { preset = "open"; }) ];
+    BLINDS_PRIVACY = [ (startScript scripts.blindPreset { preset = "privacy"; }) ];
+    BLINDS_NIGHT = [ (startScript scripts.blindPreset { preset = "night"; }) ];
     ROBOROCK_DOCK = [ (call "vacuum.return_to_base" entities.vacuum) ];
   };
 
@@ -53,10 +53,10 @@ let
     )
     ++ [
       "light.living_room_window_open_relay"
-      "light.living_room_shutter_top_left_up_relay"
-      "light.living_room_shutter_top_right_up_relay"
-      "light.living_room_shutter_bottom_left_up_relay"
-      "light.living_room_shutter_bottom_right_up_relay"
+      "light.living_room_blind_top_left_up_relay"
+      "light.living_room_blind_top_right_up_relay"
+      "light.living_room_blind_bottom_left_up_relay"
+      "light.living_room_blind_bottom_right_up_relay"
       entities.desktop
       entities.serverRack
     ];
@@ -92,7 +92,7 @@ in
     {
       id = "1792500000007";
       alias = "Notifications: Handle Actions";
-      description = "Handles the buttons on actionable notifications: close the window, skip or un-skip tomorrow's wake-up light, raise the blinds / shutters to Privacy, send the Roborock to the dock and reset Roborock consumables.";
+      description = "Handles the buttons on actionable notifications: close the window, skip or un-skip tomorrow's wake-up light, raise the blinds / set them to Privacy, send the Roborock to the dock and reset Roborock consumables.";
       triggers = [
         {
           trigger = "event";

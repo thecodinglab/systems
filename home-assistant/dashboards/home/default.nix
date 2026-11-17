@@ -13,7 +13,7 @@ in
     ./wake-up.nix
     ./energy.nix
     ./system.nix
-    ./shutters.nix
+    ./blinds.nix
     ./automations.nix
   ];
 }

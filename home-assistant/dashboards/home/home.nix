@@ -1,5 +1,5 @@
 # the home view as native cards, plus custom:home-feature (../../www/home-card.js)
-# as a tile feature for the light and shutter presets and the shutter panes
+# as a tile feature for the light and blind presets and the blind panes
 {
   entities,
   navigate,
@@ -18,7 +18,7 @@ let
     performAction
     stateIs
     ;
-  inherit (entities) lights scripts shutters;
+  inherit (entities) lights scripts blinds;
 
   # an entity badge for a heading
   badge =
@@ -86,11 +86,11 @@ let
       ];
     };
 
-  shutterOptions = [
+  blindOptions = [
     {
       key = "open";
       name = "Open";
-      icon = "mdi:window-shutter-open";
+      icon = "mdi:blinds-open";
     }
     {
       key = "shade";
@@ -105,18 +105,18 @@ let
     {
       key = "closed";
       name = "Closed";
-      icon = "mdi:window-shutter";
+      icon = "mdi:blinds";
     }
   ];
 
-  # the four shutters as one tile: the panes (tap one for its controls) and
+  # the four blinds as one tile: the panes (tap one for its controls) and
   # the layouts. The icon lights up while a layout is applied, the name leads
-  # to the shutters view like the subheading above (storm guard is its badge)
-  shutterTile = full (
+  # to the blinds view like the subheading above (storm guard is its badge)
+  blindTile = full (
     {
-      entity = scripts.shutterPreset;
-      name = "Shutters";
-      icon = "mdi:window-shutter";
+      entity = scripts.blindPreset;
+      name = "Blinds";
+      icon = "mdi:blinds";
       hide_state = true;
       grid_options = {
         columns = 12;
@@ -128,30 +128,30 @@ let
           kind = "panes";
           color = "--state-cover-active-color";
           rows = [
-            shutters.top
-            shutters.bottom
+            blinds.top
+            blinds.bottom
           ];
         }
         {
           type = "custom:home-feature";
           kind = "presets";
-          action = scripts.shutterPreset;
+          action = scripts.blindPreset;
           color = "--state-cover-active-color";
           options = map (
             option:
             let
-              layout = entities.shutterPresets.${option.key};
+              layout = entities.blindPresets.${option.key};
             in
             option
             // {
               match =
-                lib.genAttrs shutters.top (_: layout.top) // lib.genAttrs shutters.bottom (_: layout.bottom);
+                lib.genAttrs blinds.top (_: layout.top) // lib.genAttrs blinds.bottom (_: layout.bottom);
             }
-          ) shutterOptions;
+          ) blindOptions;
         }
       ];
     }
-    // onTap (navigateTo "shutters")
+    // onTap (navigateTo "blinds")
   );
 
   # a small heading that leads to another view, the chevron shows it does
@@ -217,7 +217,7 @@ let
     {%- set h = now().hour -%}
     # {{ 'Good night' if h < 5 else 'Good morning' if h < 12 else 'Good afternoon' if h < 18 else 'Good evening' }}
     {%- set ns = namespace(open=0, wake=''') -%}
-    {%- for e in ${builtins.toJSON shutters.all} -%}
+    {%- for e in ${builtins.toJSON blinds.all} -%}
       {%- if not is_state(e, 'closed') %}{% set ns.open = ns.open + 1 %}{% endif -%}
     {%- endfor -%}
     {%- if is_state('input_boolean.bedroom_wake_up_light', 'on') and is_state('input_boolean.bedroom_wake_up_skip_next', 'off') -%}
@@ -231,7 +231,7 @@ let
       {%- endfor -%}
     {%- endif %}
 
-    {{ 'The shutters are closed.' if ns.open == 0 else 'The shutters are open.' if ns.open == 4 else ns.open ~ ' of 4 shutters are open.' }}
+    {{ 'The blinds are closed.' if ns.open == 0 else 'The blinds are open.' if ns.open == 4 else ns.open ~ ' of 4 blinds are open.' }}
     {{ 'Wake-up light at ' ~ ns.wake ~ '.' if ns.wake else 'The next wake-up light is skipped.' if is_state('input_boolean.bedroom_wake_up_light', 'on') else 'The wake-up light is off.' }}
   '';
 
@@ -297,6 +297,26 @@ in
       show_name = true;
       tap_action = navigateTo "energy";
     }
+    # an official MeteoSwiss warning (yellow or higher) for the home location
+    {
+      type = "entity";
+      entity = entities.meteoswiss.warningLevel;
+      name = "Warning";
+      show_name = true;
+      color = "amber";
+      icon = "mdi:alert";
+      state_content = [
+        "level_name"
+        "region"
+      ];
+      visibility = [
+        {
+          condition = "numeric_state";
+          entity = entities.meteoswiss.warningLevel;
+          above = 1;
+        }
+      ];
+    }
     {
       type = "entity";
       entity = "input_boolean.storm_protection";
@@ -342,7 +362,7 @@ in
           "night"
         ];
       })
-      (subheading "mdi:window-shutter" "Window & shutters" "shutters" [
+      (subheading "mdi:blinds" "Window & blinds" "blinds" [
         (badge "input_boolean.storm_protection" {
           icon = "mdi:weather-windy";
           state_content = [
@@ -352,7 +372,7 @@ in
           tap_action.action = "toggle";
         })
       ])
-      shutterTile
+      blindTile
       # opens the window for 5-10 minutes, the icon lights up until it is
       # closed again
       (

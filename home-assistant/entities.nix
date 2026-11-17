@@ -11,7 +11,19 @@ rec {
     "person.charly"
   ];
   nightMode = "input_boolean.night_mode";
-  weather = "weather.forecast_home";
+  weather = "weather.meteoswiss";
+  # the rest of the MeteoSwiss integration (custom_components/meteoswiss): the
+  # nearest station's 10-minute measurements, the forecast maxima and the
+  # official warnings for the home location
+  meteoswiss = {
+    gust = "sensor.meteoswiss_wind_gust";
+    gustMax2h = "sensor.meteoswiss_wind_gust_max_2h";
+    gustMax24h = "sensor.meteoswiss_wind_gust_max_24h";
+    radiation = "sensor.meteoswiss_global_radiation";
+    warningLevel = "sensor.meteoswiss_warning_level";
+    windWarning = "binary_sensor.meteoswiss_wind_warning";
+    thunderstormWarning = "binary_sensor.meteoswiss_thunderstorm_warning";
+  };
 
   # light groups, one per room
   lights = {
@@ -92,14 +104,14 @@ rec {
   };
 
   window = "cover.living_room_window";
-  shutters = rec {
+  blinds = rec {
     top = [
-      "cover.living_room_shutter_top_left"
-      "cover.living_room_shutter_top_right"
+      "cover.living_room_blind_top_left"
+      "cover.living_room_blind_top_right"
     ];
     bottom = [
-      "cover.living_room_shutter_bottom_left"
-      "cover.living_room_shutter_bottom_right"
+      "cover.living_room_blind_bottom_left"
+      "cover.living_room_blind_bottom_right"
     ];
     all = top ++ bottom;
   };
@@ -115,7 +127,7 @@ rec {
     lightPreset = "script.light_preset";
     roborockClean = "script.roborock_clean";
     roborockUpstairs = "script.roborock_upstairs";
-    shutterPreset = "script.shutter_preset";
+    blindPreset = "script.blind_preset";
     sunrise = "script.bedroom_sunrise";
   };
 
@@ -246,9 +258,9 @@ rec {
     };
   };
 
-  # the living room shutter layouts of script.shutter_preset, 100 is fully open
+  # the living room blind layouts of script.blind_preset, 100 is fully open
   # for both the position and the blades
-  shutterPresets =
+  blindPresets =
     let
       pair = position: tilt: { inherit position tilt; };
     in

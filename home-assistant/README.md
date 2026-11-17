@@ -23,13 +23,20 @@ stay there and are covered by the regular Home Assistant backups: integrations
 and devices, area/label/icon assignments (entity registry), the dashboards
 that are not in `dashboards/`, HACS.
 
+Weather, gusts and the official warnings come from the MeteoSwiss custom
+integration (`custom_components/meteoswiss`, its own repository
+`ha-meteoswiss`, deployed with its `scripts/deploy.sh`); `entities.nix` has its
+entity ids. The living room blinds are external venetian blinds on the
+south-west façade (232°), driven by `cover_time_based` over the relay
+modules.
+
 ## Writing packages
 
 Package files are functions of `{ lib, entities, ... }` plus everything in
 `lib.nix`, and take what they use:
 
 - `entities.nix` has the entity ids used in more than one place (the phone,
-  room lights, shutters, scripts, ...). Renaming a device in home assistant
+  room lights, blinds, scripts, ...). Renaming a device in home assistant
   only needs a change there.
 - `lib.nix` has the building blocks: conditions (`state`, `template`,
   `isHome`, ...), actions (`call`, `notify`, `lightPreset`, `startScript`,
@@ -63,10 +70,10 @@ the theme, plus one custom tile feature, `custom:home-feature` in
 `www/home-card.js`. That's a plain web component without a build step, styled
 only with the theme's variables. It has two kinds:
 
-- a segmented control for the light presets, the shutter layouts and the
-  Roborock programs, which marks the preset the lights or shutters are at
+- a segmented control for the light presets, the blind layouts and the
+  Roborock programs, which marks the preset the lights or blinds are at
   (using the tables in `entities.nix`)
-- the four living room shutters drawn as a window
+- the four living room blinds drawn as a window
 
 Nothing on the view appears or disappears when something is switched, so the
 page doesn't move; only alerts (storm, Roborock stuck, low batteries) add

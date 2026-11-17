@@ -69,7 +69,7 @@ in
     {
       id = "1792500000015";
       alias = "Heating: Air the Living Room";
-      description = "In the heating period (Met.no mean below ${toString heatingLimit} °C over the next 24 h) airs the living room at the three airing times: opens the window fully for 5 minutes below 5 °C outside, 10 otherwise, then closes it (script.airing). Also runs while nobody is home if someone was home at some point in the last ${toString recentlyHomeHours} h; skipped after longer absences, in night mode, when it rains or storm protection is on and while the window is open or was closed less than an hour ago (just aired).";
+      description = "In the heating period (MeteoSwiss forecast mean below ${toString heatingLimit} °C over the next 24 h) airs the living room at the three airing times: opens the window fully for 5 minutes below 5 °C outside, 10 otherwise, then closes it (script.airing). Also runs while nobody is home if someone was home at some point in the last ${toString recentlyHomeHours} h; skipped after longer absences, in night mode, when it rains or storm protection is on and while the window is open or was closed less than an hour ago (just aired).";
       triggers =
         map
           (n: {

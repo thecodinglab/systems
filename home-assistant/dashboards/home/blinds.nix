@@ -9,9 +9,9 @@ let
     onTap
     performAction
     ;
-  inherit (entities) scripts shutters;
+  inherit (entities) scripts blinds;
 
-  shutter =
+  blind =
     name: entity:
     half {
       inherit entity name;
@@ -25,34 +25,34 @@ let
     name: icon: key:
     half (
       {
-        entity = scripts.shutterPreset;
+        entity = scripts.blindPreset;
         inherit name icon;
         hide_state = true;
       }
-      // onTap (performAction scripts.shutterPreset { data.preset = key; })
+      // onTap (performAction scripts.blindPreset { data.preset = key; })
     );
 
-  resetScript = "script.shutter_reset";
+  resetScript = "script.blind_reset";
 in
 {
-  title = "Shutters";
-  path = "shutters";
-  icon = "mdi:window-shutter";
+  title = "Blinds";
+  path = "blinds";
+  icon = "mdi:blinds";
   type = "sections";
   max_columns = 2;
   subview = true;
   back_path = navigate "home";
   sections = [
     (section [
-      (heading "mdi:window-shutter" "Shutters")
-      (shutter "Top left" (builtins.elemAt shutters.top 0))
-      (shutter "Top right" (builtins.elemAt shutters.top 1))
-      (shutter "Bottom left" (builtins.elemAt shutters.bottom 0))
-      (shutter "Bottom right" (builtins.elemAt shutters.bottom 1))
-      (preset "Open" "mdi:window-shutter-open" "open")
+      (heading "mdi:blinds" "Blinds")
+      (blind "Top left" (builtins.elemAt blinds.top 0))
+      (blind "Top right" (builtins.elemAt blinds.top 1))
+      (blind "Bottom left" (builtins.elemAt blinds.bottom 0))
+      (blind "Bottom right" (builtins.elemAt blinds.bottom 1))
+      (preset "Open" "mdi:blinds-open" "open")
       (preset "Shade" "mdi:sun-angle-outline" "shade")
       (preset "Privacy" "mdi:eye-off-outline" "privacy")
-      (preset "Closed" "mdi:window-shutter" "closed")
+      (preset "Closed" "mdi:blinds" "closed")
       (heading "mdi:window-open-variant" "Window")
       (full {
         entity = entities.window;
@@ -63,11 +63,11 @@ in
     ])
     (section [
       (heading "mdi:tune-variant" "Calibration")
-      (markdown "Positions are estimated from travel time. If a shutter drifts out of sync, reset them all: they close fully and start counting from zero.")
+      (markdown "Positions are estimated from travel time. If a blind drifts out of sync, reset them all: they close fully and start counting from zero.")
       (full (
         {
           entity = resetScript;
-          name = "Reset shutters";
+          name = "Reset blinds";
           icon = "mdi:restore";
           hide_state = true;
         }

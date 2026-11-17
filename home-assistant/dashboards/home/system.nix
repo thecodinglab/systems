@@ -86,7 +86,7 @@ in
       (battery "iPhone" "sensor.iphone_battery_level")
     ])
     (section [
-      (heading "mdi:tune-variant" "Shutter calibration")
+      (heading "mdi:tune-variant" "Blind calibration")
       {
         type = "custom:cover-time-based-card";
         grid_options.columns = 12;
