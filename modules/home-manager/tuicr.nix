@@ -206,8 +206,10 @@ in
       "tuicr/themes/system-${appearance}.tmTheme".source = syntaxTheme appearance p;
     }) appearances;
 
-    # /tuicr: the agent opens a review pane next to itself (herdr or tmux)
-    # and reads the comments left there back
+    # /tuicr: the agent opens a review pane next to itself (tmux)
+    # and reads the comments left there back. The skill's split-pane mode
+    # does not work under devtools; there the skill runs tuicr in the
+    # agent's own pane
     custom.claude-code.skills.tuicr = "${pkgs.tuicr.src}/skills/tuicr";
   };
 }

@@ -421,16 +421,16 @@
   colorscheme = "system";
 
   extraConfigLua = ''
-    -- tmux-navigator only knows tmux, inside herdr move to the herdr pane
+    -- tmux-navigator only knows tmux; inside devtools move to the devtools pane
     -- next to the editor once there is no split left in that direction
-    if vim.env.HERDR_ENV == "1" and vim.env.TMUX == nil then
+    if vim.env.DEVTOOLS_PANE ~= nil and vim.env.TMUX == nil then
       vim.g.tmux_navigator_no_mappings = 1
       for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
         local function navigate()
           local win = vim.api.nvim_get_current_win()
           vim.cmd.wincmd(key)
           if vim.api.nvim_get_current_win() == win then
-            vim.system({ vim.env.HERDR_BIN_PATH or "herdr", "pane", "focus", "--direction", direction, "--current" })
+            vim.system({ "devtools", "pane", "focus", "--direction", direction })
           end
         end
         vim.keymap.set("n", "<C-" .. key .. ">", navigate, { silent = true })

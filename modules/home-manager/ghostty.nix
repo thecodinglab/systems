@@ -70,6 +70,10 @@ in
 
         quit-after-last-window-closed = true;
 
+        # a bell (an agent that wants an answer) plays the system sound and
+        # marks the window and its title; the default makes no sound
+        bell-features = "system,attention,title";
+
         # Text gets a margin from the window edge rather than running into
         # it, and the slack left over by the cell grid is shared out round
         # all four sides instead of piling up on the right and the bottom.

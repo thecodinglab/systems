@@ -18,6 +18,18 @@ in
 
   home-manager.users.florian = ./home.nix;
 
+  # devtools dials the macbook on demand (programs.devtools.machines); the
+  # desktop is known from profiles/darwin/workstation.nix. The key is
+  # provisional (E5): read from the desktop user's known_hosts, not yet
+  # confirmed by E5 against the macbook itself
+  programs.ssh.knownHosts.macbook = {
+    hostNames = [
+      "macbook"
+      "192.168.48.11"
+    ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHTXvGcxsLgHcVUNxTUzjasByQS8tmDLkzJz4/vWuMw";
+  };
+
   nix.linux-builder.enable = true;
 
   # remote builder for the desktop (nix.buildMachines in hosts/desktop): its

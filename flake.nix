@@ -141,6 +141,7 @@
         sops = sops-nix.homeManagerModules.sops;
         stylix = stylix.homeModules.stylix;
         shell = inputs.shell.homeModules.default;
+        devtools = inputs.devtools.homeModules.default;
       };
 
       # adding a host: create hosts/<name>/default.nix and list its name here

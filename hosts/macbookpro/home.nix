@@ -7,11 +7,11 @@
     ../../home/florian/writing.nix
   ];
 
-  # the devtools switchers on the other machines list this machine's
-  # projects; "macbook" is its ssh alias
-  custom.devtools.serve = {
-    enable = true;
-    name = "macbook";
+  # the other machines, by ssh alias, dialled on demand (F12); the others
+  # know this one as "macbook"
+  programs.devtools.machines = {
+    desktop = { };
+    macmini = { };
   };
 
   custom.omniwm = {

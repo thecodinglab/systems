@@ -1,11 +1,9 @@
 {
   chromium = import ./chromium.nix;
   claude-code = import ./claude-code.nix;
-  devtools = import ./devtools.nix;
   fzf = import ./fzf.nix;
   ghostty = import ./ghostty.nix;
   git = import ./git.nix;
-  herdr = import ./herdr.nix;
   hyprland = import ./hyprland.nix;
   neovim = import ./neovim.nix;
   omniwm = import ./omniwm;

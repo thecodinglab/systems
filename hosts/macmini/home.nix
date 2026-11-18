@@ -1,18 +1,21 @@
-{ ... }:
+{ config, ... }:
 {
   imports = [
     ../../home/florian
     ../../home/florian/darwin.nix
   ];
 
-  # the devtools switchers on the other machines list this machine's projects
-  custom.devtools.serve = {
-    enable = true;
-    name = "macmini";
+  # the other machines, by ssh alias, dialled on demand (F12); nothing is
+  # held open while nobody sits here
+  programs.devtools.machines = {
+    desktop = { };
+    macbook = { };
   };
 
   # ssh keys come from the machine you log in from, see the ssh module
   custom.ssh.forwardedAgents.enable = true;
+  # and so do the keys of the devtools panes, which the server starts
+  programs.devtools.server.environment.SSH_AUTH_SOCK = config.custom.ssh.forwardedAgents.socket;
 
   # the proxy runs right here (./default.nix), no need to ask 1password
   custom.claude-code.proxy = {

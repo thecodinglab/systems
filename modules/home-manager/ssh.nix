@@ -30,9 +30,10 @@ let
       "${home}/.1password/agent.sock";
 
   # Logged in over ssh, a key should come from the machine in front of you, so
-  # its 1password asks there. The panes of the launchd herdr/tmux live in the
-  # gui session (for the keychain) and don't inherit a login's SSH_AUTH_SOCK,
-  # but a unix socket doesn't care about the security session. So every login
+  # its 1password asks there. The panes of the launchd devtools server and the
+  # launchd tmux live in the gui session (for the keychain) and don't inherit
+  # a login's SSH_AUTH_SOCK, but a unix socket doesn't care about the security
+  # session. So every login
   # registers its forwarded agent (registerAgent below), and a proxy at a
   # fixed path, which everything here uses, hands each connection to the
   # newest one still alive, dropping dead ones on the way, and to the local

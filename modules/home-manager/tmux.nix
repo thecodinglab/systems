@@ -159,16 +159,57 @@ in
       };
     };
 
-    # never let an ssh login start the server, it would be stuck in the ssh
-    # security session; -N connects to a running server only
-    programs.zsh.initContent = lib.mkIf (isDarwin && config.custom.zsh.enable) ''
+    # R3: never a tmux client inside a pane of devtools, tmux or herdr, also not
+    # across ssh. On darwin, also never let an ssh login start the server: it
+    # would be stuck in the ssh security session; -N connects to a running
+    # server only. The libghostty answer of a herdr pane is provisional (E6:
+    # herdr's own answer is not recorded yet)
+    programs.zsh.initContent = lib.mkIf config.custom.zsh.enable ''
       tmux() {
+        case "''${1:-new}" in
+          new|new-s*|a|at*)
+            if [ -z "$TMUX" ]; then
+              local outer=""
+              if [ -n "$DEVTOOLS_PANE" ]; then outer=devtools; elif _mux_outer; then outer=$_mux_outer_name; fi
+              if [ -n "$outer" ]; then
+                print -u2 "tmux: refused. This terminal is a $outer pane; a multiplexer inside it would nest."
+                return 1
+              fi
+            fi ;;
+        esac
+      ${lib.optionalString isDarwin ''
         if [[ -n $SSH_CONNECTION && -z $TMUX ]] && ! command tmux -N start-server 2>/dev/null; then
           print -u2 "tmux: no server running, refusing to start one from ssh (the keychain would be locked)"
           print -u2 "tmux: start it in the gui session: launchctl kickstart gui/$UID/${agentLabel}"
           return 1
         fi
+      ''}
         command tmux "$@"
+      }
+      # asks the terminal for its name (XTVERSION). A devtools pane answers
+      # "devtools <version> <host>", a tmux pane "tmux <version>", a herdr pane
+      # "libghostty". Sets _mux_outer_name and returns 0 when the terminal is a
+      # pane of one of them
+      _mux_outer() {
+        typeset -g _mux_outer_name=""
+        [ -t 0 ] && [ -t 1 ] || return 1
+        local old reply
+        old=$(stty -g) || return 1
+        stty raw -echo min 0 time 5
+        printf '\033[>q' > /dev/tty
+        reply=$(dd bs=64 count=1 2>/dev/null < /dev/tty)
+        stty "$old"
+        _mux_name "$reply"
+      }
+      # maps an XTVERSION answer to the multiplexer that gave it; no terminal
+      # is touched, so the acceptance of P3-06 can call it with fixed answers
+      _mux_name() {
+        case "$1" in
+          *'>|devtools'*) _mux_outer_name=devtools ;;
+          *'>|tmux '*) _mux_outer_name=tmux ;;
+          *'>|libghostty'*) _mux_outer_name=herdr ;;
+          *) _mux_outer_name=""; return 1 ;;
+        esac
       }
     '';
 

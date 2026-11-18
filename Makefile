@@ -59,9 +59,26 @@ else
 	nixos-rebuild build $(NIXOS_REBUILD_FLAGS) --flake ".#$(HOST)" $(FLAKE_FLAGS)
 endif
 
+# launchd has no keep-old: home-manager unloads and loads an agent whose plist
+# changed, which ends the devtools server and every pane on this mac. The plist
+# of the build lies in its home-manager generation, LaunchAgents/<label>.plist
+DEVTOOLS_PLIST := org.nix-community.home.devtools-server.plist
+
 switch: check-host
 ifeq ($(PLATFORM),darwin)
 	darwin-rebuild build --flake ".#$(HOST)" $(FLAKE_FLAGS)
+	@new=""; \
+	for g in $$(nix-store -qR "$$(readlink -f result)" | grep -- '-home-manager-generation$$'); do \
+	  if [ -f "$$g/LaunchAgents/$(DEVTOOLS_PLIST)" ]; then new="$$g/LaunchAgents/$(DEVTOOLS_PLIST)"; fi; \
+	done; \
+	old="$$HOME/Library/LaunchAgents/$(DEVTOOLS_PLIST)"; \
+	if [ -n "$$new" ] && [ -f "$$old" ] && ! cmp -s "$$new" "$$old"; then \
+	  n=$$(devtools server status --json 2>/dev/null | jq -r '.panes | if type == "array" then length else . end' 2>/dev/null); \
+	  echo "this switch restarts the devtools server and ends its $${n:-0} panes"; \
+	  printf 'activate anyway? [y/N] '; \
+	  read -r answer; \
+	  case "$$answer" in y|Y|yes) ;; *) echo "not activated"; exit 1 ;; esac; \
+	fi
 	sudo -H nix-env --profile $(SYSTEM_PROFILE) --set "$$(readlink -f result)"
 	sudo -H ./result/sw/bin/darwin-rebuild activate
 else

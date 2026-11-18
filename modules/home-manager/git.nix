@@ -60,7 +60,7 @@
           ssh = {
             # op-ssh-sign asks the local 1password app; with forwarded agents
             # ssh-keygen signs through their proxy, see the ssh module, also
-            # where SSH_AUTH_SOCK is something else (herdr popups, tmux panes
+            # where SSH_AUTH_SOCK is something else (devtools panes, tmux panes
             # created from an ssh login)
             program =
               if config.custom.ssh.forwardedAgents.enable then

@@ -31,6 +31,13 @@
         };
       };
 
+      # tmux.enable installs devtools (modules/home-manager/tmux.nix) and
+      # this host runs no devtools server, so tmux is its default backend
+      programs.devtools = {
+        enable = true;
+        multiplexer = "tmux";
+      };
+
       programs.btop.enable = true;
     }
   );

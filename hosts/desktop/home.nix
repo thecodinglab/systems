@@ -7,10 +7,11 @@
     ../../home/florian/writing.nix
   ];
 
-  # the devtools switchers on the macs list this machine's projects
-  custom.devtools.serve = {
-    enable = true;
-    name = "desktop";
+  # the other machines, by ssh alias (F12): a permanent connection to the
+  # mini, the macbook dialled on demand
+  programs.devtools.machines = {
+    macmini.connect = true;
+    macbook = { };
   };
 
   # AirPods Max, toggled with Super+B

@@ -1,6 +1,7 @@
 # cross-platform core of the user environment; platform and feature specific
 # parts live next to it and are picked per host in hosts/<name>/home.nix
 {
+  config,
   lib,
   pkgs,
   ...
@@ -40,7 +41,6 @@ in
   custom = {
     fzf.enable = true;
     tmux.enable = true;
-    herdr.enable = true;
     git.enable = true;
     ssh.enable = true;
     neovim.enable = true;
@@ -88,6 +88,38 @@ in
   };
 
   stylix.enable = true;
+
+  programs.devtools = {
+    enable = true;
+    # the five tokens the look takes from the palette (F11); without them
+    # devtools draws with the terminal's 16 colours only
+    colors =
+      let
+        p = import ../../modules/home-manager/theme/palette.nix;
+        both = name: {
+          light = "#${p.light.${name}}";
+          dark = "#${p.dark.${name}}";
+        };
+      in
+      {
+        strong = both "base06";
+        muted = both "base04";
+        raised = both "base02";
+        warning = both "base09";
+        selection = {
+          light = "#${p.selection.light}";
+          dark = "#${p.selection.dark}";
+        };
+      };
+    server = {
+      enable = true;
+      # no store paths here: the unit text must not change on updates
+      environment = {
+        SHELL = "${config.home.profileDirectory}/bin/zsh";
+        LANG = "en_US.UTF-8";
+      };
+    };
+  };
 
   programs = {
     bat.enable = true;

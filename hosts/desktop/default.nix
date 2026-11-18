@@ -209,6 +209,10 @@ in
 
     shell = pkgs.zsh;
 
+    # the devtools server is a user unit wanted by default.target: without
+    # lingering it would start at the first login and end with the last
+    linger = true;
+
     openssh.authorizedKeys.keys = [
       keys.personal
     ]
@@ -253,6 +257,16 @@ in
         "192.168.48.124"
       ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICrxTjFdOR/HM9EnaHa5DUDbcLN3MbDnPIvK4LVh7TwV";
+    };
+    # devtools dials the macbook on demand (programs.devtools.machines). The
+    # key is provisional (E5): read from this user's known_hosts, not yet
+    # confirmed by E5 against the macbook itself
+    knownHosts.macbook = {
+      hostNames = [
+        "macbook"
+        "192.168.48.11"
+      ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHTXvGcxsLgHcVUNxTUzjasByQS8tmDLkzJz4/vWuMw";
     };
   };
 

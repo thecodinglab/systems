@@ -15,6 +15,17 @@ in
 
   home-manager.users.florian = ./home.nix;
 
+  # devtools dials the mini on demand (programs.devtools.machines); the desktop
+  # is known from profiles/darwin/workstation.nix. The key is provisional (E5):
+  # the one hosts/desktop pins for the mini, not yet read by E5 from here
+  programs.ssh.knownHosts.macmini = {
+    hostNames = [
+      "macmini"
+      "192.168.48.124"
+    ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICrxTjFdOR/HM9EnaHa5DUDbcLN3MbDnPIvK4LVh7TwV";
+  };
+
   system.defaults.dock.autohide = true;
   system.defaults.dock.autohide-delay = 0.2;
 
