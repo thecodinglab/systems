@@ -1,7 +1,7 @@
 {
     "apple-design-skill": {
         "cargoLock": null,
-        "date": "2026-10-28",
+        "date": "2026-11-13",
         "extract": null,
         "name": "apple-design-skill",
         "passthru": null,
@@ -13,12 +13,12 @@
             "name": null,
             "owner": "dickwu",
             "repo": "apple-design-skill",
-            "rev": "ff4ebddf0488598723a82bfdce1afb04de0b1c44",
-            "sha256": "sha256-62qSK+EyUmKlNSNAVAj7nd1FprMzB72myZLbQ7UOKII=",
+            "rev": "91e15664896f6f27e75dcf1414d1226cb95fa167",
+            "sha256": "sha256-uNY1fW4cp5KiYFV4z5LMTyJftyt/5AEiJdcu6gImcwE=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "ff4ebddf0488598723a82bfdce1afb04de0b1c44"
+        "version": "91e15664896f6f27e75dcf1414d1226cb95fa167"
     },
     "claude-code-aarch64-darwin": {
         "cargoLock": null,
@@ -29,11 +29,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-5D1X3wzjg+CEsi8dT7e+bgvbHUC0zrBC88+6ltXsRo8=",
+            "sha256": "sha256-cC5c5EdeBEbnp6Hu8UjyUfXl5HsJArauLnsA89Qm8qI=",
             "type": "url",
-            "url": "https://downloads.claude.ai/claude-code-releases/2.1.316/darwin-arm64/claude.zst"
+            "url": "https://downloads.claude.ai/claude-code-releases/2.1.329/darwin-arm64/claude.zst"
         },
-        "version": "2.1.316"
+        "version": "2.1.329"
     },
     "claude-code-x86_64-linux": {
         "cargoLock": null,
@@ -44,11 +44,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-QQh2QQBnXAdz2YAR1QkfQn8w7r/FZ6qfG19NmlRjChA=",
+            "sha256": "sha256-5eUqUM+rijVzpIloRvSZSI2CKzTomkmU2LyZCq8oRsQ=",
             "type": "url",
-            "url": "https://downloads.claude.ai/claude-code-releases/2.1.316/linux-x64/claude.zst"
+            "url": "https://downloads.claude.ai/claude-code-releases/2.1.329/linux-x64/claude.zst"
         },
-        "version": "2.1.316"
+        "version": "2.1.329"
     },
     "claude-desktop": {
         "cargoLock": null,
@@ -59,11 +59,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-T89ljg/IlTkKuCWTKHKB37ziYbDsPqkAYOgti/v9eoQ=",
+            "sha256": "sha256-uWIIsgfkULdA99vjBPYHf+2A5/PTfd1UWZHE6CAVZM8=",
             "type": "url",
-            "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_4.4212.0_amd64.deb"
+            "url": "https://downloads.claude.ai/claude-desktop/apt/stable/pool/main/c/claude-desktop/claude-desktop_5.11492.5_amd64.deb"
         },
-        "version": "4.4212.0"
+        "version": "5.11492.5"
     },
     "codex-aarch64-darwin": {
         "cargoLock": null,
@@ -74,11 +74,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-VaRAy1eflwq+fHmrGB5UsOpMQZvpnzM7vYaO66ycIfA=",
+            "sha256": "sha256-WMiAMuxEbnKSLZEdjwN3MQLaIMFqYFnPIfZ0S85X8hA=",
             "type": "url",
-            "url": "https://github.com/openai/codex/releases/download/rust-v0.166.0/codex-package-aarch64-apple-darwin.tar.gz"
+            "url": "https://github.com/openai/codex/releases/download/rust-v0.171.0/codex-package-aarch64-apple-darwin.tar.gz"
         },
-        "version": "0.166.0"
+        "version": "0.171.0"
     },
     "codex-x86_64-linux": {
         "cargoLock": null,
@@ -89,11 +89,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-HUSyi8SsmTfX01MiZLqmilB842SVag1Ou4VvMxze4lQ=",
+            "sha256": "sha256-g5HWd1dJa/0UiT7KbL8MlplL8mJ1Zv8fAY9wYAye9rM=",
             "type": "url",
-            "url": "https://github.com/openai/codex/releases/download/rust-v0.166.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
+            "url": "https://github.com/openai/codex/releases/download/rust-v0.171.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
         },
-        "version": "0.166.0"
+        "version": "0.171.0"
     },
     "helium": {
         "cargoLock": null,
@@ -104,11 +104,11 @@
         "pinned": false,
         "src": {
             "name": null,
-            "sha256": "sha256-N1nqTpW/TvSgpkd+PXNXaw8DkG8ugDVydb/Gysr7X6w=",
+            "sha256": "sha256-5BWJi1G/HEHWvX1EAnd2yZvzbZ4O50FsHYvw3lO26gw=",
             "type": "url",
-            "url": "https://github.com/imputnet/helium-linux/releases/download/0.20.3.1/helium-0.20.3.1-x86_64_linux.tar.xz"
+            "url": "https://github.com/imputnet/helium-linux/releases/download/0.22.1.1/helium-0.22.1.1-x86_64_linux.tar.xz"
         },
-        "version": "0.20.3.1"
+        "version": "0.22.1.1"
     },
     "zen-browser": {
         "cargoLock": null,
@@ -118,10 +118,10 @@
         "passthru": null,
         "pinned": false,
         "src": {
-            "sha256": "sha256-Q7WIxxPfuwHyAu2FWTMz7vOJrpaUoyUgmMriYpX/GfA=",
+            "sha256": "sha256-Tcxs/73YNS8B1EaA4W25qlVTJEvJcLwgDoqWWs/Kt+A=",
             "type": "tarball",
-            "url": "https://github.com/zen-browser/desktop/releases/download/1.24b/zen.linux-x86_64.tar.xz"
+            "url": "https://github.com/zen-browser/desktop/releases/download/1.24.3b/zen.linux-x86_64.tar.xz"
         },
-        "version": "1.24b"
+        "version": "1.24.3b"
     }
 }
