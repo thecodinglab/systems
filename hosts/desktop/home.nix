@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
   imports = [
     ../../home/florian
@@ -13,6 +13,12 @@
     macmini.connect = true;
     macbook = { };
   };
+
+  # ssh keys come from the machine you log in from, see the ssh module: from
+  # the macbook this one may well be locked
+  custom.ssh.forwardedAgents.enable = true;
+  # and so do the keys of the devtools panes, which the server starts
+  programs.devtools.server.environment.SSH_AUTH_SOCK = config.custom.ssh.forwardedAgents.socket;
 
   # AirPods Max, toggled with Super+B
   custom.hyprland.headphones = "90:62:3F:9B:23:F7";

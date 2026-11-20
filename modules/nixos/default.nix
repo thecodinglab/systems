@@ -7,4 +7,5 @@
   gaming = import ./gaming.nix;
   nvidia = import ./nvidia.nix;
   proxy = import ./proxy.nix;
+  ssh-agents = import ../shared/ssh-agents.nix;
 }

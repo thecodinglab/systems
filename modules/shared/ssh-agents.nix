@@ -1,6 +1,6 @@
 # /etc/ssh/sshrc for the home-manager users with custom.ssh.forwardedAgents
-# (modules/home-manager/ssh.nix): sshd runs it with /bin/sh in every login's
-# environment, sftp/scp included, as long as the user has no ~/.ssh/rc
+# (modules/home-manager/ssh.nix), on nixos and darwin: sshd runs it with /bin/sh in
+# every login's environment, sftp/scp included, as long as the user has no ~/.ssh/rc
 { config, lib, ... }:
 let
   users = lib.filter (user: user.custom.ssh.forwardedAgents.enable or false) (

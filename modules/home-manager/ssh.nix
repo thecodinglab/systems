@@ -30,10 +30,11 @@ let
       "${home}/.1password/agent.sock";
 
   # Logged in over ssh, a key should come from the machine in front of you, so
-  # its 1password asks there. The panes of the launchd devtools server and the
-  # launchd tmux live in the gui session (for the keychain) and don't inherit
-  # a login's SSH_AUTH_SOCK, but a unix socket doesn't care about the security
-  # session. So every login
+  # its 1password asks there, not the one here, which may be locked. The panes
+  # of the devtools server (and on macOS of the tmux server) are started by
+  # launchd/systemd and don't inherit a login's SSH_AUTH_SOCK; on macOS they
+  # even live in the gui session (for the keychain), but a unix socket doesn't
+  # care about the security session. So every login
   # registers its forwarded agent (registerAgent below), and a proxy at a
   # fixed path, which everything here uses, hands each connection to the
   # newest one still alive, dropping dead ones on the way, and to the local
@@ -75,7 +76,7 @@ let
     '';
   };
 
-  # Run by /etc/ssh/sshrc (the ssh-agents darwin module) in every login's
+  # Run by /etc/ssh/sshrc (modules/shared/ssh-agents.nix) in every login's
   # environment, sftp/scp included. Not ~/.ssh/rc: sshd runs that through the
   # login shell, whose zshenv has already put the proxy into SSH_AUTH_SOCK,
   # and skips it for sftp. It must not print, that would end up in scp/sftp
@@ -109,7 +110,7 @@ in
     forwardedAgents = {
       enable = lib.mkEnableOption ''
         taking ssh keys from the agents forwarded by ssh logins, the newest
-        login still connected first, the local 1password agent last (macOS)
+        login still connected first, the local 1password agent last
       '';
       socket = lib.mkOption {
         type = lib.types.str;
@@ -117,7 +118,7 @@ in
         default = "${home}/.ssh/agent.sock";
         description = ''
           The proxy's socket, for SSH_AUTH_SOCK in environments that don't get
-          the session variables (launchd agents).
+          the session variables (launchd agents, systemd user services).
         '';
       };
       registerScript = lib.mkOption {
@@ -144,14 +145,21 @@ in
           settings = {
             "*".IdentityAgent = ''"${agent}"'';
 
-            # workstations
-            desktop = florian "192.168.48.10";
+            # workstations; the agent is forwarded so the keys come from the
+            # machine in front of you, see forwardedAgents. A machine with
+            # forwarded agents forwards its proxy, so the keys follow a chain
+            # (macbook -> desktop -> mini), but two such machines must never
+            # forward to each other: each proxy would hand the connection to
+            # the other, round and round. Hence the mini takes agents from
+            # everyone (a login of the mini to itself is skipped by
+            # registerAgent), the desktop only from machines without forwarded
+            # agents (the macbook)
+            desktop =
+              florian "192.168.48.10" // lib.optionalAttrs (!hub.enable) { ForwardAgent = ''"${agent}"''; };
             macbook = florian "192.168.48.11";
-            # forwarded so its keys come from the machine in front of you, see
-            # forwardedAgents; not from the mini itself, it would hand the
-            # proxy to itself
-            macmini =
-              florian "192.168.48.124" // lib.optionalAttrs (!hub.enable) { ForwardAgent = ''"${agent}"''; };
+            macmini = florian "192.168.48.124" // {
+              ForwardAgent = ''"${agent}"'';
+            };
 
             server = {
               HostName = "192.168.1.113";
@@ -170,24 +178,28 @@ in
       }
 
       (lib.mkIf hub.enable {
-        assertions = [
-          {
-            assertion = isDarwin;
-            message = "custom.ssh.forwardedAgents only knows macOS (launchd, 1password's socket path)";
-          }
-        ];
-
         # not inside an ssh login, which keeps the agent it forwards itself
         home.sessionVariablesExtra = ''
           [ -n "''${SSH_CONNECTION-}" ] || export SSH_AUTH_SOCK=${lib.escapeShellArg hub.socket}
         '';
 
-        launchd.agents.ssh-agent-proxy = {
+        launchd.agents.ssh-agent-proxy = lib.mkIf isDarwin {
           enable = true;
           config = {
             ProgramArguments = [ (lib.getExe agentProxy) ];
             RunAtLoad = true;
             KeepAlive = true;
+          };
+        };
+
+        # with lingering (hosts/desktop) up from boot, before anyone logs in
+        systemd.user.services.ssh-agent-proxy = lib.mkIf (!isDarwin) {
+          Unit.Description = "ssh agent proxy: forwarded agents first, then 1password";
+          Install.WantedBy = [ "default.target" ];
+          Service = {
+            ExecStart = lib.getExe agentProxy;
+            Restart = "always";
+            RestartSec = 1;
           };
         };
       })
