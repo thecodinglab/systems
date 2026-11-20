@@ -63,9 +63,11 @@ in
       "chatgpt"
     ];
     masApps = {
-      "Pages" = 409201541;
-      "Numbers" = 409203825;
+      "Pages" = 361309726;
+      "Numbers" = 361304891;
       "Slack" = 803453959;
+      "Wireguard" = 1451685025;
+      "Pixelmator Pro" = 6746662575;
     };
   };
 }
