@@ -182,7 +182,10 @@ in
 
   # `podman compose` (and `docker compose` through the alias) delegates to
   # this provider
-  environment.systemPackages = [ pkgs.docker-compose ];
+  environment.systemPackages = [
+    pkgs.docker-compose
+    pkgs.nh
+  ];
 
   # tools that talk to the docker API directly (docker-compose, testcontainers,
   # ...) use the rootless podman socket; it is socket activated per user

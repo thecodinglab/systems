@@ -1,6 +1,6 @@
 # cloudflared as a launchd daemon running one locally-managed tunnel
 # (counterpart of the nixos module services.cloudflared, which is systemd
-# only). The tunnel is created by hand, see docs/macmini-cloudflare-tunnel.md;
+# only). The tunnel is created by hand (`cloudflared tunnel create --cred-file`);
 # its credentials are only read at runtime, so they never end up in the store.
 {
   config,
@@ -23,6 +23,7 @@ let
 
   # yaml is a superset of json; only the path of the credentials is in here
   configFile = format.generate "cloudflared.json" {
+    inherit (cfg) tunnel;
     credentials-file = cfg.credentialsFile;
     metrics = "127.0.0.1:20241";
     ingress =
@@ -36,8 +37,6 @@ let
       ) cfg.ingress
       ++ [ { service = "http_status:404"; } ];
   };
-
-  uuid = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
 in
 {
   options.services.cloudflared = {
@@ -52,13 +51,18 @@ in
       description = "User the tunnel runs as; it has to be able to read the credentials.";
     };
 
+    tunnel = mkOption {
+      type = types.strMatching "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+      example = "00000000-0000-0000-0000-000000000000";
+      description = "Id of the tunnel, the TunnelID of the credentials (not a secret).";
+    };
+
     credentialsFile = mkOption {
       type = types.strMatching "/.*";
       example = "/Users/florian/.config/cloudflared/macmini.json";
       description = ''
         Credentials of the tunnel (`cloudflared tunnel create --cred-file`), read
-        when the daemon starts, which refuses to run without it. The tunnel id
-        is taken from it, so it alone decides which tunnel is run.
+        when the daemon starts, which refuses to run without it.
       '';
     };
 
@@ -98,23 +102,15 @@ in
     '';
 
     launchd.daemons.cloudflared = {
-      script = ''
-        set -eu
-        credentials=${lib.escapeShellArg cfg.credentialsFile}
-        if [ ! -s "$credentials" ]; then
-          echo "$credentials is missing, refusing to start" >&2
-          exit 1
-        fi
-
-        # errors of jq are dropped, they could quote the secret
-        if ! tunnel=$(${lib.getExe pkgs.jq} -er '.TunnelID | strings | select(test("${uuid}"))' "$credentials" 2>/dev/null); then
-          echo "$credentials has no valid TunnelID, refusing to start" >&2
-          exit 1
-        fi
-
-        exec ${lib.getExe cfg.package} tunnel --no-autoupdate --config ${configFile} run "$tunnel"
-      '';
       serviceConfig = {
+        ProgramArguments = [
+          (lib.getExe cfg.package)
+          "tunnel"
+          "--no-autoupdate"
+          "--config"
+          "${configFile}"
+          "run"
+        ];
         UserName = cfg.user;
         RunAtLoad = true;
         KeepAlive = true;

@@ -57,6 +57,7 @@
     systemPackages = [
       pkgs.coreutils
       pkgs.neovim-dev
+      pkgs.nh
     ];
 
     pathsToLink = [

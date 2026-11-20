@@ -159,11 +159,9 @@ in
       };
     };
 
-    # R3: never a tmux client inside a pane of devtools, tmux or herdr, also not
-    # across ssh. On darwin, also never let an ssh login start the server: it
-    # would be stuck in the ssh security session; -N connects to a running
-    # server only. The libghostty answer of a herdr pane is provisional (E6:
-    # herdr's own answer is not recorded yet)
+    # never a tmux client inside a pane of devtools or tmux, also not across
+    # ssh. On darwin, also never let an ssh login start the server: it would be
+    # stuck in the ssh security session; -N connects to a running server only
     programs.zsh.initContent = lib.mkIf config.custom.zsh.enable ''
       tmux() {
         case "''${1:-new}" in
@@ -187,9 +185,8 @@ in
         command tmux "$@"
       }
       # asks the terminal for its name (XTVERSION). A devtools pane answers
-      # "devtools <version> <host>", a tmux pane "tmux <version>", a herdr pane
-      # "libghostty". Sets _mux_outer_name and returns 0 when the terminal is a
-      # pane of one of them
+      # "devtools <version> <host>", a tmux pane "tmux <version>". Sets
+      # _mux_outer_name and returns 0 when the terminal is a pane of one of them
       _mux_outer() {
         typeset -g _mux_outer_name=""
         [ -t 0 ] && [ -t 1 ] || return 1
@@ -202,12 +199,11 @@ in
         _mux_name "$reply"
       }
       # maps an XTVERSION answer to the multiplexer that gave it; no terminal
-      # is touched, so the acceptance of P3-06 can call it with fixed answers
+      # is touched, so it can be tested with fixed answers
       _mux_name() {
         case "$1" in
           *'>|devtools'*) _mux_outer_name=devtools ;;
           *'>|tmux '*) _mux_outer_name=tmux ;;
-          *'>|libghostty'*) _mux_outer_name=herdr ;;
           *) _mux_outer_name=""; return 1 ;;
         esac
       }

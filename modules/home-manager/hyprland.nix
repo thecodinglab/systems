@@ -201,35 +201,13 @@
       notify = lib.getExe pkgs.libnotify;
       hyprctl = lib.getExe' pkgs.hyprland "hyprctl";
 
-      # What a screenshot looks like when it is taken: the shot comes out of
-      # the top edge as a toast with itself for its icon, the way a mac shows
-      # the thumbnail in the corner, rather than going to the clipboard with
-      # nothing to say it happened. Escape out of the selection takes nothing
-      # and says nothing.
-      screenshot = pkgs.writers.writeBash "screenshot" ''
-        set -euo pipefail
-
-        hyprctl=${hyprctl}
-        jq=${lib.getExe pkgs.jq}
-        slurp=${lib.getExe pkgs.slurp}
-        grim=${lib.getExe pkgs.grim}
-        copy=${lib.getExe' pkgs.wl-clipboard "wl-copy"}
-
-        case "$1" in
-          # drag out a rectangle
-          area) area=$($slurp) ;;
-          # pick one of the windows on a visible workspace
-          window) area=$($hyprctl clients -j | $jq --argjson active "$($hyprctl monitors -j | $jq -c '[.[].activeWorkspace.id]')" '.[] | select((.hidden | not) and (.workspace.id as $id | $active | contains([$id]))) | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"' -r | $slurp) ;;
-        esac
-
-        file="$XDG_RUNTIME_DIR/screenshot.png"
-        $grim -g "$area" -t png "$file"
-        $copy -t image/png < "$file"
-
-        ${notify} -a Screenshot -i "$file" -t 3000 \
-          -h string:x-canonical-private-synchronous:screenshot \
-          "Screenshot copied"
-      '';
+      # A screenshot goes to the clipboard and comes out of the top edge as a
+      # toast with itself for its icon, the way a mac shows the thumbnail in
+      # the corner. Area: drag out a rectangle or click a window; escape takes
+      # nothing and says nothing.
+      screenshot =
+        target:
+        "${lib.getExe pkgs.grimblast} --notify --expire-time 3000 copysave ${target} \"$XDG_RUNTIME_DIR/screenshot.png\"";
 
       # Logging out quits every app, so it is asked for twice: the first press
       # says what is about to happen, a second within a few seconds does it,
@@ -652,8 +630,8 @@
             (mkBind "${mod} + MINUS" (dsp "workspace.toggle_special()"))
 
             # screenshot
-            (mkBind "${mod} + SHIFT + F4" (exec "${screenshot} area"))
-            (mkBind "${mod} + SHIFT + F3" (exec "${screenshot} window"))
+            (mkBind "${mod} + SHIFT + F4" (exec (screenshot "area")))
+            (mkBind "${mod} + SHIFT + F3" (exec (screenshot "active")))
           ]
           # tap to connect, hold (longer than repeat_delay) to disconnect. The
           # tap bind also fires at the start of a hold, which is harmless as
@@ -1017,8 +995,7 @@
         pkgs.wl-clipboard
 
         # Screenshot Utilities
-        pkgs.grim
-        pkgs.slurp
+        pkgs.grimblast
 
         # Audio Control
         pkgs.pulseaudio

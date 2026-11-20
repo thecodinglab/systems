@@ -70,6 +70,7 @@ in
 
   services.cloudflared = {
     enable = true;
+    tunnel = "33cc3d2d-8068-4e72-ae98-cec5f9b78779";
     credentialsFile = "/Users/florian/.config/cloudflared/macmini.json";
     ingress = {
       "kakeibo.ch".service = "http://127.0.0.1:8080";
