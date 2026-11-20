@@ -34,16 +34,16 @@
 - Haiku is never the final arbiter for architecture, security, or destructive
   migrations.
 - Fable and Astra are for escalation. Don't use them by default.
-- Other OpenAI models (GPT 6.0 Luna/Sol, 5.x) only when explicitly requested.
-  Never use "Codex Auto Review" for code review: it is an action-approval
+- Other OpenAI models (GPT 6.0/6.1 Sol, 6.0 Astra, Luna, Terra, 5.x) only when
+  explicitly requested. Never use "Codex Auto Review" for code review: it is an action-approval
   mechanism, not a review model.
 
 ## Requesting a model
 
 - Claude delegates: set the Agent tool's `model` to `haiku`, `sonnet`, `opus`, or
   `fable`.
-- OpenAI delegates: set `subagent_type: "openai-sol"` (GPT 6.1 Sol) or
-  `"openai-astra"` (GPT 6.0 Astra). **Omit `model`**, because it overrides their
+- OpenAI delegates: set `subagent_type: "openai-sol"` (GPT 6.2 Sol) or
+  `"openai-astra"` (GPT 6.2 Astra). **Omit `model`**, because it overrides their
   frontmatter. Their gateway IDs start with `claude-fable`, but that does not make
   them `fable`.
 - A fork inherits its parent's model, so don't fork when a different model is the

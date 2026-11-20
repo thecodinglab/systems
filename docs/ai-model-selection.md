@@ -238,6 +238,12 @@ A read-only `GET /v1/models` against the local CLIProxyAPI instance advertised:
 | GPT-6.1 Sol | GPT 6.1 Sol | `claude-fable-5-dd-los-1.6-tpg` |
 | GPT-6 Luna | GPT 6.0 Luna | `claude-fable-5-dd-anul-6-tpg` |
 | GPT-6 Sol | GPT 6.0 Sol | `claude-fable-5-dd-los-6-tpg` |
+| GPT-6.2 Astra | GPT 6.2 Astra | `claude-fable-5-dd-artsa-2.6-tpg` |
+| GPT-6.2 Sol | GPT 6.2 Sol | `claude-fable-5-dd-los-2.6-tpg` |
+
+The GPT-6.2 rows were added on 2026-11-20 from the same read-only listing; the
+named OpenAI agents now use them. The evidence review above predates 6.2 and
+has not been redone for it.
 
 **A display name, an advertised route, and the answering upstream are three
 different things.** The Claude-shaped OpenAI IDs are proxy routes, not official
@@ -261,8 +267,9 @@ values are used. They currently map to the versions above but may be overridden
 or move with a release. For OpenAI, two [named subagents][claude-subagents] use
 full gateway IDs in their `model` frontmatter:
 
-- `openai-sol`: bounded implementation/testing and independent review with Sol 6.1.
-- `openai-astra`: difficult debugging/reasoning and exceptional review escalation.
+- `openai-sol`: bounded implementation/testing and independent review with Sol 6.2.
+- `openai-astra`: difficult debugging/reasoning and exceptional review escalation
+  with Astra 6.2.
 
 Invoke either by `subagent_type` **without a per-call `model` override**, which
 would supersede its configured route. A fork inherits the parent and is not a

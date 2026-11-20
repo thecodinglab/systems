@@ -1,7 +1,7 @@
 ---
 name: openai-astra
-description: OpenAI GPT 6.0 Astra delegate for difficult debugging, algorithms, and independent adversarial review when the global model-selection policy calls for a second model family. Not for routine lookups.
-model: claude-fable-5-dd-artsa-6-tpg
+description: OpenAI GPT 6.2 Astra delegate for difficult debugging, algorithms, and independent adversarial review when the global model-selection policy calls for a second model family. Not for routine lookups.
+model: claude-fable-5-dd-artsa-2.6-tpg
 maxTurns: 100
 ---
 
