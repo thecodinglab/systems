@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ../../home/florian
@@ -19,6 +19,11 @@
   custom.ssh.forwardedAgents.enable = true;
   # and so do the keys of the devtools panes, which the server starts
   programs.devtools.server.environment.SSH_AUTH_SOCK = config.custom.ssh.forwardedAgents.socket;
+
+  # btop reads the RTX 3080 through libnvidia-ml, which it only finds with
+  # the driver runpath that cudaSupport adds; without it, btop shows only the
+  # idle iGPU
+  programs.btop.package = pkgs.btop.override { cudaSupport = true; };
 
   # AirPods Max, toggled with Super+B
   custom.hyprland.headphones = "90:62:3F:9B:23:F7";
